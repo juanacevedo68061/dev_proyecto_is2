@@ -1,0 +1,40 @@
+<!-- login/templates/login/inicio_sesion.html -->
+{% extends 'login/base.html' %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+  <h2>Iniciar Sesión</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="{{ formulario.username.id_for_label }}">Usuario:</label>
+      {{ formulario.username }}
+      {% if formulario.username.errors %}
+        <ul class="errorlist">
+          {% for error in formulario.username.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ formulario.password.id_for_label }}">Contraseña:</label>
+      {{ formulario.password }}
+      {% if formulario.password.errors %}
+        <ul class="errorlist">
+          {% for error in formulario.password.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+  
+  <p>No tienes una cuenta? <a href="{% url 'login:registro' %}">Regístrate aquí</a></p>
+{% endblock %}
+

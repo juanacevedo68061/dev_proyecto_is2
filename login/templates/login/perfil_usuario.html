@@ -1,0 +1,45 @@
+{% extends 'login/base.html' %}
+{% block title %}Perfil de {{ usuario.username }}{% endblock %}
+
+{% block content %}
+  <h1>Bienvenido, {{ usuario.username }}</h1>
+  <p>Correo electrónico: {{ usuario.email }}</p><br>
+  
+  <!-- Mostrar rol activado si existe -->
+  {% if usuario.rol_activo %}
+    <h2>Rol activado</h2>
+    <p>{{ usuario.rol_activo.nombre }}</p><br>
+  {% else %}  
+    <p>No tienes ningun rol activado</p><br>
+  {% endif %}
+
+  <!-- Mostrar opción para activar un rol -->
+  {% if roles %}
+    
+      <h2>Activar Rol</h2>
+      <form method="post" action="{% url 'login:activar_rol' %}">
+        {% csrf_token %}
+        <select name="rol_activado">
+          {% for rol in roles %}
+            <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Activar Rol</button>
+      </form>
+    
+  {% else %}
+    <p>{{ mensaje_roles }}</p>
+  {% endif %}
+
+  <h2>Actualizar Perfil</h2>
+  <form method="post" action="{% url 'login:perfil' %}">
+    {% csrf_token %}
+    {{ formulario.username.label_tag }} {{ formulario.username }}<br>
+    {{ formulario.email.label_tag }} {{ formulario.email }}<br>
+    {{ formulario.nueva_contraseña1.label_tag }} {{ formulario.nueva_contraseña1 }}<br>
+    {{ formulario.nueva_contraseña2.label_tag }} {{ formulario.nueva_contraseña2 }}<br>
+    <button type="submit">Actualizar Perfil</button>
+  </form>
+
+  <a href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
+{% endblock %}

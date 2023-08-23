@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import Permission
 
 class Rol(models.Model): 
+    """
+    Modelo que representa los roles en el sistema.
+
+    Atributos:
+        nombre (CharField): El nombre del rol (Autor, Editor, Publicador, Administrador).
+        permisos (ManyToManyField): Los permisos asignados a este rol.
+
+    Métodos:
+        crear_roles_iniciales: Crea los roles iniciales con un permiso cada uno después de la migración inicial.
+    """
     ROLES = (
         ('autor', 'Autor'),
         ('editor', 'Editor'),
@@ -9,10 +19,6 @@ class Rol(models.Model):
         ('administrador', 'Administrador'),
     )
 
-    name = models.CharField(max_length=20, choices=ROLES, unique=True)
-    permissions = models.ManyToManyField(Permission, blank=True)
-
-    def __str__(self):
-        return self.get_name_display()
-
+    nombre = models.CharField(max_length=20, choices=ROLES, unique=True)
+    permisos = models.ManyToManyField(Permission, blank=True)
 

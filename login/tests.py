@@ -79,3 +79,4 @@ class UsuarioTests(TestCase):
         # Verifica el mensaje de error generado en la vista
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Por favor, corrige los errores a continuación.')
+

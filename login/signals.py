@@ -43,4 +43,4 @@ def asignar_roles(sender, instance, created, **kwargs):
         
         autor_rol = Rol.objects.get(nombre='autor')
         instance.roles.add(autor_rol)
-
+        

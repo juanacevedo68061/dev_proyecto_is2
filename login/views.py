@@ -29,7 +29,7 @@ def inicio_sesion(request):
             usuario = authenticate(username=nombre_usuario, password=contraseña)
             if usuario is not None:
                 login(request, usuario)
-                return redirect('login:perfil')
+                return redirect('/')
             else:
                 messages.error(request, 'Credenciales inválidas. Por favor, inténtalo de nuevo.')
         else:
@@ -174,6 +174,3 @@ def perfil_usuario(request):
         print("DEBERIA HABER ACTIVADO ESTA MIERDERA")
     
     return render(request, 'login/perfil_usuario.html', contexto)
-
-    
-

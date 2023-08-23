@@ -74,6 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "cms.wsgi.application"
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

@@ -185,7 +185,9 @@ def perfil_actualizar(request):
         formulario = FormularioActualizarPerfil(request.POST, instance=usuario)
         if formulario.is_valid():
             contraseña_actual = formulario.cleaned_data.get('contraseña_actual')
-            if usuario.check_password(contraseña_actual):
+            if contraseña_actual and not usuario.check_password(contraseña_actual):
+                messages.error(request, 'La contraseña actual no es correcta.')
+            else:
                 nueva_contraseña1 = formulario.cleaned_data.get('nueva_contraseña1')
                 nueva_contraseña2 = formulario.cleaned_data.get('nueva_contraseña2')
                 if nueva_contraseña1 and nueva_contraseña1 == nueva_contraseña2:
@@ -193,8 +195,6 @@ def perfil_actualizar(request):
                 formulario.save()
                 messages.success(request, 'Perfil actualizado exitosamente.')
                 return redirect('login:perfil')
-            else:
-                messages.error(request, 'La contraseña actual no es correcta.')
     else:
         formulario = FormularioActualizarPerfil(instance=usuario)
 

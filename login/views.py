@@ -126,22 +126,19 @@ def activar_rol(request):
 @login_required
 def perfil_usuario(request):
     """
-    Vista para mostrar y editar el perfil del usuario.
+    Vista para mostrar el perfil del usuario.
 
     Esta vista muestra el perfil del usuario, incluidos sus roles activos y la posibilidad de activar un rol adicional.
-    Si el usuario no tiene roles, se muestra un mensaje correspondiente. Permite la actualización de información y cambio de contraseña.
+    Si el usuario no tiene roles, se muestra un mensaje correspondiente.
 
     Parámetros:
         request: La solicitud HTTP entrante.
 
     Retorna:
-        Renderiza la plantilla de perfil con el formulario y la información del usuario.    
+        Renderiza la plantilla de perfil con la información del usuario.
     """
     usuario = request.user
-    print("aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-    if(usuario.rol_activo):
-        print(usuario.rol_activo.nombre)
-        print("DEBERIA HABER ACTIVADO ESTA MIERDERA")
+
     # Obtener roles del usuario
     roles = usuario.roles.all()
     mensaje_roles = 'No cuenta con ningún rol asignado.'
@@ -157,20 +154,49 @@ def perfil_usuario(request):
         usuario.rol_activado = rol_activado_obj
         usuario.save()
 
-    # Obtener formularios
-    formulario = FormularioActualizarPerfil(instance=usuario)
+    # Obtener formulario de activar rol
     formulario_roles = FormularioActivarRol(instance=usuario)
     
     contexto = {
-        'formulario': formulario,
         'formulario_roles': formulario_roles,
         'usuario': usuario,
         'roles': roles,
         'mensaje_roles': mensaje_roles,
     }
-    print("MIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    if(usuario.rol_activo):
-        print(usuario.rol_activo.nombre)
-        print("DEBERIA HABER ACTIVADO ESTA MIERDERA")
     
     return render(request, 'login/perfil_usuario.html', contexto)
+
+@login_required
+def perfil_actualizar(request):
+    """
+    Vista para actualizar el perfil del usuario.
+
+    Esta vista permite al usuario actualizar su perfil, incluida la información y la contraseña.
+
+    Parámetros:
+        request: La solicitud HTTP entrante.
+
+    Retorna:
+        Redirecciona a la vista 'perfil_usuario' después de actualizar el perfil.
+    """
+    usuario = request.user
+
+    if request.method == 'POST':
+        formulario = FormularioActualizarPerfil(request.POST, instance=usuario)
+        if formulario.is_valid():
+            nueva_contraseña1 = formulario.cleaned_data.get('nueva_contraseña1')
+            nueva_contraseña2 = formulario.cleaned_data.get('nueva_contraseña2')
+            if nueva_contraseña1 and nueva_contraseña1 == nueva_contraseña2:
+                usuario.set_password(nueva_contraseña1)
+            formulario.save()
+            messages.success(request, 'Perfil actualizado exitosamente.')
+            return redirect('login:perfil')
+    else:
+        formulario = FormularioActualizarPerfil(instance=usuario)
+
+    contexto = {
+        'formulario': formulario,
+        'usuario': usuario,
+    }
+
+    return render(request, 'login/perfil_actualizar.html', contexto)

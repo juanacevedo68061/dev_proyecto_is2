@@ -1,0 +1,16 @@
+{% extends 'login/base.html' %}
+{% block title %}Actualizar Perfil{% endblock %}
+
+{% block content %}
+  <h2>Actualizar Perfil</h2>
+  <form method="post" action="{% url 'login:perfil' %}">
+    {% csrf_token %}
+    {{ formulario.username.label_tag }} {{ formulario.username }}<br>
+    {{ formulario.email.label_tag }} {{ formulario.email }}<br>
+    {{ formulario.nueva_contraseña1.label_tag }} {{ formulario.nueva_contraseña1 }}<br>
+    {{ formulario.nueva_contraseña2.label_tag }} {{ formulario.nueva_contraseña2 }}<br>
+    <button type="submit">Actualizar Perfil</button>
+  </form>
+
+  <a href="{% url 'login:perfil_usuario' %}" class="boton-regresar">Regresar al Perfil</a>
+{% endblock %}

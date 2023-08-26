@@ -1,30 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import Usuario
-from roles.models import Rol
-
-class FormularioCreacionUsuario(UserCreationForm):
-    """
-    Formulario para la creación de usuarios con campos de username, email y contraseña.
-    """
-    class Meta:
-        model = Usuario
-        fields = ('username', 'email')
-
-class FormularioCambioUsuario(forms.ModelForm):
-    """
-    Formulario para el cambio de información de usuarios (username y email).
-    """
-    class Meta:
-        model = Usuario
-        fields = ('username', 'email')
-
-class FormularioCambioContraseña(PasswordChangeForm):
-    """
-    Formulario para el cambio de contraseña de usuarios.
-    """
-    class Meta:
-        model = Usuario
 
 class FormularioRegistro(UserCreationForm):
     """
@@ -74,5 +50,3 @@ class FormularioActivarRol(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['rol_activo']
-
-

@@ -1,0 +1,17 @@
+# Ignorar archivos y carpetas generados automáticamente
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar migraciones de Django
+*/migrations/
+db.sqlite3
+
+# Ignorar archivos específicos
+
+#.gitignore
+virtual
+venv
+.vscode
+comandos.txt
+#tests

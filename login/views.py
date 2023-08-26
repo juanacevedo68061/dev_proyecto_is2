@@ -114,11 +114,6 @@ def activar_rol(request):
         usuario = request.user
         usuario.rol_activo = rol_activo
         usuario.save()
-        print("iniciooooooooooooooooooooooooo")
-        if(usuario.rol_activo):
-            print(usuario.rol_activo.nombre)
-            print("en activar_rol si carga la activacion")
-        
         messages.success(request, 'Rol activado exitosamente.')
     
     return redirect('login:perfil')

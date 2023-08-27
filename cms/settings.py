@@ -83,12 +83,8 @@ STATICFILES_DIRS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cms_bd',  # Nombre de la base de datos PostgreSQL
-        'USER': 'postgres',  # Usuario PostgreSQL
-        'PASSWORD': '12345',  # Contraseña PostgreSQL
-        'HOST': 'db',  # Nombre del servicio de la base de datos en Docker Compose
-        'PORT': '5432',  # Puerto por defecto de PostgreSQL
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

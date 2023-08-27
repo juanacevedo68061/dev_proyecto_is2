@@ -1,11 +1,16 @@
-Login Documentation
+Login App
 ====================
 
 .. automodule:: login.models
    :members:
+   :undoc-members:
+   :show-inheritance:
+
+Vistas
+--------------------
 
 .. automodule:: login.views
    :members:
+   :undoc-members:
+   :show-inheritance:
 
-
-# More sections for documenting other aspects of myapp1...

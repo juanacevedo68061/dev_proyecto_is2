@@ -3,17 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CMS's documentation!
-===============================
+Equipo 6 - Ingenieria de Software II
+====================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contenidos:
 
    login
    publicaciones
    roles
-   cms
    canvan
    administracion
 
@@ -23,3 +22,9 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. publicaciones
+   roles
+   cms
+   canvan
+   administracion

@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-l+h5q-)9z0-gsak2r@@er_3ck3-=v8+-j@wtuu$(91&g*t-02b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -83,8 +83,12 @@ STATICFILES_DIRS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cms_bd',  # Nombre de la base de datos PostgreSQL
+        'USER': 'postgres',  # Usuario PostgreSQL
+        'PASSWORD': '12345',  # Contraseña PostgreSQL
+        'HOST': 'db',  # Nombre del servicio de la base de datos en Docker Compose
+        'PORT': '5432',  # Puerto por defecto de PostgreSQL
     }
 }
 

@@ -1,14 +1,19 @@
-Canvan Documentation
-====================
+Canvan App
+==========
+
+Models
+------
 
 .. automodule:: canvan.models
    :members:
    :undoc-members:
    :show-inheritance:
 
+Views
+-----
+
 .. automodule:: canvan.views
    :members:
    :undoc-members:
    :show-inheritance:
 
-# More sections for documenting other aspects of myapp1...

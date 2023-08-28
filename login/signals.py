@@ -13,7 +13,6 @@ def crear_roles_iniciales(sender, instance, **kwargs):
         instance: Instancia del usuario que se está creando o actualizando.
         kwargs: Argumentos adicionales (no se usan aquí).
     """
-    print("entrando en crear_roles")
     if Usuario.objects.count() == 0:
         # Crear el rol de Administrador y Autor
         admin_rol, _ = Rol.objects.get_or_create(nombre='administrador')
@@ -22,12 +21,10 @@ def crear_roles_iniciales(sender, instance, **kwargs):
         # Guardar los roles en la base de datos
         admin_rol.save()
         autor_rol.save()
-        print("SE CREARON LOS ROLES Y GUARDADOS EN TABLA")
 
 
 @receiver(post_save, sender=Usuario)
 def asignar_roles(sender, instance, created, **kwargs):
-    print("entrando en asignar_roles")
     """
     Asigna roles a un usuario recién creado.
 

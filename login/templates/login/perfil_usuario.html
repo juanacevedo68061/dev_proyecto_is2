@@ -27,18 +27,12 @@
     </form>
   {% else %}
     <p>{{ mensaje_roles }}</p>
-  {% endif %}
-
-  <h2>Actualizar Perfil</h2>
-  <form method="post" action="{% url 'login:perfil' %}">
-    {% csrf_token %}
-    {{ formulario.username.label_tag }} {{ formulario.username }}<br>
-    {{ formulario.email.label_tag }} {{ formulario.email }}<br>
-    {{ formulario.nueva_contraseña1.label_tag }} {{ formulario.nueva_contraseña1 }}<br>
-    {{ formulario.nueva_contraseña2.label_tag }} {{ formulario.nueva_contraseña2 }}<br>
-    <button type="submit">Actualizar Perfil</button>
-  </form>
-
+  {% endif %}<br>
+  <!-- Enlace para ir a la página de actualización de perfil -->
+  <a href="{% url 'login:perfil_actualizar' %}" class="boton-actualizar">Actualizar Perfil</a><br>
   <!-- Agregar enlace al botón para ir a la página principal -->
   <a href="/" class="boton-principal">Ir a la página principal</a>
+
+  
 {% endblock %}
+

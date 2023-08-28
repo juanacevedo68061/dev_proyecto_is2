@@ -7,6 +7,9 @@ from django.core.exceptions import ValidationError
 #ya despues se le debe agregar lo necesario, todo esta en la documentacion.
 
 class Publicacion(models.Model):
+    """
+    Modelo que representa una publicación en el sistema.
+    """
     ESTADOS_CONTENIDO = [
         ('borrador', 'Borrador'),
         ('revision', 'Revisión'),
@@ -41,5 +44,8 @@ class Publicacion(models.Model):
     dislikes = models.ManyToManyField(Usuario, related_name='publicaciones_disliked', blank=True)
 
     def __str__(self):
+        """
+        Devuelve una representación en forma de cadena del resumen de la publicación.
+        """
         return self.resumen
 

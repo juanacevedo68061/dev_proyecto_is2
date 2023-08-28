@@ -4,5 +4,7 @@ django-ckeditor
 django-js-asset
 Pillow
 sqlparse
+sphinx
+sphinx_rtd_theme
 typing_extensions
 tzdata

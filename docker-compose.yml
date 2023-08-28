@@ -1,16 +1,18 @@
 version: '3.8'
 
 services:
-  
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "./inicio.sh &&
+      python manage.py makemigrations login roles canvan publicaciones administracion &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
       - "8000:8000"
-
     

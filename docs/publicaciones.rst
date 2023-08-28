@@ -1,14 +1,20 @@
-publicaciones Documentation
-===========================
+Publicaciones App
+=================
+
+Models
+------
 
 .. automodule:: publicaciones.models
    :members:
    :undoc-members:
    :show-inheritance:
 
+Views
+-----
+
 .. automodule:: publicaciones.views
    :members:
    :undoc-members:
    :show-inheritance:
 
-# More sections for documenting other aspects of myapp1...
+

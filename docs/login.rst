@@ -1,5 +1,8 @@
 Login App
-====================
+=========
+
+Models
+------
 
 .. automodule:: login.models
    :members:
@@ -7,7 +10,7 @@ Login App
    :show-inheritance:
 
 Vistas
---------------------
+------
 
 .. automodule:: login.views
    :members:

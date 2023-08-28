@@ -16,15 +16,9 @@ Equipo 6 - Ingenieria de Software II
    canvan
    administracion
 
-Indices and tables
+Indices y tablas
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. publicaciones
-   roles
-   cms
-   canvan
-   administracion

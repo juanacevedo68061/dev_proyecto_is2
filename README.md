@@ -54,7 +54,7 @@ Nuestro equipo sigue un flujo de trabajo colaborativo para desarrollar y mantene
      ```bash
      git checkout main  # Cambia a la rama principal
      git merge --no-ff nombre-de-la-rama -m "Merge de nombre-de-la-rama"  # Fusiona los cambios de la rama feature en la rama main y realiza el commit del merge con mensaje
-     git branch -d nombre-de-la-rama  # Borra la rama de características después del merge
+     git branch -d nombre-de-la-rama  # Borra la rama feature después del merge
      ```
 
 8. **Subir Cambios al Repositorio Remoto:**

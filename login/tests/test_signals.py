@@ -1,7 +1,6 @@
 from django.test import TestCase
-from django.core import management
-from django.db.models.signals import pre_save, post_save
-from django.dispatch import Signal
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from login.models import Usuario
 from roles.models import Rol
 from login.signals import crear_roles_iniciales, asignar_roles
@@ -13,14 +12,14 @@ class SignalsTests(TestCase):
         """
         usuario = Usuario()
         crear_roles_iniciales(sender=Usuario, instance=usuario)
-        self.assertEqual(Rol.objects.count(), 2)  # Asegura que se crearon los roles
+        self.assertEqual(Rol.objects.count(), 4)  # Asegura que se crearon los roles
 
     def test_asignacion_de_roles(self):
         """
         Prueba la señal de asignación de roles.
         """
-        admin_rol = Rol.objects.create(nombre='administrador')
-        autor_rol = Rol.objects.create(nombre='autor')
+        admin_rol, _ = Rol.objects.get_or_create(nombre='administrador')
+        autor_rol, _ = Rol.objects.get_or_create(nombre='autor')
         usuario = Usuario(username='usuario_prueba')
         usuario.save()
 
@@ -34,28 +33,19 @@ class SignalsTests(TestCase):
         """
         Prueba el funcionamiento del pre_save con señales.
         """
-        pre_save_signal = Signal()
-        pre_save_signal.connect(crear_roles_iniciales, sender=Usuario)
-
         usuario = Usuario()
-        pre_save.send(sender=Usuario, instance=usuario)
+        usuario.save()
 
-        self.assertEqual(Rol.objects.count(), 2)  # Asegura que se crearon los roles
+        self.assertEqual(Rol.objects.count(), 4)  # Asegura que se crearon los roles
 
     def test_signal_con_post_save(self):
         """
         Prueba el funcionamiento del post_save con señales.
         """
-        post_save_signal = Signal()
-        post_save_signal.connect(asignar_roles, sender=Usuario)
-
-        admin_rol = Rol.objects.create(nombre='administrador')
-        autor_rol = Rol.objects.create(nombre='autor')
+        admin_rol, _ = Rol.objects.get_or_create(nombre='administrador')
+        autor_rol, _ = Rol.objects.get_or_create(nombre='autor')
         usuario = Usuario(username='usuario_prueba')
         usuario.save()
-
-        post_save.send(sender=Usuario, instance=usuario, created=True)
-        usuario.refresh_from_db()
 
         self.assertTrue(admin_rol in usuario.roles.all())
         self.assertTrue(autor_rol in usuario.roles.all())

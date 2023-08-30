@@ -27,44 +27,41 @@ Nuestro equipo sigue un flujo de trabajo colaborativo para desarrollar y mantene
      ```bash
      git checkout main
      ```
-     
+
 4. **Actualizar desde la Rama Principal:**
    - Luego, para asegurarte de tener los últimos cambios de la rama principal, ejecuta:
      ```bash
      git pull origin main
      ```
-     
+
 ### Creación de Nuevas Funcionalidades o Cambios
 
-5. Crea una nueva rama de características para la funcionalidad o cambio:
+5. **Crear una Nueva Rama Feature:**
+   - Antes de trabajar en una nueva funcionalidad, crea una nueva rama feature utilizando el comando:
      ```bash
-     git checkout -b funcionalidad/NombreDescriptivo
+     git checkout -b nombre-de-la-rama
      ```
 
-6. Realiza tus cambios en la rama de características, agrega y confirma:
+6. **Realizar Cambios y Confirmar:**
+   - Realiza los cambios necesarios en la nueva rama:
      ```bash
-     git add .
-     git commit -m "Agregar FuncionalidadXYZ: Descripción breve de los cambios"
-     ```
-7. (Opcional) Mantén tu rama de características actualizada con los cambios de la rama principal:
-     ```bash
-     git pull origin main
+     git add .  # Agregar los cambios al área de preparación
+     git commit -m "Descripción concisa de los cambios"  # Confirmar los cambios con un mensaje
      ```
 
-8. (Opcional) Resuelve conflictos si es necesario y confirma los cambios resultantes.
+7. **Fusionar Cambios y Eliminar la Rama Feature:**
+   - Si has terminado de trabajar en la funcionalidad, fusiona los cambios en la rama main y realiza un commit para registrar el merge, luego borra la rama feature:
+     ```bash
+     git checkout main  # Cambia a la rama principal
+     git merge --no-ff nombre-de-la-rama -m "Merge de nombre-de-la-rama"  # Fusiona los cambios de la rama feature en la rama main y realiza el commit del merge con mensaje
+     git branch -d nombre-de-la-rama  # Borra la rama de características después del merge
+     ```
 
-9. Crea un Pull Request (PR) en GitHub desde tu rama de características hacia la rama principal.
-   - Describe tus cambios y proporciona información relevante en el PR.
-
-10. Los miembros del equipo revisarán y comentarán el PR.
-   - Realiza ajustes si es necesario.
-
-11. Una vez aprobado, un miembro con permisos fusionará el PR en la rama principal.
-
-12. Elimina la rama de características después de la fusión:
-    ```bash
-    git branch -d funcionalidad/NombreDescriptivo
-    ```
+8. **Subir Cambios al Repositorio Remoto:**
+   - Sube los cambios realizados en la rama principal al repositorio remoto:
+     ```bash
+     git push origin main
+     ```
 
 ### Presentaciones y Colaboración
 

@@ -13,30 +13,18 @@ Nuestro equipo sigue un flujo de trabajo colaborativo para desarrollar y mantene
 git checkout main
 git pull origin main
 
-markdown
-
-
 2. Crea una nueva rama de características para la funcionalidad o cambio:
 
 git checkout -b funcionalidad/NombreDescriptivo
-
-markdown
-
 
 3. Realiza tus cambios en la rama de características, agrega y confirma:
 
 git add .
 git commit -m "Agregar FuncionalidadXYZ: Descripción breve de los cambios"
 
-markdown
-
-
 4. (Opcional) Mantén tu rama de características actualizada con los cambios de la rama principal:
 
 git pull origin main
-
-markdown
-
 
 5. (Opcional) Resuelve conflictos si es necesario y confirma los cambios resultantes.
 
@@ -51,9 +39,6 @@ markdown
 9. Elimina la rama de características después de la fusión:
 
 git branch -d funcionalidad/NombreDescriptivo
-
-markdown
-
 
 ### Presentaciones y Colaboración
 

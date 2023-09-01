@@ -20,13 +20,13 @@ Si aún no has clonado este repositorio, sigue estos pasos:
    - Navega al directorio donde deseas clonar el repositorio.
    - Ejecuta el siguiente comando para clonar el repositorio en tu máquina local:
      ```bash
-     git clone https://github.com/juanacevedo68061/dev_proyecto_is2.git
+     git clone https://github.com/juanacevedo68061/proyecto_is2.git
      ```
 
 2. **Navegar al Directorio del Repositorio:**
    - Una vez que hayas clonado el repositorio, navega al directorio del repositorio en tu terminal:
      ```bash
-     cd dev_proyecto_is2
+     cd proyecto_is2
      ```
 
 ## Flujo de Trabajo para Desarrollo
@@ -34,7 +34,7 @@ Si aún no has clonado este repositorio, sigue estos pasos:
 1. **Crear una Nueva Rama de Funcionalidad (Feature):**
    - Asegurate de estar en la rama development
      ```bash
-     git checkout development  # Esto te posicionará en la rama development para que al crear la rama feature tambien traiga el contenido de development a la rama
+     git checkout development  # Esto es necesario para que al crear la rama feature tambien traiga el contenido de development a la rama
      ``` 
    - Antes de trabajar en una nueva funcionalidad, crea una nueva rama feature utilizando el comando:
      ```bash
@@ -132,4 +132,3 @@ Durante el desarrollo, presentamos avances al profesor. Para ello:
 Si tienes preguntas o necesitas integrarte al proyecto, puedes contactar a [juan.acevedo68061@fpuna.edu.py].
 
 ¡Gracias por contribuir al proyecto CMS!
-

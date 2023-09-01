@@ -20,23 +20,37 @@ Si aún no has clonado este repositorio, sigue estos pasos:
    - Navega al directorio donde deseas clonar el repositorio.
    - Ejecuta el siguiente comando para clonar el repositorio en tu máquina local:
      ```bash
-     git clone https://github.com/juanacevedo68061/proyecto_is2.git
+     git clone https://github.com/juanacevedo68061/dev_proyecto_is2.git
      ```
 
 2. **Navegar al Directorio del Repositorio:**
    - Una vez que hayas clonado el repositorio, navega al directorio del repositorio en tu terminal:
      ```bash
-     cd proyecto_is2
+     cd dev_proyecto_is2
      ```
 
 ## Flujo de Trabajo para Desarrollo
 
 1. **Crear una Nueva Rama de Funcionalidad (Feature):**
-   - Antes de trabajar, crea una nueva rama feature utilizando el comando:
+   - Asegurate de estar en la rama development
+     ```bash
+     git checkout development  # Esto te posicionará en la rama development para que al crear la rama feature tambien traiga el contenido de development a la rama
+     ``` 
+   - Antes de trabajar en una nueva funcionalidad, crea una nueva rama feature utilizando el comando:
      ```bash
      git checkout -b nombre-de-la-rama  # Crea la rama feature y se posiciona en ella
      git pull origin development  # Actualizar la rama feature con los últimos cambios de development
      git push origin nombre-de-la-rama  # Sube la rama feature que solo estaba en local a remoto
+     ```
+
+2. **Colaboración en la Rama Feature (Opcional):**
+   - Si deseas colaborar en una rama feature que esté en el repositorio remoto, primero verifica si la rama feature ya existe en el repositorio remoto:
+     ```bash
+     git ls-remote --heads origin nombre-de-la-rama
+     ```
+   - Si la rama feature existe en el repositorio remoto, puedes posicionarte en la rama y colaborar en ella.
+     ```bash
+     git checkout nombre-de-la-rama
      ```
 
 3. **Realizar Cambios y Commitear:**
@@ -71,6 +85,7 @@ Si aún no has clonado este repositorio, sigue estos pasos:
      git push origin --delete nombre-de-la-rama-feature
      ```
 
+
 ## Flujo de Fusión en `main` (Producción)
 
 Cuando estés listo para fusionar tus cambios en la rama principal (`main`), sigue estos pasos:
@@ -104,6 +119,7 @@ Cuando estés listo para fusionar tus cambios en la rama principal (`main`), sig
      ```bash
      git push origin main
      ```
+
 
 ### Presentaciones y Colaboración
 

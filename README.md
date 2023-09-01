@@ -4,9 +4,16 @@ Este repositorio contiene el código fuente y la documentación para el proyecto
 
 ## Flujo de Trabajo y Contribución
 
-Nuestro equipo sigue un flujo de trabajo colaborativo para desarrollar y mantener este proyecto. A continuación, se muestra el proceso que seguimos:
+Este repositorio sigue un flujo de trabajo colaborativo para desarrollar nuevas características y mantener el entorno de producción actualizado. El proceso implica las ramas de desarrollo (`development`) y producción (`main`).
 
-### Paso Inicial: Clonación del Repositorio
+## Ramas de Entornos
+
+- **`main` (Producción):** Esta rama contiene el código en producción. Se considera estable y se actualiza únicamente con cambios verificados y probados.
+- **`development` (Desarrollo):** Esta rama es donde ocurre el desarrollo activo. Nuevas características y cambios se integran aquí antes de ser fusionados en la rama principal.
+
+## Indicaciones Iniciales
+
+Si aún no has clonado este repositorio, sigue estos pasos:
 
 1. **Clonar el Repositorio:**
    - Abre tu terminal o línea de comandos.
@@ -16,49 +23,95 @@ Nuestro equipo sigue un flujo de trabajo colaborativo para desarrollar y mantene
      git clone https://github.com/juanacevedo68061/dev_proyecto_is2.git
      ```
 
-2. **Ubicarse en el Repositorio:**
+2. **Navegar al Directorio del Repositorio:**
    - Una vez que hayas clonado el repositorio, navega al directorio del repositorio en tu terminal:
      ```bash
      cd dev_proyecto_is2
      ```
 
-3. **Cambiar a la Rama Principal:**
-   - Es probable que ya estés en la rama principal `main` después de clonar el repositorio. Sin embargo, para estar seguro, puedes ejecutar:
-     ```bash
-     git checkout main
-     ```
+## Flujo de Trabajo para Desarrollo
 
-4. **Actualizar desde la Rama Principal:**
-   - Luego, para asegurarte de tener los últimos cambios de la rama principal, ejecuta:
-     ```bash
-     git pull origin main
-     ```
-
-### Creación de Nuevas Funcionalidades o Cambios
-
-5. **Crear una Nueva Rama Feature:**
+1. **Crear una Nueva Rama de Funcionalidad (Feature):**
    - Antes de trabajar en una nueva funcionalidad, crea una nueva rama feature utilizando el comando:
      ```bash
-     git checkout -b nombre-de-la-rama
+     git checkout -b nombre-de-la-rama  # Crea la rama feature y se posiciona en ella
+     git pull origin development  # Actualizar la rama feature con los últimos cambios de development
+     git push origin nombre-de-la-rama  # Sube la rama feature que solo estaba en local a remoto
      ```
 
-6. **Realizar Cambios y Confirmar:**
-   - Realiza los cambios necesarios en la nueva rama:
+2. **Colaboración en la Rama Feature (Opcional):**
+   - Si deseas colaborar en una rama feature que esté en el repositorio remoto, primero verifica si la rama feature ya existe en el repositorio remoto:
+     ```bash
+     git ls-remote --heads origin nombre-de-la-rama
+     ```
+   - Si la rama feature existe en el repositorio remoto, puedes posicionarte en la rama y colaborar en ella.
+     ```bash
+     git checkout nombre-de-la-rama
+     ```
+
+3. **Realizar Cambios y Commitear:**
+   - Realiza los cambios necesarios en la nueva rama.
+   - Prueba tus cambios y asegúrate de que todo funcione correctamente. Luego.
      ```bash
      git add .  # Agregar los cambios al área de preparación
      git commit -m "Descripción concisa de los cambios"  # Confirmar los cambios con un mensaje
      ```
 
-7. **Fusionar Cambios y Eliminar la Rama Feature:**
-   - Si has terminado de trabajar en la funcionalidad, fusiona los cambios en la rama main y realiza un commit para registrar el merge, luego borra la rama feature:
+4. **Fusión de la rama feature en `development`:**
+   - Cambiate a `development` y actualiza con los últimos cambios del repositorio remoto:
      ```bash
-     git checkout main  # Cambia a la rama principal
-     git merge --no-ff nombre-de-la-rama -m "Merge de nombre-de-la-rama"  # Fusiona los cambios de la rama feature en la rama main y realiza el commit del merge con mensaje
-     git branch -d nombre-de-la-rama  # Borra la rama feature después del merge
+     git checkout development
+     git pull origin development
+     ```
+   - Fusiona tu rama de funcionalidad en `development`:
+     ```bash
+     git merge --no-ff nombre-de-la-rama -m "Merge de nombre-de-la-rama"  # Fusiona los cambios de la rama feature en la rama development y realiza el commit del merge con mensaje
+     git push origin development  # Sube los cambios de la fusión a la rama development en el repositorio remoto
      ```
 
-8. **Subir Cambios al Repositorio Remoto:**
-   - Sube los cambios realizados en la rama principal al repositorio remoto:
+5. **Eliminar la Rama Feature (Local):**
+   - Después de haber fusionado con éxito la rama feature en `development`, puedes eliminar la rama feature si ya no la necesitas en tu repositorio local:
+     ```bash
+     git branch -d nombre-de-la-rama
+     ```
+
+6. **Eliminar la Rama Feature (Remota):**
+   - Después de que se haya fusionado en `development`, puedes hacerlo con el siguiente comando:
+     ```bash
+     git push origin --delete nombre-de-la-rama-feature
+     ```
+
+
+## Flujo de Fusión en `main` (Producción)
+
+Cuando estés listo para fusionar tus cambios en la rama principal (`main`), sigue estos pasos:
+
+1. **Fusión de `development` en `main` (Producción):**
+   - Asegúrate de estar en la rama `main`. Si no lo estás, puedes cambiar a esta rama ejecutando el siguiente comando:
+     ```bash
+     git checkout main
+     ```
+   - Luego, fusiona los cambios de `development` en `main` con la opción `--no-commit` para preparar la fusión:
+     ```bash
+     git pull origin main
+     git merge --no-commit development
+     ```
+
+2. **Exclusión de Archivos Específicos:**
+   - Para excluir archivos específicos de la fusión, ejecuta el siguiente comando para traer esos archivos desde `development`:
+     ```bash
+     git checkout development -- .gitattributes
+     ```
+
+3. **Confirmar la Fusión y Realizar el Commit:**
+   - Reinicia el encabezado del commit y realiza el commit para registrar la fusión con un mensaje descriptivo:
+     ```bash
+     git reset HEAD
+     git commit -m "Fusión de development en main, excluyendo archivos específicos"
+     ```
+
+4. **Subir Cambios a `main` (Producción):**
+   - Finalmente, sube los cambios realizados en la rama principal al repositorio remoto:
      ```bash
      git push origin main
      ```
@@ -72,6 +125,6 @@ Durante el desarrollo, presentamos avances al profesor. Para ello:
 
 ## Contacto
 
-   Si tienes preguntas o necesitas ayuda, puedes contactar a [juan.acevedo68061@fpuna.edu.py].
+   Si tienes preguntas o necesitas integrarte al proyecto, puedes contactar a [juan.acevedo68061@fpuna.edu.py].
 
 ¡Gracias por contribuir al proyecto CMS!

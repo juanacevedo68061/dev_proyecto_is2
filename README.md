@@ -59,9 +59,14 @@ Si aún no has clonado este repositorio, sigue estos pasos:
      ```bash
      git add .  # Agregar los cambios al área de preparación
      git commit -m "Descripción concisa de los cambios"  # Confirmar los cambios con un mensaje
+     git push origin nombre-de-la-rama  # Sube los cambios en la rama feature del repositorio remoto
      ```
 
 4. **Fusión de la rama feature en `development`:**
+   - Si se trabajó en colaboración en la rama feature, antes de la fusion actualiza la rama feature con los últimos cambios del repositorio remoto:
+     ```bash
+     git pull origin nombre-de-la-rama  
+     ```
    - Cambiate a `development` y actualiza con los últimos cambios del repositorio remoto:
      ```bash
      git checkout development

@@ -72,7 +72,7 @@ Si aún no has clonado este repositorio, sigue estos pasos:
      git checkout development
      git pull origin development
      ```
-   - Fusiona tu rama de funcionalidad en `development`:
+   - Fusiona tu rama feature en `development`:
      ```bash
      git merge --no-ff nombre-de-la-rama -m "Merge de nombre-de-la-rama"  # Fusiona los cambios de la rama feature en la rama development y realiza el commit del merge con mensaje
      git push origin development  # Sube los cambios de la fusión a la rama development en el repositorio remoto

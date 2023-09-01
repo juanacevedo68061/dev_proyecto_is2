@@ -20,33 +20,23 @@ Si aún no has clonado este repositorio, sigue estos pasos:
    - Navega al directorio donde deseas clonar el repositorio.
    - Ejecuta el siguiente comando para clonar el repositorio en tu máquina local:
      ```bash
-     git clone https://github.com/juanacevedo68061/dev_proyecto_is2.git
+     git clone https://github.com/juanacevedo68061/proyecto_is2.git
      ```
 
 2. **Navegar al Directorio del Repositorio:**
    - Una vez que hayas clonado el repositorio, navega al directorio del repositorio en tu terminal:
      ```bash
-     cd dev_proyecto_is2
+     cd proyecto_is2
      ```
 
 ## Flujo de Trabajo para Desarrollo
 
 1. **Crear una Nueva Rama de Funcionalidad (Feature):**
-   - Antes de trabajar en una nueva funcionalidad, crea una nueva rama feature utilizando el comando:
+   - Antes de trabajar, crea una nueva rama feature utilizando el comando:
      ```bash
      git checkout -b nombre-de-la-rama  # Crea la rama feature y se posiciona en ella
      git pull origin development  # Actualizar la rama feature con los últimos cambios de development
      git push origin nombre-de-la-rama  # Sube la rama feature que solo estaba en local a remoto
-     ```
-
-2. **Colaboración en la Rama Feature (Opcional):**
-   - Si deseas colaborar en una rama feature que esté en el repositorio remoto, primero verifica si la rama feature ya existe en el repositorio remoto:
-     ```bash
-     git ls-remote --heads origin nombre-de-la-rama
-     ```
-   - Si la rama feature existe en el repositorio remoto, puedes posicionarte en la rama y colaborar en ella.
-     ```bash
-     git checkout nombre-de-la-rama
      ```
 
 3. **Realizar Cambios y Commitear:**
@@ -80,7 +70,6 @@ Si aún no has clonado este repositorio, sigue estos pasos:
      ```bash
      git push origin --delete nombre-de-la-rama-feature
      ```
-
 
 ## Flujo de Fusión en `main` (Producción)
 
@@ -121,10 +110,10 @@ Cuando estés listo para fusionar tus cambios en la rama principal (`main`), sig
 Durante el desarrollo, presentamos avances al profesor. Para ello:
    - Mostramos el historial de ramas eliminadas para demostrar el progreso.
    - Explicamos los cambios en las ramas de características y cómo se integran en la rama principal.
-   - Resaltamos la documentación, los comentarios de código y las pruebas realizadas.
 
 ## Contacto
 
-   Si tienes preguntas o necesitas integrarte al proyecto, puedes contactar a [juan.acevedo68061@fpuna.edu.py].
+Si tienes preguntas o necesitas integrarte al proyecto, puedes contactar a [juan.acevedo68061@fpuna.edu.py].
 
 ¡Gracias por contribuir al proyecto CMS!
+

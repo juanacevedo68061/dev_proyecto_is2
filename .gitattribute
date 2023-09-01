@@ -1,0 +1,7 @@
+.gitignore merge=ours
+Dockerfile merge=ours
+docker-compose.yml merge=ours
+manage.py merge=ours
+para_windows.bat merge=ours
+requirements.txt merge=ours
+cms/settings.py merge=ours

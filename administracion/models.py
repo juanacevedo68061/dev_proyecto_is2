@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 class Categoria(models.Model):
     """
-    La clase categoria contiene el campo nombre y contiene un campo booleano que indica si la misma es moderada o no
+    La clase categoria 
     """
     
     nombre = models.CharField(max_length=100)

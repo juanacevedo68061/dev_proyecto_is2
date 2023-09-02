@@ -1,0 +1,38 @@
+{% extends 'login/base.html' %}
+{% block title %}Perfil de {{ usuario.username }}{% endblock %}
+
+{% block content %}
+  <h1>Bienvenido, {{ usuario.username }}</h1>
+  <p>Correo electrónico: {{ usuario.email }}</p><br>
+  
+  <!-- Mostrar rol activado si existe -->
+  {% if usuario.rol_activo %}
+    <h2>Rol activado</h2>
+    <p>{{ usuario.rol_activo.nombre }}</p><br>
+  {% else %}  
+    <p>No tienes ningún rol activado</p><br>
+  {% endif %}
+
+  <!-- Mostrar opción para activar un rol -->
+  {% if roles %}
+    <h2>Activar Rol</h2>
+    <form method="post" action="{% url 'login:activar_rol' %}">
+      {% csrf_token %}
+      <select name="rol_activado">
+        {% for rol in roles %}
+          <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Activar Rol</button>
+    </form>
+  {% else %}
+    <p>{{ mensaje_roles }}</p>
+  {% endif %}<br>
+  <!-- Enlace para ir a la página de actualización de perfil -->
+  <a href="{% url 'login:perfil_actualizar' %}" class="boton-actualizar">Actualizar Perfil</a><br>
+  <!-- Agregar enlace al botón para ir a la página principal -->
+  <a href="/" class="boton-principal">Ir a la página principal</a>
+
+  
+{% endblock %}
+

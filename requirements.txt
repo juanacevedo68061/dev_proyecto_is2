@@ -1,0 +1,10 @@
+asgiref
+Django>=4.0
+django-ckeditor
+django-js-asset
+Pillow
+sqlparse
+typing_extensions
+tzdata
+psycopg2-binary
+gunicorn

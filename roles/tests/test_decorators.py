@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.http import HttpResponse
 from roles.decorators import rol_requerido
-from login.models import Rol, Usuario 
+from login.models import Usuario 
 from roles.models import Rol
 
 class DecoratorTest(TestCase):

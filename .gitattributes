@@ -1,0 +1,12 @@
+# Ignorar archivos específicos al fusionar la rama development en la rama main
+.gitignore merge=ours=theirs
+Dockerfile merge=ours=theirs
+docker-compose.yml merge=ours=theirs
+manage.py merge=ours=theirs
+para_windows.bat merge=ours=theirs
+requirements.txt merge=ours=theirs
+cms/settings.py merge=ours=theirs
+
+# Ignorar el directorio de pruebas (tests/) en cada aplicación
+**/tests/** merge=ours=theirs
+

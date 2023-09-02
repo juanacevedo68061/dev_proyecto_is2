@@ -90,40 +90,34 @@ Si aún no has clonado este repositorio, sigue estos pasos:
      git push origin --delete nombre-de-la-rama-feature
      ```
 
-
 ## Flujo de Fusión en `main` (Producción)
 
 Cuando estés listo para fusionar tus cambios en la rama principal (`main`), sigue estos pasos:
 
-1. **Fusión de `development` en `main` (Producción):**
+1. **Configuración de Git para la Estrategia de Fusión (Una sola vez):**
+   - Configura Git globalmente para usar la estrategia "ours". Esto se hace una vez con el siguiente comando:
+     ```bash
+     git config --global merge.ours.driver true  # Esto es principalmente para que la configuración en .gitattributes funcione
+     ```
+
+2. **Fusión de `development` en `main` (Producción):**
    - Asegúrate de estar en la rama `main`. Si no lo estás, puedes cambiar a esta rama ejecutando el siguiente comando:
      ```bash
      git checkout main
      ```
-   - Luego, fusiona los cambios de `development` en `main` con la opción `--no-commit` para preparar la fusión:
-     ```bash
-     git pull origin main
-     git merge --no-commit development
-     ```
 
-2. **Exclusión de Archivos Específicos:**
-   - Para excluir archivos específicos de la fusión, ejecuta el siguiente comando para traer esos archivos desde `development`:
+3. **Realizar la Fusión de Cambios de `development` del Repositorio Remoto:**
+   - Realiza el merge de los cambios de la rama `development` que está en el repositorio remoto en `main`, utilizando la estrategia "theirs", lo que significa que se tomarán automáticamente los cambios de `development` en caso de conflictos:
      ```bash
-     git checkout development -- .gitattributes
-     ```
-
-3. **Confirmar la Fusión y Realizar el Commit:**
-   - Reinicia el encabezado del commit y realiza el commit para registrar la fusión con un mensaje descriptivo:
-     ```bash
-     git reset HEAD
-     git commit -m "Fusión de development en main, excluyendo archivos específicos"
+     git merge -X theirs origin/development -m "Merge de development"
      ```
 
 4. **Subir Cambios a `main` (Producción):**
-   - Finalmente, sube los cambios realizados en la rama principal al repositorio remoto:
+   - Sube los cambios realizados en la rama principal al repositorio remoto:
      ```bash
      git push origin main
      ```
+
 
 
 ### Presentaciones y Colaboración

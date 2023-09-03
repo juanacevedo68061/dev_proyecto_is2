@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Panel de Administración</h1>
+
+    <ul>
+        <li><a href="{% url 'administracion:listar_categorias' %}">Categorías</a></li>
+    </ul>
+
+    <!-- Aquí puedes agregar enlaces a otras secciones de administración si es necesario -->
+</div>
+
+<a href="/" class="boton-principal">Ir a la página principal</a>
+{% endblock %}

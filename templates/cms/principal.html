@@ -5,6 +5,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
   <div class="sidebar">
     <!-- Barra lateral con opciones de usuario -->
+    <a href="{% url 'administracion:panel' %}">Administración</a>
     <a href="{% url 'login:perfil' %}">{{ request.user.username }}</a>
     <a href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
   </div>

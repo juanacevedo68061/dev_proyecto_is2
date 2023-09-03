@@ -5,4 +5,5 @@ urlpatterns = [
     # ... otras URLs ...
     path('', views.principal, name='principal'),
     path('login/', include('login.urls', namespace='login')),
+    path('administracion/', include('administracion.urls', namespace='administracion')),
 ]

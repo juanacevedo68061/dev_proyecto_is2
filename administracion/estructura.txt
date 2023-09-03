@@ -1,0 +1,23 @@
+administracion/
+│
+├── admin.py
+├── apps.py
+├── forms.py
+├── __init__.py
+├── migrations/
+│   ├── __init__.py
+│   └── ...
+├── models.py
+├── templates/
+│   └── administracion/
+│       ├── panel.html  # Cambiado desde inicio.html
+│       ├── listar_categorias.html
+│       ├── crear_categoria.html
+│       ├── editar_categoria.html
+│       └── eliminar_categoria.html
+│   └── js/
+│       ├── custom.js  # Aquí colocarás el código JavaScript para AJAX
+│
+├── tests.py
+├── urls.py
+└── views.py

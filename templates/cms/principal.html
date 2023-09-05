@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  
-  <div class="sidebar">
-    <!-- Barra lateral con opciones de usuario -->
-    {% if user.is_authenticated %}
-      <a class="nav-link" href="{% url 'login:perfil' %}">{{ request.user.username }}</a>
-      <a class="nav-link" href="{% url 'administracion:panel' %}">Administración</a>
-      <a class="nav-link" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
-    {% else %}
-      <a class="nav-link" href="{% url 'login:inicio_sesion' %}">Iniciar sesión</a>
-    {% endif %}
-  </div>
-  <div class="content">
-    <!-- Contenido principal de la página -->
-    <h1>Página Principal</h1>
-    <!-- Espacio para el buscador (aún no implementado) -->
+  <!-- Espacio para el buscador (aún no implementado) -->
+
+  <!-- Contenedor para las partes modularizadas -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Barra lateral -->
+        {% include 'cms/sidebar.html' %}
+      </div>
+      <div class="col-md-9">
+        <!-- Parte de las publicaciones -->
+        {% include 'cms/publicaciones.html' %}
+      </div>
+    </div>
   </div>
 {% endblock %}
 

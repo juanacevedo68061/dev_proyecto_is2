@@ -10,5 +10,6 @@ urlpatterns = [
     path('activar-rol/', views.activar_rol, name='activar_rol'),
     path('perfil/', views.perfil_usuario, name='perfil'),
     path('perfil/actualizar/', views.perfil_actualizar, name='perfil_actualizar'),
+    path('perfil/cargar_imagen/', views.cargar_imagen, name='cargar_imagen'),
 ]
 

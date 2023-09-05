@@ -28,11 +28,14 @@
   {% else %}
     <p>{{ mensaje_roles }}</p>
   {% endif %}<br>
+  
   <!-- Enlace para ir a la página de actualización de perfil -->
   <a href="{% url 'login:perfil_actualizar' %}" class="boton-actualizar">Actualizar Perfil</a><br>
+  
+  <!-- Enlace para crear una nueva publicación -->
+  <a href="{% url 'publicaciones:crear_publicacion' %}" class="boton-crear-publicacion">Crear una nueva publicación</a><br>
+  
   <!-- Agregar enlace al botón para ir a la página principal -->
   <a href="/" class="boton-principal">Ir a la página principal</a>
-
-  
 {% endblock %}
 

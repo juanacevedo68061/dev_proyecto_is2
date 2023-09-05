@@ -1,21 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  
-  <div class="sidebar">
-    <!-- Barra lateral con opciones de usuario -->
-    {% if user.is_authenticated %}
-      <a class="nav-link" href="{% url 'login:perfil' %}">{{ request.user.username }}</a>
-      <a class="nav-link" href="{% url 'administracion:panel' %}">Administración</a>
-      <a class="nav-link" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
-    {% else %}
-      <a class="nav-link" href="{% url 'login:inicio_sesion' %}">Iniciar sesión</a>
-    {% endif %}
-  </div>
-  <div class="content">
-    <!-- Contenido principal de la página -->
-    <h1>Página Principal</h1>
-    <!-- Espacio para el buscador (aún no implementado) -->
+  <!-- Espacio para el buscador (aún no implementado) -->
+
+  <!-- Contenedor para las publicaciones -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Barra lateral (aquí puedes colocar tus enlaces y opciones de usuario) -->
+        <div class="sidebar">
+          <!-- Contenido de la barra lateral -->
+          {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'login:perfil' %}">{{ request.user.username }}</a>
+            <a class="nav-link" href="{% url 'administracion:panel' %}">Administración</a>
+            <a class="nav-link" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'login:inicio_sesion' %}">Iniciar sesión</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-9">
+        <!-- Contenedor para las tarjetas de las publicaciones -->
+        <div class="publicaciones">
+          {% for publicacion in publicaciones %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h2 class="card-title">{{ publicacion.resumen }}</h2>
+                <p class="card-text">Creado por: {{ publicacion.autor.username }}</p>
+                <p class="card-text">Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
+                <p class="card-text">Categoría: {{ publicacion.categoria.nombre }}</p>
+                <p class="card-text">Palabras Clave: {{ publicacion.palabras_clave }}</p>
+                <p class="card-text">Fecha de Creación: {{ publicacion.fecha_creacion }}</p>
+                <!-- Agregar otros campos de la publicación según tus necesidades -->
+
+                <!-- Botones para interactuar con la publicación -->
+                <div class="btn-group" role="group">
+                  <a href="{% url 'publicaciones:like' publicacion.id %}" class="btn btn-primary">Like</a>
+                  <a href="{% url 'publicaciones:dislike' publicacion.id %}" class="btn btn-danger">Dislike</a>
+                  <a href="{% url 'publicaciones:compartir' publicacion.id %}" class="btn btn-secondary">Compartir</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
-

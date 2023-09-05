@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from publicaciones.models import Publicacion  # Importa el modelo de Publicacion
 
 def principal(request):
     """
@@ -14,4 +15,12 @@ def principal(request):
     Retorna:
         Renderiza la plantilla principal con la barra lateral y superior.
     """
-    return render(request, 'cms/principal.html')
+    # Filtrar las publicaciones con categoría moderada en False
+    publicaciones_moderadas = Publicacion.objects.filter(categoria__moderada=False)
+
+    # Puedes pasar la lista de publicaciones a la plantilla para mostrarlas
+    contexto = {'publicaciones': publicaciones_moderadas}
+
+    return render(request, 'cms/principal.html', contexto)
+
+    

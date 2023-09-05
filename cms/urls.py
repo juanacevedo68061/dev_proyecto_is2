@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.principal, name='principal'),
     path('login/', include('login.urls', namespace='login')),
     path('administracion/', include('administracion.urls', namespace='administracion')),
+    path('publicaciones/', include('publicaciones.urls', namespace='publicaciones')),
 ]

@@ -1,0 +1,79 @@
+<!-- publicaciones.html -->
+<style>
+  /* Estilo para la línea separadora */
+  .linea-separadora {
+    margin: 20px 0;
+    border: 1px solid #ccc;
+  }
+
+  /* Estilo para el botón "Mostrar Información" */
+  .mostrar-informacion {
+    text-decoration: none;
+    color: #007bff;
+    cursor: pointer;
+  }
+</style>
+
+<div class="publicaciones">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+  {% for publicacion in publicaciones %}
+    <div class="publicacion">
+      
+      <!-- Resumen y botones principales -->
+      <h2>{{ publicacion.resumen }}</h2>
+      
+      <!-- Botón/enlace para mostrar/ocultar información adicional (lado derecho) -->
+      <a href="#" class="mostrar-informacion" data-target="{{ publicacion.id }}">Mostrar Información</a>
+
+      <!-- Botones para interactuar con la publicación con iconos de Font Awesome -->
+      <div class="botones-principales">
+        <div class="btn-group" role="group">
+          <a href="{% url 'publicaciones:like' publicacion.id %}" class="btn btn-link like-button">
+            <i class="fas fa-thumbs-up"></i> <!-- Icono de "Me gusta" -->
+          </a>
+          <a href="{% url 'publicaciones:dislike' publicacion.id %}" class="btn btn-link dislike-button">
+            <i class="fas fa-thumbs-down"></i> <!-- Icono de "No me gusta" -->
+          </a>
+          <a href="{% url 'publicaciones:compartir' publicacion.id %}" class="btn btn-link compartir-button">
+            <i class="fas fa-share-square"></i> <!-- Icono de "Compartir" -->
+          </a>
+        </div>
+      </div>
+
+      <!-- Información adicional oculta -->
+      <div class="informacion-adicional" id="contenido-{{ publicacion.id }}" style="display: none;">
+        <p>Creado por: {{ publicacion.autor.username }}</p>
+        <p>Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
+        <p>Categoría: {{ publicacion.categoria.nombre }}</p>
+        <p>Palabras Clave: {{ publicacion.palabras_clave }}</p>
+        <p>Fecha de Creación: {{ publicacion.fecha_creacion }}</p>
+        <!-- Agregar otros campos de la publicación según tus necesidades -->
+      </div>
+    </div>
+    <!-- Línea separadora -->
+    <hr class="linea-separadora">
+  {% endfor %}
+</div>
+
+<!-- Agrega este script para cambiar el texto del enlace -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $(".mostrar-informacion").on("click", function(e) {
+      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+      var targetId = $(this).data("target");
+      var contenidoAdicional = $("#contenido-" + targetId);
+
+      if (contenidoAdicional.is(":visible")) {
+        contenidoAdicional.hide();
+        $(this).text("Mostrar Información");
+      } else {
+        contenidoAdicional.show();
+        $(this).text("Ocultar Información");
+      }
+    });
+  });
+</script>
+

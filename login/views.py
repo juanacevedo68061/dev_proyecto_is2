@@ -91,7 +91,7 @@ def cerrar_sesion(request):
     usuario.save()
 
     logout(request)
-    return redirect('login:inicio_sesion')
+    return redirect('/')
 
 @login_required
 def activar_rol(request):

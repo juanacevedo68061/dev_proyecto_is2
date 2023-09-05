@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-@login_required
 def principal(request):
     """
     Vista para mostrar la página principal con la barra lateral y superior.

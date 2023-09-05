@@ -16,7 +16,7 @@ def principal(request):
         Renderiza la plantilla principal con la barra lateral y superior.
     """
     # Filtrar las publicaciones con categoría moderada en False
-    publicaciones_moderadas = Publicacion.objects.filter(categoria__moderada=False)
+    publicaciones_moderadas = Publicacion.objects.filter(categoria__moderada=False).order_by('-fecha_creacion')
 
     # Crear una lista de tuplas con la publicación y la imagen del autor si está disponible
     publicaciones_con_imagen = []

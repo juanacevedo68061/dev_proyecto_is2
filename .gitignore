@@ -16,4 +16,5 @@ venv
 comandos.txt
 #tests
 
-*.jpg
+*/codigos_qr/
+*/profile_images/

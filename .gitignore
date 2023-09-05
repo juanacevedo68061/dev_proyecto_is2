@@ -15,3 +15,5 @@ venv
 .vscode
 comandos.txt
 #tests
+
+*.jpg

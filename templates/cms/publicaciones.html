@@ -1,9 +1,41 @@
-<!-- publicaciones.html -->
 <style>
-  /* Estilo para la línea separadora */
-  .linea-separadora {
-    margin: 20px 0;
-    border: 1px solid #ccc;
+  /* Estilo para el contenedor de cada publicación */
+  .publicacion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* Espacio entre las publicaciones */
+  }
+
+  /* Estilo para el círculo de perfil */
+  .perfil-circle {
+    width: 50px; /* Tamaño deseado para el círculo */
+    height: 50px; /* Tamaño deseado para el círculo */
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Color de fondo del círculo */
+    margin-bottom: 10px; /* Espacio entre el círculo y el nombre */
+  }
+
+  /* Estilo para la imagen de perfil dentro del círculo */
+  .perfil-circle img {
+    width: 100%; /* La imagen ocupará todo el ancho del círculo */
+    height: 100%; /* La imagen ocupará todo el alto del círculo */
+    object-fit: cover; /* La imagen se ajustará para llenar el círculo sin deformarla */
+  }
+
+  /* Estilo para el nombre del autor en negrita */
+  .nombre-autor {
+    font-weight: bold; /* Texto en negrita */
+  }
+
+  /* Estilo para el contenido de la publicación */
+  .contenido-publicacion {
+    text-align: center; /* Alinea el contenido al centro */
+    margin-bottom: 10px; /* Espacio entre la publicación y los botones */
   }
 
   /* Estilo para el botón "Mostrar Información" */
@@ -17,13 +49,25 @@
 <div class="publicaciones">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-
-  {% for publicacion in publicaciones %}
+  {% for publicacion, imagen_autor in publicaciones_con_imagen %}
     <div class="publicacion">
-      
-      <!-- Resumen y botones principales -->
-      <h2>{{ publicacion.resumen }}</h2>
-      
+      <!-- Foto de perfil en la esquina superior -->
+      <div class="perfil-circle">
+        {% if imagen_autor %}
+          <img src="{{ imagen_autor }}" alt="Foto de perfil">
+        {% else %}
+          <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+        {% endif %}
+      </div>
+
+      <!-- Nombre del autor en negrita -->
+      <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+
+      <!-- Resumen de la publicación -->
+      <div class="contenido-publicacion">
+        <h2>{{ publicacion.resumen }}</h2>
+      </div>
+
       <!-- Botón/enlace para mostrar/ocultar información adicional (lado derecho) -->
       <a href="#" class="mostrar-informacion" data-target="{{ publicacion.id }}">Mostrar Información</a>
 
@@ -44,7 +88,6 @@
 
       <!-- Información adicional oculta -->
       <div class="informacion-adicional" id="contenido-{{ publicacion.id }}" style="display: none;">
-        <p>Creado por: {{ publicacion.autor.username }}</p>
         <p>Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
         <p>Categoría: {{ publicacion.categoria.nombre }}</p>
         <p>Palabras Clave: {{ publicacion.palabras_clave }}</p>

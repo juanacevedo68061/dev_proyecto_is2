@@ -18,9 +18,19 @@ def principal(request):
     # Filtrar las publicaciones con categoría moderada en False
     publicaciones_moderadas = Publicacion.objects.filter(categoria__moderada=False)
 
-    # Puedes pasar la lista de publicaciones a la plantilla para mostrarlas
-    contexto = {'publicaciones': publicaciones_moderadas}
+    # Crear una lista de tuplas con la publicación y la imagen del autor si está disponible
+    publicaciones_con_imagen = []
+
+    for publicacion in publicaciones_moderadas:
+        imagen_autor = None  # Inicializa la variable de imagen como None por defecto
+        if publicacion.autor.imagen:
+            imagen_autor = publicacion.autor.imagen.url  # Asigna la URL de la imagen si está disponible
+        publicaciones_con_imagen.append((publicacion, imagen_autor))
+
+    # Puedes pasar la lista de publicaciones con imagen al contexto
+    contexto = {'publicaciones_con_imagen': publicaciones_con_imagen}
 
     return render(request, 'cms/principal.html', contexto)
+
 
     

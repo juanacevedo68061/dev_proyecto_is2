@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol
+from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol, CargarImagenForm 
 from roles.models import Rol
 from .models import Usuario
 
@@ -199,3 +199,33 @@ def perfil_actualizar(request):
     }
 
     return render(request, 'login/perfil_actualizar.html', contexto)
+
+
+@login_required
+def cargar_imagen(request):
+    """
+    Vista para cargar una nueva imagen de perfil para el usuario.
+
+    Esta vista permite a los usuarios cargar una nueva imagen de perfil.
+    Si ya tenían una imagen de perfil, la reemplazará por la nueva.
+
+    Parámetros:
+        request: La solicitud HTTP entrante.
+
+    Retorna:
+        Redirige al perfil del usuario después de cargar la imagen.
+    """
+    usuario = request.user
+
+    if request.method == 'POST':
+        formulario = CargarImagenForm(request.POST, request.FILES, instance=usuario)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('login:perfil')
+
+    else:
+        formulario = CargarImagenForm(instance=usuario)
+
+    contexto = {'formulario': formulario}
+    
+    return render(request, 'login/cargar_imagen.html', contexto)

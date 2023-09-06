@@ -2,7 +2,7 @@
 <div class="sidebar">
     <!-- Contenido de la barra lateral -->
     {% if user.is_authenticated %}
-      <a class="nav-link" href="{% url 'login:perfil' %}">{{ request.user.username }}</a>
+      <a class="nav-link" href="{% url 'login:perfil' %}">Perfil</a>
       <a class="nav-link" href="{% url 'administracion:panel' %}">Administración</a>
       <a class="nav-link" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a>
     {% else %}

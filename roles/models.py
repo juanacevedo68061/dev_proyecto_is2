@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 
-class Rol(models.Model): 
+from django.db import models
+
+class Rol(models.Model):
     """
     Modelo que representa los roles en el sistema.
 
@@ -10,7 +13,7 @@ class Rol(models.Model):
         permisos (ManyToManyField): Los permisos asignados a este rol.
 
     Métodos:
-        crear_roles_iniciales: Crea los roles iniciales con un permiso cada uno después de la migración inicial.
+        
     """
     ROLES = (
         ('autor', 'Autor'),
@@ -19,8 +22,50 @@ class Rol(models.Model):
         ('administrador', 'Administrador'),
     )
 
-    nombre = models.CharField(max_length=20, choices=ROLES, unique=True)
-    permisos = models.ManyToManyField(Permission, blank=True)
+    PERMISOS = {
+        'autor': [
+            'permiso1',
+            'permiso2',
+            # Agrega aquí los permisos correspondientes al rol "autor"
+        ],
+        'editor': [
+            'permiso3',
+            'permiso4',
+            # Agrega aquí los permisos correspondientes al rol "editor"
+        ],
+        'publicador': [
+            'permiso5',
+            'permiso6',
+            # Agrega aquí los permisos correspondientes al rol "publicador"
+        ],
+        'administrador': [
+            'permiso7',
+            'permiso8',
+            # Agrega aquí los permisos correspondientes al rol "administrador"
+        ],
+    }
+
+    nombre = models.CharField(max_length=20, choices=ROLES)
+    permisos = models.ManyToManyField('auth.Permission', blank=True)
 
     def __str__(self):
-            return self.get_nombre_display()
+        return self.get_nombre_display()
+
+    def save(self, *args, **kwargs):
+        super(Rol, self).save(*args, **kwargs)
+        # Después de guardar el rol, asigna los permisos correspondientes si existen en el diccionario
+        if self.nombre in self.PERMISOS:
+            permisos = self.PERMISOS[self.nombre]
+            for permiso_codename in permisos:
+                # Obtener el objeto ContentType para el modelo deseado (reemplaza 'TuModelo' por el modelo real)
+                content_type = ContentType.objects.get_for_model(Rol)
+                
+                # Verificar si el permiso ya existe o crearlo si no existe
+                permiso, created = Permission.objects.get_or_create(
+                    codename=permiso_codename,
+                    content_type=content_type,
+                    defaults={'name': f'Permiso {permiso_codename}'}
+                )
+
+                # Agregar el permiso al rol
+                self.permisos.add(permiso)

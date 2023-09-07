@@ -27,9 +27,8 @@ def rol_requerido(rol_nombre):
                 HttpResponse: La respuesta HTTP o un mensaje de "Acceso denegado".
             """
             try:
-                # Verifica si el usuario tiene el rol específico
-                rol = Rol.objects.get(nombre=rol_nombre)
-                if request.user.roles.filter(id=rol.id).exists():
+                # Verifica si el usuario tiene al menos un rol con el nombre especificado
+                if request.user.roles.filter(nombre=rol_nombre).exists():
                     return view_func(request, *args, **kwargs)
                 else:
                     return HttpResponseForbidden("Acceso denegado")
@@ -39,4 +38,5 @@ def rol_requerido(rol_nombre):
         return _wrapped_view
 
     return decorator
+
 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Eliminar Permisos de Roles del Usuario</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <h2>{{ usuario.username }}</h2>
+
+        {% if roles_usuario %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Permisos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rol in roles_usuario %}
+                <tr>
+                    <td>{{ rol.nombre }}</td>
+                    <td>
+                        {% for permiso in rol.permisos.all %}
+                        <label class="form-check-label">
+                            <input type="checkbox" name="permisos" value="{{ permiso.id }}"
+                                {% if permisos_seleccionados and permiso in permisos_seleccionados %} checked {% endif %}>
+                            {{ permiso.name }}
+                        </label><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>El usuario no tiene roles asignados.</p>
+        {% endif %}
+        
+        <button type="submit" class="btn btn-danger">Eliminar Permisos</button>
+        <a href="{% url 'administracion:gestion_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+

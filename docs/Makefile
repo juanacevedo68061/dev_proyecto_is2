@@ -14,8 +14,8 @@ help:
 
 html: Makefile
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
-	@echo "Serving HTML on http://localhost:8080"
+	@echo "Compilacion exitosa. Las paginas HTML estan en $(BUILDDIR)/html."
+	@echo "El HTML de la documentacion corre en el servidor http://localhost:8080"
 	@cd $(BUILDDIR)/html && python3 -m http.server 8080
 
 .PHONY: help Makefile

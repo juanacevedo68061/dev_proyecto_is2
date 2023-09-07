@@ -12,6 +12,12 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+html: Makefile
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	@echo "Serving HTML on http://localhost:8080"
+	@cd $(BUILDDIR)/html && python3 -m http.server 8080
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

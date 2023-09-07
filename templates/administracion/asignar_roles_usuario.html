@@ -14,10 +14,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for rol in roles_no_asignados %}
+                {% for rol_nombre in roles_disponibles %}
                 <tr>
-                    <td>{{ rol.nombre }}</td>
-                    <td><input type="checkbox" name="roles" value="{{ rol.id }}"></td>
+                    <td>{{ rol_nombre }}</td>
+                    <td><input type="checkbox" name="roles" value="{{ rol_nombre }}"></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -27,3 +27,4 @@
     </form>
 </div>
 {% endblock %}
+

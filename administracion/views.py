@@ -3,6 +3,7 @@ from .models import Categoria
 from .forms import CategoriaForm, AsignarPermisosForm, EliminarPermisosForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from roles.decorators import rol_requerido
 from roles.models import Rol
@@ -139,21 +140,30 @@ def eliminar_usuario(request, usuario_id):
 
     return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario})
 
+from roles.models import Rol
+
 @rol_requerido('administrador')
 @login_required
 def asignar_roles_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    roles_no_asignados = Rol.objects.exclude(usuarios=usuario)
     
+    # Obtener los nombres de roles que el usuario aún no tiene asignados
+    roles_asignados_nombres = usuario.roles.values_list('nombre', flat=True)
+    roles_disponibles = [rol[0] for rol in Rol.ROLES if rol[0] not in roles_asignados_nombres]
+
     if request.method == 'POST':
         roles_seleccionados = request.POST.getlist('roles')
-        for rol_id in roles_seleccionados:
-            rol = Rol.objects.get(id=rol_id)
-            usuario.roles.add(rol)
+        for rol_nombre in roles_seleccionados:
+            # Crear una nueva instancia del rol y asignarlo al usuario
+            if rol_nombre not in roles_asignados_nombres:
+                Rol.objects.create(nombre=rol_nombre)
+                usuario.roles.create(nombre=rol_nombre)
         messages.success(request, 'Roles asignados correctamente.')
         return redirect('administracion:gestion_usuarios')
 
-    return render(request, 'administracion/asignar_roles_usuario.html', {'usuario': usuario, 'roles_no_asignados': roles_no_asignados})
+    return render(request, 'administracion/asignar_roles_usuario.html', {'usuario': usuario, 'roles_disponibles': roles_disponibles})
+
+
 
 @rol_requerido('administrador')
 @login_required
@@ -171,30 +181,34 @@ def eliminar_roles_usuario(request, usuario_id):
     roles_asignados = usuario.roles.all()
     return render(request, 'administracion/eliminar_roles_usuario.html', {'usuario': usuario, 'roles_asignados': roles_asignados})
 
-@rol_requerido('administrador')
-@login_required
 def agregar_permisos_roles_usuario(request, usuario_id):
     usuario = Usuario.objects.get(id=usuario_id)
     roles_asignados = usuario.roles.all()
 
     if request.method == 'POST':
-        form = AsignarPermisosForm(request.POST)
+        form = AsignarPermisosForm(request.POST, roles_asignados=roles_asignados)
         if form.is_valid():
             rol_id = form.cleaned_data['rol'].id
-            permisos = form.cleaned_data['permisos']
+            permisos_seleccionados = form.cleaned_data['permisos']
 
-            # Obtener la instancia de Rol y agregar permisos
+            # Obtener el rol seleccionado
             rol = Rol.objects.get(id=rol_id)
-            rol.permisos.add(*permisos)
+
+            # Crear permisos y asignarlos al rol
+            for permiso_nombre in permisos_seleccionados:
+                permiso, _ = Permission.objects.get_or_create(
+                    codename=permiso_nombre,
+                    content_type=ContentType.objects.get_for_model(Rol),
+                    defaults={'name': f'Permiso {permiso_nombre}'}
+                )
+                rol.permisos.add(permiso)
 
             return redirect('administracion:gestion_usuarios')
     else:
         form = AsignarPermisosForm(roles_asignados=roles_asignados)
 
-    return render(request, 'administracion/agregar_permisos_roles_usuario.html', {
-        'usuario': usuario,
-        'form': form,
-    })
+    return render(request, 'administracion/agregar_permisos_roles_usuario.html', {'usuario': usuario, 'form': form})
+
 
 @rol_requerido('administrador')
 @login_required

@@ -38,13 +38,14 @@ def recopilar_datos_tests(ruta_script):
 # Lista de módulos
 modulos = ['login', 'administracion', 'roles', 'canvan', 'publicaciones']
 
-# Buscar todos los archivos de prueba en esos módulos
-archivos_tests = [
-    os.path.join("/app", modulo, "tests", f) 
-    for modulo in modulos 
-    for f in os.listdir(os.path.join("/app", modulo, "tests")) 
-    if f.startswith('test_') and f.endswith('.py') and os.path.exists(os.path.join("/app", modulo, "tests", f))
-]
+archivos_tests = []
+
+for modulo in modulos:
+    directorio_tests = os.path.join("/app", modulo, "tests")
+    if os.path.exists(directorio_tests):
+        for f in os.listdir(directorio_tests):
+            if f.startswith('test_') and f.endswith('.py'):
+                archivos_tests.append(os.path.join(directorio_tests, f))
 
 print(f"Archivos de prueba encontrados: {archivos_tests}")
 

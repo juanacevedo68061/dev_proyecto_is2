@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Ignorar documentacion generada automaticamente por Sphinx
+
+docs/_build/
+
 # Ignorar migraciones de Django
 */migrations/
 db.sqlite3

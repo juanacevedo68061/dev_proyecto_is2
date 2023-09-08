@@ -1,18 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <h1>Panel de Administración</h1>
+<style>
+  /* Estilos para el panel de administración */
+  .admin-panel {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
 
-    <ul>
-        <li><a href="{% url 'administracion:listar_categorias' %}">Gestión de Categorías</a></li>
-        <li><a href="{% url 'administracion:gestion_usuarios' %}">Gestión de Usuarios</a></li>
-    </ul>
+  .admin-panel h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-    <!-- Aquí puedes agregar enlaces a otras secciones de administración si es necesario -->
+  .admin-panel ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .admin-panel li {
+    margin-bottom: 10px;
+  }
+
+  .admin-panel a {
+    display: block;
+    padding: 10px 0;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .admin-panel a:hover {
+    background-color: #0056b3;
+  }
+
+  /* Estilos para el botón de regreso */
+  .boton-regresar {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+
+<div class="admin-panel">
+  <h1>Panel de Administración</h1>
+
+  <ul>
+    <li><a href="{% url 'administracion:listar_categorias' %}">Gestión de Categorías</a></li>
+    <li><a href="{% url 'administracion:gestion_usuarios' %}">Gestión de Usuarios</a></li>
+    <!-- Puedes agregar más elementos de menú aquí si es necesario -->
+  </ul>
+
+  <!-- Enlace para regresar a la página principal -->
+  <a href="/" class="boton-regresar">Ir a la página principal</a>
 </div>
-
-<a href="/" class="boton-principal">Ir a la página principal</a>
 {% endblock %}
+
 
 

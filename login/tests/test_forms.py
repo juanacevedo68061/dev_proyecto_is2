@@ -4,9 +4,7 @@ from login.forms import FormularioRegistro, FormularioActualizarPerfil, Formular
 
 class FormsTests(TestCase):
     def test_formulario_registro_valido(self):
-        """
-        Prueba que el formulario de registro es válido con datos correctos.
-        """
+
         form_data = {
             'username': 'usuario_prueba',
             'email': 'usuario@example.com',
@@ -17,9 +15,6 @@ class FormsTests(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_formulario_registro_invalido(self):
-        """
-        Prueba que el formulario de registro es inválido con datos incorrectos.
-        """
         form_data = {
             'username': '',
             'email': 'correo_invalido',
@@ -30,9 +25,6 @@ class FormsTests(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_formulario_actualizar_perfil_valido(self):
-        """
-        Prueba que el formulario de actualización de perfil es válido con datos correctos.
-        """
         form_data = {
             'username': 'usuario_prueba',
             'email': 'nuevo_correo@example.com',
@@ -44,9 +36,6 @@ class FormsTests(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_formulario_actualizar_perfil_invalido(self):
-        """
-        Prueba que el formulario de actualización de perfil es inválido con datos incorrectos.
-        """
         form_data = {
             'username': '',
             'email': 'correo_invalido',
@@ -58,9 +47,6 @@ class FormsTests(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_formulario_activar_rol_valido(self):
-        """
-        Prueba que el formulario de activación de rol es válido con datos correctos.
-        """
         rol = Rol.objects.create(nombre='Rol de Prueba')
         form_data = {
             'rol_activo': rol.id
@@ -69,9 +55,6 @@ class FormsTests(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_formulario_activar_rol_invalido(self):
-        """
-        Prueba que el formulario de activación de rol es válido incluso con datos incorrectos.
-        """
         form_data = {
             'rol_activo': None
         }

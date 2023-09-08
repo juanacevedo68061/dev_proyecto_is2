@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "roles",
     "publicaciones",
     "canvan",
+    "PIL",
 ]
 
 MIDDLEWARE = [

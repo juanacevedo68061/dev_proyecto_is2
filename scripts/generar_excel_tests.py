@@ -11,14 +11,17 @@ import inspect
 from django.test import TestCase
 from datetime import datetime
 
-# Función para recopilar nombres de tests
 def recopilar_datos_tests(ruta_script):
     data = []
 
     # Import dinámico del módulo de prueba
     modulo_name = ruta_script.replace('/app/', '').replace('/', '.').replace('.py', '')
     
-    modulo = __import__(modulo_name, fromlist=[''])
+    try:
+        modulo = __import__(modulo_name, fromlist=[''])
+    except ImportError as e:
+        print(f"Error al importar {modulo_name}: {e}")
+        return data  # Regresa una lista vacía para este módulo en particular
 
     fecha_actual = datetime.now().strftime('%d-%m-%Y')
 
@@ -34,6 +37,7 @@ def recopilar_datos_tests(ruta_script):
                     })
 
     return data
+
 
 # Lista de módulos
 modulos = ['login'] # 'administracion', 'roles', 'canvan', 'publicaciones'] 

@@ -10,14 +10,6 @@ class CategoriaForm(forms.ModelForm):
 
     Este formulario se utiliza para ingresar información sobre una categoría,
     incluyendo su nombre y estado de moderación.
-
-    Campos:
-    -------
-    nombre : str
-        Nombre de la categoría.
-    moderada : bool
-        Estado de moderación de la categoría (True para moderada, False para no moderada).
-
     """
 
     class Meta:
@@ -28,6 +20,12 @@ class CategoriaForm(forms.ModelForm):
         super(CategoriaForm, self).__init__(*args, **kwargs)
 
 class AsignarPermisosForm(forms.Form):
+    """
+    Formulario para asignar permisos a roles de usuario.
+
+    Este formulario se utiliza para asignar permisos específicos a roles de usuario
+    en el sistema.
+    """
     rol = forms.ModelChoiceField(
         queryset=Rol.objects.all(),
         label='Rol',
@@ -62,6 +60,12 @@ class AsignarPermisosForm(forms.Form):
 
             
 class EliminarPermisosForm(forms.Form):
+    """
+    Formulario para eliminar permisos de roles de usuario.
+
+    Este formulario se utiliza para seleccionar y eliminar permisos de roles de usuario
+    en el sistema.
+    """
     permisos = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         widget=forms.CheckboxSelectMultiple,

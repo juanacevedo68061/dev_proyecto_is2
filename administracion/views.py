@@ -131,6 +131,20 @@ def gestion_usuarios(request):
 @rol_requerido('administrador')
 @login_required
 def eliminar_usuario(request, usuario_id):
+    """
+    Vista para eliminar un usuario existente.
+
+    Esta vista permite a un administrador eliminar un usuario existente del sistema.
+    
+    Parámetros:
+        request (HttpRequest): La solicitud HTTP entrante.
+        usuario_id (int): El ID del usuario que se va a eliminar.
+
+    Retorna:
+        HttpResponse: Una respuesta HTTP que redirige al administrador a la lista de usuarios
+                      después de eliminar el usuario especificado.
+
+    """
     usuario = get_object_or_404(Usuario, id=usuario_id)
     
     if request.method == 'POST':
@@ -144,6 +158,20 @@ def eliminar_usuario(request, usuario_id):
 @rol_requerido('administrador')
 @login_required
 def asignar_roles_usuario(request, usuario_id):
+    """
+    Vista para asignar roles a un usuario existente.
+
+    Esta vista permite a un administrador asignar roles a un usuario existente en el sistema.
+
+    Parámetros:
+        request (HttpRequest): La solicitud HTTP entrante.
+        usuario_id (int): El ID del usuario al que se le asignarán roles.
+
+    Retorna:
+        HttpResponse: Una respuesta HTTP que redirige al administrador a la gestión de usuarios
+                      después de asignar los roles al usuario especificado.
+
+    """    
     usuario = get_object_or_404(Usuario, id=usuario_id)
     
     # Obtener los nombres de roles que el usuario aún no tiene asignados
@@ -167,6 +195,20 @@ def asignar_roles_usuario(request, usuario_id):
 @rol_requerido('administrador')
 @login_required
 def eliminar_roles_usuario(request, usuario_id):
+    """
+    Vista para eliminar roles de un usuario existente.
+
+    Esta vista permite a un administrador eliminar roles de un usuario existente en el sistema.
+
+    Parámetros:
+        request (HttpRequest): La solicitud HTTP entrante.
+        usuario_id (int): El ID del usuario del que se eliminarán roles.
+
+    Retorna:
+        HttpResponse: Una respuesta HTTP que redirige al administrador a la gestión de usuarios
+                      después de eliminar los roles del usuario especificado.
+
+    """
     usuario = get_object_or_404(Usuario, id=usuario_id)
     
     if request.method == 'POST':
@@ -183,6 +225,20 @@ def eliminar_roles_usuario(request, usuario_id):
 @rol_requerido('administrador')
 @login_required
 def agregar_permisos_roles_usuario(request, usuario_id):
+    """
+    Vista para agregar permisos a los roles de un usuario existente.
+
+    Esta vista permite a un administrador agregar permisos a los roles de un usuario existente en el sistema.
+
+    Parámetros:
+        request (HttpRequest): La solicitud HTTP entrante.
+        usuario_id (int): El ID del usuario al que se le asignarán permisos a sus roles.
+
+    Retorna:
+        HttpResponse: Una respuesta HTTP que redirige al administrador a la gestión de usuarios
+                      después de agregar los permisos a los roles del usuario especificado.
+
+    """    
     usuario = Usuario.objects.get(id=usuario_id)
     roles_asignados = usuario.roles.all()
 
@@ -214,6 +270,20 @@ def agregar_permisos_roles_usuario(request, usuario_id):
 @rol_requerido('administrador')
 @login_required
 def eliminar_permisos_roles_usuario(request, usuario_id):
+    """
+    Vista para eliminar permisos de los roles de un usuario existente.
+
+    Esta vista permite a un administrador eliminar permisos de los roles de un usuario existente en el sistema.
+
+    Parámetros:
+        request (HttpRequest): La solicitud HTTP entrante.
+        usuario_id (int): El ID del usuario del que se eliminarán permisos de sus roles.
+
+    Retorna:
+        HttpResponse: Una respuesta HTTP que redirige al administrador a la gestión de usuarios
+                      después de eliminar los permisos de los roles del usuario especificado.
+
+    """
     usuario = get_object_or_404(Usuario, id=usuario_id)
     roles_usuario = usuario.roles.all()
     permisos_seleccionados = None

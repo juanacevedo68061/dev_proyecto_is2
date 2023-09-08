@@ -23,9 +23,7 @@ class SignalsTests(TestCase):
         post_save.disconnect(asignar_roles, sender=Usuario)
 
     def test_asignar_roles_a_usuario_recien_creado(self):
-        """
-        Prueba que los roles se asignen correctamente a un usuario recién creado.
-        """
+
         # Crea un nuevo usuario
         usuario = Usuario(username='usuario_prueba')
         usuario.save()

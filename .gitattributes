@@ -9,4 +9,5 @@ cms/settings.py merge=ours
 
 # Ignorar el directorio de pruebas (tests/) en cada aplicación
 **/tests/** merge=ours
+**/scripts/** merge=ours
 

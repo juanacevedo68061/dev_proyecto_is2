@@ -1,0 +1,149 @@
+<style>
+  /* Estilo para el contenedor de cada publicación */
+  .publicacion {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea el contenido en la esquina superior izquierda */
+    margin-bottom: 20px; /* Espacio entre las publicaciones */
+    padding: 20px; /* Espaciado interno para el recuadro de la publicación */
+  /*border: 1px solid #ccc; /* Borde alrededor de la publicación */
+  /*border-radius: 5px; /* Bordes redondeados para el recuadro de la publicación */
+  }
+
+  /* Estilo para el círculo de perfil y nombre del autor */
+  .perfil-y-nombre {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 10px; /* Espacio entre el círculo y el nombre */
+  }
+
+  /* Estilo para el círculo de perfil */
+  .perfil-circle {
+    width: 50px; /* Tamaño deseado para el círculo */
+    height: 50px; /* Tamaño deseado para el círculo */
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Color de fondo del círculo */
+    margin-right: 10px; /* Espacio entre el círculo y el nombre */
+  }
+
+  /* Estilo para la imagen de perfil dentro del círculo */
+  .perfil-circle img {
+    width: 100%; /* La imagen ocupará todo el ancho del círculo */
+    height: 100%; /* La imagen ocupará todo el alto del círculo */
+    object-fit: cover; /* La imagen se ajustará para llenar el círculo sin deformarla */
+  }
+
+  /* Estilo para el nombre del autor en negrita */
+  .nombre-autor {
+    font-weight: bold; /* Texto en negrita */
+  }
+
+  /* Estilo para el contenido de la publicación */
+  .contenido-publicacion {
+    /* text-align: center; /* Eliminado para alinear el texto a la izquierda */
+    margin-bottom: 10px; /* Espacio entre la publicación y los botones */
+    font-size: 10px; /* Tamaño de fuente más pequeño */
+    line-height: 1.4; /* Espaciado entre líneas */
+    text-align: justify; /* Justificar el texto entre los márgenes */
+  }
+
+  /* Estilo para el botón "Mostrar Información" */
+  .mostrar-informacion {
+    text-decoration: none;
+    color: #007bff;
+    cursor: pointer;
+  }
+
+  /* Estilo para los botones principales */
+  .botones-principales {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinea verticalmente los botones */
+    width: 100%;
+  }
+
+  /* Estilo para el espacio entre Mostrar Información y los botones */
+  .espacio {
+    margin-top: 20px; /* Ajusta la cantidad de espacio según tus necesidades */
+  }
+
+</style>
+
+<div class="publicaciones">
+  <!-- Agrega el enlace para cargar Font Awesome si no lo has hecho aún -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  {% for publicacion, imagen_autor in publicaciones_con_imagen %}
+    <div class="publicacion">
+      <!-- Círculo de perfil y nombre del autor en la esquina superior izquierda -->
+      <div class="perfil-y-nombre">
+        <div class="perfil-circle">
+          {% if imagen_autor %}
+            <img src="{{ imagen_autor }}" alt="Foto de perfil">
+          {% else %}
+            <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+          {% endif %}
+        </div>
+        <!-- Nombre del autor en negrita -->
+        <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+      </div>
+
+      <!-- Resumen de la publicación sin recuadro -->
+      <div class="contenido-publicacion">
+        <h4>{{ publicacion.resumen }}</h4><br>
+      </div>
+
+      <!-- Botones para interactuar con la publicación con iconos de Font Awesome -->
+      <div class="botones-principales">
+        <a href="{% url 'publicaciones:like' publicacion.id %}" class="btn btn-link like-button">
+          <i class="fas fa-thumbs-up"></i> <!-- Icono de "Me gusta" -->
+        </a>
+        <a href="{% url 'publicaciones:dislike' publicacion.id %}" class="btn btn-link dislike-button">
+          <i class="fas fa-thumbs-down"></i> <!-- Icono de "No me gusta" -->
+        </a>
+        <a href="{% url 'publicaciones:compartir' publicacion.id %}" class="btn btn-link compartir-button">
+          <i class="fas fa-share-square"></i> <!-- Icono de "Compartir" -->
+        </a>
+      </div>
+
+      <div class="espacio"></div>
+
+      <!-- Botón/enlace para mostrar/ocultar información adicional (lado derecho) -->
+      <a href="#" class="mostrar-informacion" data-target="{{ publicacion.id }}">Mostrar Información</a>
+
+      <!-- Información adicional oculta -->
+      <div class="informacion-adicional" id="contenido-{{ publicacion.id }}" style="display: none;">
+        <p>Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
+        <p>Categoría: {{ publicacion.categoria.nombre }}</p>
+        <p>Palabras Clave: {{ publicacion.palabras_clave }}</p>
+        <p>Fecha de Creación: {{ publicacion.fecha_creacion }}</p>
+        <!-- Agregar otros campos de la publicación según tus necesidades -->
+      </div>
+    </div>
+    <!-- Línea separadora -->
+    <hr class="linea-separadora">
+  {% endfor %}
+</div>
+
+<!-- Agrega este script para cambiar el texto del enlace -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $(".mostrar-informacion").on("click", function(e) {
+      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+      var targetId = $(this).data("target");
+      var contenidoAdicional = $("#contenido-" + targetId);
+
+      if (contenidoAdicional.is(":visible")) {
+        contenidoAdicional.hide();
+        $(this).text("Mostrar Información");
+      } else {
+        contenidoAdicional.show();
+        $(this).text("Ocultar Información");
+      }
+    });
+  });
+</script>
+

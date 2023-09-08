@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from publicaciones.models import Publicacion  # Importa el modelo de Publicacion
 
-@login_required
 def principal(request):
     """
     Vista para mostrar la página principal con la barra lateral y superior.
@@ -15,4 +15,22 @@ def principal(request):
     Retorna:
         Renderiza la plantilla principal con la barra lateral y superior.
     """
-    return render(request, 'cms/principal.html')
+    # Filtrar las publicaciones con categoría moderada en False
+    publicaciones_moderadas = Publicacion.objects.filter(categoria__moderada=False).order_by('-fecha_creacion')
+
+    # Crear una lista de tuplas con la publicación y la imagen del autor si está disponible
+    publicaciones_con_imagen = []
+
+    for publicacion in publicaciones_moderadas:
+        imagen_autor = None  # Inicializa la variable de imagen como None por defecto
+        if publicacion.autor.imagen:
+            imagen_autor = publicacion.autor.imagen.url  # Asigna la URL de la imagen si está disponible
+        publicaciones_con_imagen.append((publicacion, imagen_autor))
+
+    # Puedes pasar la lista de publicaciones con imagen al contexto
+    contexto = {'publicaciones_con_imagen': publicaciones_con_imagen}
+
+    return render(request, 'cms/principal.html', contexto)
+
+
+    

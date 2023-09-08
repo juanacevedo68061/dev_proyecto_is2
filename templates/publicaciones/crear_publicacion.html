@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Crear Publicación</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Campo para seleccionar el tipo de publicación -->
+    <div class="form-group">
+      <label for="id_tipo">Tipo de Publicación:</label>
+      <select name="tipo" class="form-control" id="id_tipo">
+        <option value="rich_text">Rich Text</option>
+        <option value="solo_text">Solo Text</option>
+      </select>
+    </div>
+    
+    <!-- Campo para el resumen -->
+    <div class="form-group">
+      <label for="id_resumen">Resumen:</label>
+      <textarea name="resumen" class="form-control" id="id_resumen" rows="4" required></textarea>
+    </div>
+
+    <!-- Campo para subir una imagen principal -->
+    <div class="form-group">
+      <label for="id_imagen">Imagen Principal:</label>
+      <input type="file" name="imagen" class="form-control-file" id="id_imagen">
+    </div>
+
+    <!-- Campo para seleccionar la categoría -->
+    <div class="form-group">
+      <label for="id_categoria">Categoría:</label>
+      <select name="categoria" class="form-control" id="id_categoria">
+        {% for categoria in categorias %}
+          <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Campo para palabras clave -->
+    <div class="form-group">
+      <label for="id_palabras_clave">Palabras Clave:</label>
+      <input type="text" name="palabras_clave" class="form-control" id="id_palabras_clave">
+    </div>
+
+    <!-- Botones para enviar el formulario y cancelar -->
+    <button type="submit" class="btn btn-primary">Crear Publicación</button>
+    <a href="{% url 'login:perfil' %}" class="btn btn-warning">Cancelar</a>
+  </form>
+{% endblock %}
+
+
+

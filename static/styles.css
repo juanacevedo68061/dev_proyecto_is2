@@ -36,7 +36,7 @@
 
 /* Cambio de estilo al pasar el cursor sobre los enlaces */
 .sidebar a:hover {
-  color: black; /* Cambio de color de texto al pasar el cursor */
+  color: white; /* Cambio de color de texto al pasar el cursor */
 }
 
 

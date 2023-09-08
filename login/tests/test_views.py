@@ -30,12 +30,12 @@ class ViewsTests(TestCase):
 
     def test_cerrar_sesion(self):
         """
-        Prueba que la vista de cierre de sesión redirige al usuario a la vista de inicio de sesión después del cierre de sesión.
+        Prueba que la vista de cierre de sesión redirige al usuario a la raíz después del cierre de sesión.
         """
         self.client.login(username='usuario_prueba', password='contraseña123')
         response = self.client.get(reverse('login:cerrar_sesion'))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('login:inicio_sesion'))
+        self.assertRedirects(response, '/')
 
     def test_activar_rol(self):
         """

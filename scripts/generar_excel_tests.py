@@ -12,41 +12,39 @@ from django.test import TestCase
 from datetime import datetime
 
 def recopilar_datos_tests(ruta_script):
-    data = []
-
-    # Import dinámico del módulo de prueba
-    modulo_name = ruta_script.replace('/app/', '').replace('/', '.').replace('.py', '')
-    
     try:
+        data = []
+
+        modulo_name = ruta_script.replace('/app/', '').replace('/', '.').replace('.py', '')
         modulo = __import__(modulo_name, fromlist=[''])
-    except ImportError as e:
-        print(f"Error al importar {modulo_name}: {e}")
-        return data  # Regresa una lista vacía para este módulo en particular
+        fecha_actual = datetime.now().strftime('%d-%m-%Y')
 
-    fecha_actual = datetime.now().strftime('%d-%m-%Y')
+        for nombre, objeto in inspect.getmembers(modulo):
+            if inspect.isclass(objeto) and issubclass(objeto, TestCase) and objeto is not TestCase:
+                for metodo_nombre, metodo_objeto in inspect.getmembers(objeto):
+                    if metodo_nombre.startswith('test_'):
+                        data.append({
+                            "SCRIPT": ruta_script.split('/')[-1],
+                            "METODO": metodo_nombre,
+                            "FECHAPRU": fecha_actual,
+                            "MODULO": modulo_name.split('.')[0]
+                        })
 
-    for nombre, objeto in inspect.getmembers(modulo):
-        if inspect.isclass(objeto) and issubclass(objeto, TestCase) and objeto is not TestCase:
-            for metodo_nombre, metodo_objeto in inspect.getmembers(objeto):
-                if metodo_nombre.startswith('test_'):
-                    data.append({
-                        "SCRIPT": ruta_script.split('/')[-1],  # Solo el nombre del archivo
-                        "METODO": metodo_nombre,
-                        "FECHAPRU": fecha_actual,
-                        "MODULO": modulo_name.split('.')[0]  # Asume que el nombre del módulo está en el segundo lugar del nombre del módulo
-                    })
-
-    return data
-
+        return data
+    except Exception as e:
+        print(f"Error al procesar {ruta_script}: {e}")
+        return []
 
 # Lista de módulos
-modulos = ['login'] # 'administracion', 'roles', 'canvan', 'publicaciones'] 
+modulos = ['login', 'administracion', 'roles', 'canvan', 'publicaciones']
 
 # Buscar todos los archivos de prueba en esos módulos
-archivos_tests = [os.path.join("/app", modulo, "tests", f) 
-                  for modulo in modulos 
-                  for f in os.listdir(os.path.join("/app", modulo, "tests")) 
-                  if f.startswith('test_') and f.endswith('.py')]
+archivos_tests = [
+    os.path.join("/app", modulo, "tests", f) 
+    for modulo in modulos 
+    for f in os.listdir(os.path.join("/app", modulo, "tests")) 
+    if f.startswith('test_') and f.endswith('.py') and os.path.exists(os.path.join("/app", modulo, "tests", f))
+]
 
 print(f"Archivos de prueba encontrados: {archivos_tests}")
 

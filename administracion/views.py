@@ -140,7 +140,6 @@ def eliminar_usuario(request, usuario_id):
 
     return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario})
 
-from roles.models import Rol
 
 @rol_requerido('administrador')
 @login_required
@@ -181,6 +180,8 @@ def eliminar_roles_usuario(request, usuario_id):
     roles_asignados = usuario.roles.all()
     return render(request, 'administracion/eliminar_roles_usuario.html', {'usuario': usuario, 'roles_asignados': roles_asignados})
 
+@rol_requerido('administrador')
+@login_required
 def agregar_permisos_roles_usuario(request, usuario_id):
     usuario = Usuario.objects.get(id=usuario_id)
     roles_asignados = usuario.roles.all()

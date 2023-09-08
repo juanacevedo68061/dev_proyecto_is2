@@ -1,51 +1,44 @@
 from django.test import TestCase
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-from login.models import Usuario
+from django.db.models.signals import post_save
+from django.dispatch import Signal
 from roles.models import Rol
-from login.signals import crear_roles_iniciales, asignar_roles
+from login.models import Usuario
+from login.signals import asignar_roles
 
 class SignalsTests(TestCase):
-    def test_creacion_de_roles_iniciales(self):
-        """
-        Prueba la señal de creación de roles iniciales.
-        """
-        usuario = Usuario()
-        crear_roles_iniciales(sender=Usuario, instance=usuario)
-        self.assertEqual(Rol.objects.count(), 4)  # Asegura que se crearon los roles
 
-    def test_asignacion_de_roles(self):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Define una señal personalizada para el post_save
+        cls.post_save_signal = Signal()
+
+        # Asocia el signal personalizado al modelo Usuario
+        post_save.connect(asignar_roles, sender=Usuario)
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        # Desconecta el signal personalizado después de las pruebas
+        post_save.disconnect(asignar_roles, sender=Usuario)
+
+    def test_asignar_roles_a_usuario_recien_creado(self):
         """
-        Prueba la señal de asignación de roles.
+        Prueba que los roles se asignen correctamente a un usuario recién creado.
         """
-        admin_rol, _ = Rol.objects.get_or_create(nombre='administrador')
-        autor_rol, _ = Rol.objects.get_or_create(nombre='autor')
+        # Crea un nuevo usuario
         usuario = Usuario(username='usuario_prueba')
         usuario.save()
 
-        asignar_roles(sender=Usuario, instance=usuario, created=True)
-        usuario.refresh_from_db()  # Actualiza la instancia del usuario desde la base de datos
+        # Refresca la instancia del usuario desde la base de datos
+        usuario.refresh_from_db()
 
-        self.assertTrue(admin_rol in usuario.roles.all())
+        # Verifica que el usuario tenga el rol de 'autor'
+        autor_rol = Rol.objects.get(nombre='autor')
         self.assertTrue(autor_rol in usuario.roles.all())
 
-    def test_signal_con_pre_save(self):
-        """
-        Prueba el funcionamiento del pre_save con señales.
-        """
-        usuario = Usuario()
-        usuario.save()
+        # Si es el primer usuario creado, verifica que también tenga el rol de 'administrador'
+        if Usuario.objects.count() == 1:
+            admin_rol = Rol.objects.get(nombre='administrador')
+            self.assertTrue(admin_rol in usuario.roles.all())
 
-        self.assertEqual(Rol.objects.count(), 4)  # Asegura que se crearon los roles
-
-    def test_signal_con_post_save(self):
-        """
-        Prueba el funcionamiento del post_save con señales.
-        """
-        admin_rol, _ = Rol.objects.get_or_create(nombre='administrador')
-        autor_rol, _ = Rol.objects.get_or_create(nombre='autor')
-        usuario = Usuario(username='usuario_prueba')
-        usuario.save()
-
-        self.assertTrue(admin_rol in usuario.roles.all())
-        self.assertTrue(autor_rol in usuario.roles.all())

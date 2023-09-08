@@ -8,3 +8,6 @@ sphinx_rtd_theme
 typing_extensions
 tzdata
 qrcode
+pandas
+openpyxl
+beautifulsoup4

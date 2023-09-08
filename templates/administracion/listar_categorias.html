@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Lista de Categorías</h1>
+
+    <a href="{% url 'administracion:crear_categoria' %}" class="btn btn-primary">Crear Categoría</a>
+
+    {% if categorias %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Moderada</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %}
+            <tr>
+                <td>{{ categoria.nombre }}</td>
+                <td>{{ categoria.moderada }}</td>
+                <td>
+                    <a href="{% url 'administracion:editar_categoria' categoria.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'administracion:eliminar_categoria' categoria.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay categorías disponibles.</p>
+    {% endif %}
+</div>
+<a href="{% url 'administracion:panel' %}" class="boton-principal">Volver al panel</a>
+{% endblock %}

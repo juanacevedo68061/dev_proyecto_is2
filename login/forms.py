@@ -50,3 +50,12 @@ class FormularioActivarRol(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ['rol_activo']
+
+class CargarImagenForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['imagen']
+
+    imagen = forms.FileInput(attrs={'accept': 'image/*'})
+
+

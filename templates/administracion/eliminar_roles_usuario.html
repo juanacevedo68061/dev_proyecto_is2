@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Eliminar Roles de {{ usuario.username }}</h1>
+
+    <form method="post" action="{% url 'administracion:eliminar_roles_usuario' usuario.id %}">
+        {% csrf_token %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rol in roles_asignados %}
+                <tr>
+                    <td>{{ rol.nombre }}</td>
+                    <td><input type="checkbox" name="roles" value="{{ rol.id }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-danger">Eliminar Roles</button>
+        <a href="{% url 'administracion:gestion_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

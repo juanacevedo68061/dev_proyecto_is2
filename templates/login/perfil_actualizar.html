@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Actualizar Perfil{% endblock %}
+
+{% block content %}
+<style>
+  /* Estilos para el contenedor principal */
+  .center-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Estilos para el formulario */
+  form {
+    text-align: left; /* Alinea el texto de las etiquetas a la izquierda */
+    margin-top: 20px; /* Espacio entre el formulario y el título */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos horizontalmente */
+  }
+
+  /* Estilos para los campos de entrada y etiquetas */
+  input {
+    display: block; /* Coloca campos en bloques separados */
+    margin-bottom: 15px; /* Espacio entre campos */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  input::placeholder {
+    text-align: center;
+    color: #ccc;
+  }
+
+  /* Estilos para el botón */
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px; /* Espacio entre el formulario y el botón */
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Estilos para el enlace de regreso */
+  .boton-regresar {
+    margin-top: 15px; /* Espacio entre el botón y el enlace de regreso */
+  }
+</style>
+
+<div class="center-form">
+  <h2>Actualizar Perfil</h2>
+  <form method="post" action="{% url 'login:perfil_actualizar' %}">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Usuario" value="{{ formulario.username.value }}">
+    <input type="email" name="email" placeholder="Correo electrónico" value="{{ formulario.email.value }}">
+    <input type="password" name="contraseña_actual" placeholder="Contraseña actual">
+    <input type="password" name="nueva_contraseña1" placeholder="Nueva contraseña">
+    <input type="password" name="nueva_contraseña2" placeholder="Confirmar nueva contraseña">
+    <button type="submit">Actualizar Perfil</button>
+  </form>
+
+  <a href="{% url 'login:perfil' %}" class="boton-regresar">Regresar al Perfil</a>
+</div>
+{% endblock %}
+
+
+

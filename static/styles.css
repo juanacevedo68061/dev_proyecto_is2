@@ -2,7 +2,7 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-    background-color: #333;
+    background-color: #007BFF; /* Color azul Bootstrap */
     color: white;
     padding: 20px;
     position: fixed;
@@ -23,3 +23,20 @@
     padding: 20px;
   }
   
+/* Estilo para los enlaces de la barra lateral */
+.sidebar a {
+  text-decoration: none;
+  color: white; /* Color de texto normal */
+  display: block;
+  padding: 10px 15px;
+  background-color: #007BFF; /* Color de fondo ligeramente sombreado */
+  border-radius: 8px; /* Borde redondeado para esquinas menos puntiagudas */
+  transition: background-color 0.2s, color 0.2s; /* Transición suave de colores al pasar el cursor */
+}
+
+/* Cambio de estilo al pasar el cursor sobre los enlaces */
+.sidebar a:hover {
+  color: white; /* Cambio de color de texto al pasar el cursor */
+}
+
+

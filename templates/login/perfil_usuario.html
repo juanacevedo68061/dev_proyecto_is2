@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Perfil de {{ usuario.username }}{% endblock %}
+
+{% block content %}
+<style>
+  /* Estilos para el contenedor principal */
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  /* Estilos para la imagen de perfil */
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f0f0f0;
+  }
+
+  .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Estilos para la información del usuario */
+  .user-info {
+    margin-top: 20px;
+  }
+
+  .user-info p {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  /* Estilos para los roles */
+  .roles {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .roles label {
+    margin-right: 10px;
+  }
+
+  /* Estilos para los botones */
+  .profile-buttons {
+    margin-top: 20px;
+  }
+
+  .profile-buttons a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+
+  .profile-buttons a:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<div class="profile-container">
+  <div class="profile-image">
+    {% if usuario.imagen %}
+      <img src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
+    {% else %}
+      <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+    {% endif %}
+  </div>
+
+  <div class="user-info">
+    <h1>{{ usuario.username }}</h1>
+    <p>Correo electrónico: {{ usuario.email }}</p>
+  </div>
+
+  {% if roles %}
+    <div class="roles">
+      <h2>Roles:</h2>
+      <p>
+        {% for rol in roles %}
+          {{ rol.nombre }}
+          {% if not forloop.last %}, {% endif %} <!-- Coma entre roles excepto el último -->
+        {% endfor %}
+      </p>
+    </div>
+  {% else %}
+    <p>{{ mensaje_roles }}</p>
+  {% endif %}
+
+  <div class="profile-buttons">
+    <a href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
+    <a href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
+    <a href="{% url 'publicaciones:crear_publicacion' %}">Crear Publicación</a>
+    <a href="/">Ir a la Página Principal</a>
+  </div>
+</div>
+{% endblock %}
+

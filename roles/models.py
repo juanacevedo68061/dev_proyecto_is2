@@ -13,7 +13,9 @@ class Rol(models.Model):
         permisos (ManyToManyField): Los permisos asignados a este rol.
 
     Métodos:
-        
+        __str__(): Devuelve una representación en cadena del rol.
+        save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
+
     """
     ROLES = (
         ('autor', 'Autor'),

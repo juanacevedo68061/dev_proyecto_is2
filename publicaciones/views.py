@@ -4,6 +4,7 @@ from PIL import Image
 from django.core.files.base import ContentFile
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.defaults import page_not_found
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion
@@ -40,6 +41,28 @@ def crear_publicacion(request):
         form = PublicacionForm()
     
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias})
+
+def editar_publicacion(request, publicacion_id, tabla):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+
+    if tabla == 'autor':
+        canvas_url = 'canvas-autor'
+    elif tabla == 'editor':
+        canvas_url = 'canvas-editor'
+    else:
+        # Manejo de caso no válido, puedes redirigir a una página de error
+        return page_not_found(request)
+
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            return redirect(canvas_url)
+
+    else:
+        form = PublicacionForm(instance=publicacion)
+
+    return render(request, 'publicaciones/editar_publicacion.html', {'form': form, 'publicacion': publicacion})
 
 @login_required
 def like_publicacion(request, pk):

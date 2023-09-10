@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', include('login.urls', namespace='login')),
     path('administracion/', include('administracion.urls', namespace='administracion')),
     path('publicaciones/', include('publicaciones.urls', namespace='publicaciones')),
+    path('canvan/', include('canvan.urls', namespace='canvan')),
 ]
 
 if settings.DEBUG:

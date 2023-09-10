@@ -10,14 +10,14 @@ class Publicacion(models.Model):
         ('publicar', 'Publicar'),
         ('publicado', 'Publicado'),
         ('rechazado', 'Rechazado'),
-        ('inactivo', 'Inactivo'),
     ]
 
     TIPOS_PUBLICACION = [
         ('rich_text', 'Rich Text'),
         ('solo_text', 'Solo Text'),
     ]
-
+    activo = models.BooleanField(default=True)
+    titulo = models.CharField(max_length=200, null=True, default=None)
     tipo = models.CharField(max_length=10, choices=TIPOS_PUBLICACION)
     resumen = models.TextField()
     id_publicacion = models.CharField(max_length=20)

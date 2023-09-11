@@ -1,28 +1,15 @@
 /* Estilos de la barra lateral */
 .sidebar {
-    width: 250px;
-    height: 100vh;
-    background-color: #007BFF; /* Color azul Bootstrap */
-    color: white;
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
-  
-  .sidebar a {
-    display: block;
-    color: white;
-    margin-bottom: 15px;
-    text-decoration: none;
-  }
-  
-  /* Estilos del contenido principal */
-  .content {
-    margin-left: 270px; /* Espacio para la barra lateral */
-    padding: 20px;
-  }
-  
+  width: 250px;
+  height: 100vh;
+  background-color: #007BFF; /* Color azul Bootstrap */
+  color: white;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 /* Estilo para los enlaces de la barra lateral */
 .sidebar a {
   text-decoration: none;
@@ -38,5 +25,22 @@
 .sidebar a:hover {
   color: white; /* Cambio de color de texto al pasar el cursor */
 }
+
+/* Ajustes para los elementos del menú lateral */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 5px; /* Reduce el margen inferior para que los elementos ocupen menos espacio vertical */
+}
+
+/* Ajustar el tamaño del texto si es necesario */
+.sidebar a {
+  font-size: 16px; /* Cambia el tamaño del texto según tus necesidades */
+}
+
 
 

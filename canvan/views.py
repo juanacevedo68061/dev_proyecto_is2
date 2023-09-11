@@ -4,15 +4,24 @@ from publicaciones.models import Publicacion_solo_text
 
 @login_required
 def canvas_autor(request):
-    # Obtener todas las publicaciones del autor ordenadas por fecha de creación
-    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='borrador')
-    completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='revision')
+    # Obtener todas las publicaciones activas del autor ordenadas por fecha de creación
+    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='borrador', activo=True)
+    completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='revision', activo=True)
 
     return render(request, 'canvan/canvas_autor.html', {'en_progreso': en_progreso, 'completadas': completadas})
 
 @login_required
 def canvas_editor(request):
-    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='revision')
-    completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar')
+    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='revision', activo=True)
+    completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar', activo=True)
 
     return render(request, 'canvan/canvas_editor.html', {'en_progreso': en_progreso, 'completadas': completadas})
+
+@login_required
+def canvas_publicador(request):
+    # Obtener todas las publicaciones activas del publicador ordenadas por fecha de creación
+    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar', activo=True)
+    completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicado', activo=True)
+
+    return render(request, 'canvan/canvas_publicador.html', {'en_progreso': en_progreso, 'completadas': completadas})
+

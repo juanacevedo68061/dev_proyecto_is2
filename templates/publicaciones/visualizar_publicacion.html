@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Estilos para la tarjeta de publicación */
+    .tarjeta {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    /* Estilos para los botones */
+    .btn {
+      margin-right: 10px;
+    }
+  </style>
+  
+  <div class="container">
+    {% include 'mensajes.html' %}
+
+    <h1>Publicación</h1>
+    <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id %}" class="btn btn-danger">Rechazar</a><br>
+
+    <div class="tarjeta">
+      {% if datos_publicacion.Título %}
+        <h2>{{ datos_publicacion.Título }}</h2>
+      {% endif %}
+      {% if datos_publicacion.Texto %}
+        <p>{{ datos_publicacion.Texto }}</p>
+      {% endif %}
+      {% if datos_publicacion.Categoría %}
+        <p><strong>Categoría:</strong> {{ datos_publicacion.Categoría }}</p>
+      {% endif %}
+      {% if datos_publicacion.Palabras %}
+        <p><strong>Palabras Clave:</strong> {{ datos_publicacion.Palabras }}</p>
+      {% endif %}
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" name="publicar">Publicar</button>
+      <a href="{% url 'canvan:canvas-publicador' %}" class="btn btn-danger">Cancelar</a>
+    </form>
+  </div>
+{% endblock %}
+

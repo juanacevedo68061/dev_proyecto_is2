@@ -12,6 +12,8 @@ urlpatterns = [
     path('eliminar/<int:publicacion_id>/', views.eliminar_publicacion_autor, name='eliminar-publicacion-autor'),
     path('editar/<int:publicacion_id>/editor/', views.editar_publicacion_editor, name='editar_publicacion_editor'),
     path('rechazar_editor/<int:publicacion_id>/', views.rechazar_editor, name='rechazar_editor'),
+    path('visualizar/<int:publicacion_id>/', views.visualizar_publicacion, name='visualizar_publicacion'),
+    path('rechazar_publicador/<int:publicacion_id>/', views.rechazar_publicador, name='rechazar_publicador'),
 ]
 
 

@@ -129,8 +129,49 @@ def rechazar_editor(request, publicacion_id):
             publicacion.save()
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
 
-    return render(request, 'publicaciones/rechazar_editor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
+    return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
+@login_required
+def visualizar_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    message = ''  # Variable para almacenar el mensaje personalizado
+    redirect_url = None  # Variable para almacenar la URL de redirección
+
+    if request.method == 'POST':
+        if 'publicar' in request.POST:
+            # Cambiar el estado de la publicación a "publicado"
+            publicacion.estado = 'publicado'
+            publicacion.save()
+            message = 'La publicación ha sido publicada con éxito.'
+            redirect_url = reverse('canvan:canvas-publicador')
+            messages.success(request,message)
+
+    # Filtrar campos que no estén vacíos
+    datos_publicacion = {
+        'Título': publicacion.titulo,
+        'Texto': publicacion.texto,
+        'Categoría': publicacion.categoria.nombre,
+        'Palabras': publicacion.palabras_clave,
+        # Agrega más campos aquí según sea necesario
+    }
+
+    # Eliminar campos con valor None o vacío
+    datos_publicacion = {campo: valor for campo, valor in datos_publicacion.items() if valor}
+
+    return render(request, 'publicaciones/visualizar_publicacion.html', {'publicacion': publicacion, 'datos_publicacion': datos_publicacion, 'redirect_url': redirect_url})
+
+@login_required
+def rechazar_publicador(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
+
+    if request.method == 'POST':
+        if 'confirmar_rechazo' in request.POST:
+            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
+            publicacion.save()
+            messages.success(request, 'La publicación ha sido rechazada con éxito.')
+
+    return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
 @login_required
 def like_publicacion(request, pk):

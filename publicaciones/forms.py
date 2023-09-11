@@ -3,36 +3,24 @@ from django import forms
 from .models import Publicacion
 
 class PublicacionForm(forms.ModelForm):
+    datos_parciales = forms.BooleanField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Publicacion
-        fields = ['titulo', 'tipo', 'resumen', 'categoria', 'palabras_clave']
+        fields = ['titulo', 'tipo', 'resumen', 'imagen', 'categoria', 'palabras_clave']
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        super(PublicacionForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'id': 'id_titulo', 'required': True})
+        self.fields['tipo'].widget.attrs.update({'class': 'form-control', 'id': 'id_tipo'})
+        self.fields['resumen'].widget.attrs.update({'class': 'form-control', 'id': 'id_resumen', 'rows': '4', 'required': True})
+        self.fields['imagen'].widget.attrs.update({'class': 'form-control-file', 'id': 'id_imagen'})
+        self.fields['categoria'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria'})
+        self.fields['palabras_clave'].widget.attrs.update({'class': 'form-control', 'id': 'id_palabras_clave'})
 
-        self.fields['titulo'].widget.attrs['class'] = 'form-control'
-        self.fields['tipo'].widget.attrs['class'] = 'form-control'
-        self.fields['resumen'].widget.attrs['class'] = 'form-control'
-        self.fields['categoria'].widget.attrs['class'] = 'form-control'
-        self.fields['palabras_clave'].widget.attrs['class'] = 'form-control'
-        self.fields['titulo'].widget.attrs['placeholder'] = 'Escribe el título de la publicación'
-        self.fields['tipo'].widget.attrs['placeholder'] = 'Selecciona el tipo de publicación'
-        self.fields['resumen'].widget.attrs['placeholder'] = 'Escribe un resumen de la publicación'
-        self.fields['categoria'].widget.attrs['placeholder'] = 'Selecciona la categoría'
-        self.fields['palabras_clave'].widget.attrs['placeholder'] = 'Agrega palabras clave separadas por comas'
-
-        if instance:
-            self.fields['titulo'].initial = instance.titulo
-            self.fields['tipo'].initial = instance.tipo
-            self.fields['resumen'].initial = instance.resumen
-            self.fields['categoria'].initial = instance.categoria
-            self.fields['palabras_clave'].initial = instance.palabras_clave
-
-    def clean_resumen(self):
-        resumen = self.cleaned_data.get('resumen')
-        if len(resumen) < 10:
-            raise forms.ValidationError('El resumen debe tener al menos 10 caracteres.')
-        return resumen
-
-
+        self.fields['titulo'].label = 'Título'
+        self.fields['tipo'].label = 'Tipo de Publicación'
+        self.fields['resumen'].label = 'Resumen'
+        self.fields['imagen'].label = 'Imagen Principal'
+        self.fields['categoria'].label = 'Categoría'
+        self.fields['palabras_clave'].label = 'Palabras Clave'

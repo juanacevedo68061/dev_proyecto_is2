@@ -10,23 +10,29 @@ from django.http import JsonResponse
 from .models import Publicacion
 from .forms import PublicacionForm
 from .models import Categoria 
+from django.contrib import messages
+
+
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 @login_required
 def crear_publicacion(request):
-    categorias = Categoria.objects.all()  # Obtén todas las categorías desde la base de datos
+    categorias = Categoria.objects.all()
+    form = PublicacionForm()
 
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.autor = request.user
-            
+
             # Generar código QR
             qr_img = qrcode.make(publicacion.id_publicacion)
             qr_io = BytesIO()
             qr_img.save(qr_io, 'JPEG')
             publicacion.codigo_qr.save('codigo_qr.jpg', ContentFile(qr_io.getvalue()))
-            
+
             # Generar imagen thumbnail
             if publicacion.imagen:
                 img = Image.open(publicacion.imagen)
@@ -34,14 +40,23 @@ def crear_publicacion(request):
                 thumb_io = BytesIO()
                 img.save(thumb_io, 'JPEG')
                 publicacion.imagen_thumbnail.save('thumbnail.jpg', ContentFile(thumb_io.getvalue()))
-            
-            publicacion.save()
-            return redirect('login:perfil')
-    else:
-        form = PublicacionForm()
-    
+
+            if 'accion' in request.POST:
+                if request.POST['accion'] == 'crear':
+                    publicacion.estado = 'revision'  # Establecer el estado como "revision"
+                    publicacion.save()
+                    messages.success(request, 'Publicación guardada en estado de revisión con éxito.')
+                    print("CARGA EL MENSAJE")
+                elif request.POST['accion'] == 'guardar_borrador':
+                    publicacion.estado = 'borrador'
+                    publicacion.save()
+                    messages.success(request, 'Publicación guardada como borrador con éxito.')
+                    print("CARGA EL MENSAJE")
+
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias})
 
+
+@login_required
 def editar_publicacion(request, publicacion_id, tabla):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
 

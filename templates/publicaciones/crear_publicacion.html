@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% include 'mensajes.html' %}
   <h1>Crear Publicación</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -49,10 +50,8 @@
     </div>
 
     <!-- Botones para enviar el formulario y cancelar -->
-    <button type="submit" class="btn btn-primary">Crear Publicación</button>
-    <a href="{% url 'login:perfil' %}" class="btn btn-warning">Cancelar</a>
+    <button type="submit" class="btn btn-primary" name="accion" value="crear">Crear Publicación</button>
+    <button type="submit" class="btn btn-warning" name="accion" value="guardar_borrador">Guardar como Borrador</button>
+    <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-danger">Cancelar</a>
   </form>
 {% endblock %}
-
-
-

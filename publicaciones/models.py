@@ -8,7 +8,6 @@ class Publicacion_solo_text(models.Model):
         ('revision', 'Revisión'),
         ('publicar', 'Publicar'),
         ('publicado', 'Publicado'),
-        ('rechazado', 'Rechazado'),
     ]
 
     #TIPOS_PUBLICACION = [

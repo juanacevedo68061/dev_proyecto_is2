@@ -45,32 +45,92 @@ def crear_publicacion(request):
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    message = ''  # Variable para almacenar el mensaje personalizado
+    redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
         form = PublicacionForm(request.POST, instance=publicacion)
-        if form.is_valid():
-            form.save()
-            return redirect('canvan:canvas-autor')
+        if 'accion' in request.POST:
+            if request.POST['accion'] == 'guardar':
+                form_fields_required = ['titulo']
+                message = 'Cambios guardados con éxito.'
+
+            elif request.POST['accion'] == 'completar_borrador':
+                form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']
+                message = 'Borrador completado con éxito.'
+            
+            for field_name, field in form.fields.items():
+                field.required = field_name in form_fields_required
+
+            if form.is_valid():
+                publicacion = form.save(commit=False)
+                publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+                publicacion.save()
+                messages.success(request, message)
+                redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
     else:
         form = PublicacionForm(instance=publicacion)
 
-    return render(request, 'publicaciones/editar_publicacion_autor.html', {'form': form, 'publicacion': publicacion})
+    return render(request, 'publicaciones/editar_publicacion_autor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
+
+@login_required
+def eliminar_publicacion_autor(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
+
+    if request.method == 'POST':
+        # Verifica si se confirma la eliminación
+        if 'confirmar_eliminar' in request.POST:
+            publicacion.delete()
+            messages.success(request, 'La publicación ha sido eliminada con éxito.')
+
+    return render(request, 'publicaciones/eliminar_publicacion_autor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
+
 
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    message = ''  # Variable para almacenar el mensaje personalizado
+    redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
         form = PublicacionForm(request.POST, instance=publicacion)
-        if form.is_valid():
-            form.save()
-            return redirect('canvan:canvas-editor')
+        if 'accion' in request.POST:
+            if request.POST['accion'] == 'guardar':
+                form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
+                message = 'Cambios guardados con éxito.'
+            elif request.POST['accion'] == 'completar_edicion':
+                form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
+                message = 'Edición completada con éxito.'
+            
+            for field_name, field in form.fields.items():
+                field.required = field_name in form_fields_required
 
+            if form.is_valid():
+                publicacion = form.save(commit=False)
+                publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+                publicacion.save()
+                messages.success(request, message)
+                redirect_url = reverse('canvan:canvas-editor')  
     else:
         form = PublicacionForm(instance=publicacion)
 
-    return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion})
+    return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
+
+@login_required
+def rechazar_editor(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
+
+    if request.method == 'POST':
+        if 'confirmar_rechazo' in request.POST:
+            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
+            publicacion.save()
+            messages.success(request, 'La publicación ha sido rechazada con éxito.')
+
+    return render(request, 'publicaciones/rechazar_editor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
+
 
 @login_required
 def like_publicacion(request, pk):

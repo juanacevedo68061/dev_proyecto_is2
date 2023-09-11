@@ -8,7 +8,10 @@ urlpatterns = [
     path('like/<int:pk>/', views.like_publicacion, name='like'),
     path('dislike/<int:pk>/', views.dislike_publicacion, name='dislike'),
     path('compartir/<int:pk>/', views.compartir_publicacion, name='compartir'),
-    path('editar-publicacion/<int:publicacion_id>/<str:tabla>/', views.editar_publicacion, name='editar_publicacion'),
+    # URLs para edición de publicación en el contexto de canvas-autor
+    path('editar/<int:publicacion_id>/autor/', views.editar_publicacion_autor, name='editar_publicacion_autor'),
+    # URLs para edición de publicación en el contexto de canvas-editor
+    path('editar/<int:publicacion_id>/editor/', views.editar_publicacion_editor, name='editar_publicacion_editor'),
 ]
 
 

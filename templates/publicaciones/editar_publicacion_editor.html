@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1>Editar Publicación (Canvas Editor)</h1>
+    <a href="{% url 'canvan:canvas-editor' %}">Volver al Canvas Editor</a>
+    <br><br>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+  </div>
+{% endblock %}

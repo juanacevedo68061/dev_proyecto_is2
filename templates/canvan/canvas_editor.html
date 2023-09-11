@@ -79,18 +79,16 @@
     }
   </style>
 
-  <h1>Canvas del Autor</h1>
-    <!-- Botón para crear una nueva publicación -->
-    <a href="{% url 'publicaciones:crear_publicacion' %}" class="btn btn-primary">Crear Nueva Publicación</a><br><br>
-    <a href="/">Ir a la Página Principal</a>
+  <h1>Canvas del Editor</h1>
+  <a href="/">Ir a la Página Principal</a>
   <div class="canvas">
-    <!-- Columna "Haciendo" -->
+    <!-- Columna "En Progreso" -->
     <div class="column">
       <h2>En Progreso</h2>
-      <ul class="tarjetas" id="haciendo-list">
+      <ul class="tarjetas" id="en-progreso-list">
         {% for publicacion in en_progreso %}
           <li class="tarjeta" id="{{ publicacion.id }}">
-            <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id %}">{{ publicacion.titulo }}</a>
+            <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id %}">{{ publicacion.titulo }}</a>
           </li>
         {% endfor %}
       </ul>
@@ -109,4 +107,3 @@
     </div>
   </div>
 {% endblock %}
-

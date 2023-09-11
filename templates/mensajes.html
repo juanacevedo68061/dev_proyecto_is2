@@ -19,7 +19,7 @@
                     
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "{% url 'canvan:canvas-autor' %}";
+                        window.location.href = "{{ redirect_url }}"
                     }
                 });
             });

@@ -11,3 +11,4 @@ qrcode
 pandas
 openpyxl
 beautifulsoup4
+autopep8

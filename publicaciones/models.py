@@ -10,15 +10,10 @@ class Publicacion_solo_text(models.Model):
         ('publicado', 'Publicado'),
     ]
 
-    #TIPOS_PUBLICACION = [
-    #    ('rich_text', 'Rich Text'),
-    #   ('solo_text', 'Solo Text'),
-    #]
-
     activo = models.BooleanField(default=True)
     titulo = models.CharField(max_length=200, blank=True, null=True)
-    #tipo = models.CharField(max_length=10, choices=TIPOS_PUBLICACION, null=True)
     texto = models.TextField()
+    #contenido = models.TextField()
     id_publicacion = models.CharField(max_length=20)
     codigo_qr = models.ImageField(upload_to='codigos_qr/', blank=True)
     imagen = models.ImageField(upload_to='imagenes/', blank=True)

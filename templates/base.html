@@ -2,139 +2,168 @@
 
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <!-- Enlaces para los íconos de favicon -->
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
-        <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
-        <!--Para los iconos de los accesos en el sidebar-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<head>
+    <title>{% block title %} {% endblock %}</title>
+    <!-- Enlaces para los íconos de favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>{% block title %} {% endblock %}</title>
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <!-- Si quitas el class que tiene body, al hacer scroll no se mantendra la parte superior-->
-    <body class="sb-nav-fixed">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--Para los iconos de los accesos en el sidebar-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+</head>
 
-        <!-- Este es todo el Navbar-->
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 " id="sidebarToggle" href="#/"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="/">CMS</a>
-            <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+<!-- Si quitas el class que tiene body, al hacer scroll no se mantendra la parte superior-->
+<body class="sb-nav-fixed">
+
+    <!-- Este es todo el Navbar-->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Sidebar Toggle Button -->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#/"><i class="fas fa-bars"></i></button>
+
+        <!-- Logo del Navbar -->
+        <a class="navbar-brand ps-3" href="/">CMS</a>
+
+        <!-- Contenedor para centrar el buscador y el botón "+" -->
+        <div class="mx-auto d-flex align-items-center">
+            <!-- Navbar Search (Búsqueda Normal) -->
+            <form class="form-inline">
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Buscar..." aria-label="Buscar..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    <input class="form-control" type="text" name="q" placeholder="Buscar..." aria-label="Buscar..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
                 </div>
             </form>
-            <!-- Navbar-->
+
+            <!-- Ícono de búsqueda avanzada como enlace -->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if user.imagen %}
-                            <img src="{{ user.imagen.url }}" alt="{{ user.username }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
-                        {% else %}
-                            <i class="fas fa-user fa-fw"></i>
-                        {% endif %}
+                    <a class="nav-link" id="btnMostrarBusquedaAvanzada" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-cog"></i>
                     </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            {% if user.is_authenticated %}      
-                                <li><a class="dropdown-item" href="{% url 'login:perfil' %}">Perfil</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a></li>                
-                            {% else %}
-                                <li><a class="dropdown-item" href="{% url 'login:inicio_sesion' %}">Acceder</a></li>
-                            {% endif %}
-                        </ul>
-                    
-                </li>
+                    <!-- Dropdown de búsqueda avanzada -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <!-- Contenido del formulario de búsqueda avanzada -->
+                        <h6 class="dropdown-header">Búsqueda Avanzada</h6>
+                        <form class="dropdown-item" method="GET" action="{% url 'principal' %}">
+                            {% csrf_token %}
+                            {{ busqueda_avanzada_form.as_p }}
+                            <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                        </form>
+                    </ul>
+                </li>        
             </ul>
-        </nav>
-        
-        <!-- Este es todo el Sidebar-->
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-
-
-                            <div class="sb-sidenav-menu-heading">Principal</div>
-                            <a class="nav-link" href="/">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
-                                Publicaciones
-                            </a>
-
-
-                            <div class="sb-sidenav-menu-heading">Acceso</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                kanban
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url 'canvan:canvas-autor' %}">Canvas Autor</a>
-                                    <a class="nav-link" href="{% url 'canvan:canvas-editor' %}">Canvas Editor</a>
-                                    <a class="nav-link" href="{% url 'canvan:canvas-publicador' %}">Canvas Publicador</a>
-                                </nav>
-                            </div>
-
-                            <div class="sb-sidenav-menu-heading">Panel</div>
-                            <a class="nav-link" href="{% url 'administracion:panel' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-desktop-alt"></i></div>
-                                Administracion
-                            </a>
-
-
-                        </div>
-                    </div>
-                    
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Conectado como:</div>
-                        {{user.username}}
-                    </div>
-
-                </nav>
-            </div>
-
-            <!-- Este es todo el contenido, parece que va dentro del Sidebar-->
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        {% block content %}{% endblock %}
-                    </div>
-                </main>
-        
-                <!-- Este es todo el copyright del final-->
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </div>
         </div>
-        <!-- Ves, aqui termina el Sidebar, entonces todo el contenido va dentro-->
-        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'js/scripts.js' %}"></script>
-    </body>
+
+        <!-- Navbar Dropdown (Usuario) -->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if user.imagen %}
+                    <img src="{{ user.imagen.url }}" alt="{{ user.username }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                    {% else %}
+                    <i class="fas fa-user fa-fw"></i>
+                    {% endif %}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    {% if user.is_authenticated %}
+                    <li><a class="dropdown-item" href="{% url 'login:perfil' %}">Perfil</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="{% url 'login:cerrar_sesion' %}">Cerrar sesión</a></li>
+                    {% else %}
+                    <li><a class="dropdown-item" href="{% url 'login:inicio_sesion' %}">Acceder</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Este es todo el Sidebar-->
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+
+
+                        <div class="sb-sidenav-menu-heading">Principal</div>
+                        <a class="nav-link" href="/">
+                            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                            Publicaciones
+                        </a>
+
+
+                        <div class="sb-sidenav-menu-heading">Acceso</div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            kanban
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="{% url 'canvan:canvas-autor' %}">Canvas Autor</a>
+                                <a class="nav-link" href="{% url 'canvan:canvas-editor' %}">Canvas Editor</a>
+                                <a class="nav-link" href="{% url 'canvan:canvas-publicador' %}">Canvas Publicador</a>
+                            </nav>
+                        </div>
+
+                        <div class="sb-sidenav-menu-heading">Panel</div>
+                        <a class="nav-link" href="{% url 'administracion:panel' %}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-desktop-alt"></i></div>
+                            Administracion
+                        </a>
+
+
+                    </div>
+                </div>
+
+                <div class="sb-sidenav-footer">
+                    <div class="small">Conectado como:</div>
+                    {{user.username}}
+                </div>
+
+            </nav>
+        </div>
+
+        <!-- Este es todo el contenido, parece que va dentro del Sidebar-->
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+
+            <!-- Este es todo el copyright del final-->
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</body>
+
 </html>

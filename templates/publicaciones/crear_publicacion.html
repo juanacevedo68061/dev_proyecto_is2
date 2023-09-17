@@ -1,16 +1,20 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  {% include 'mensajes.html' %}
-  <h1>Crear Publicación</h1>
-  <form method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
-    
-    {{ form.as_p }}
-    
-    <!-- Botones para enviar el formulario y cancelar -->
-    <button type="submit" class="btn btn-primary" name="accion" value="crear">Crear Publicación</button>
-    <button type="submit" class="btn btn-warning" name="accion" value="guardar_borrador">Guardar como Borrador</button>
-    <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-danger">Cancelar</a>
-  </form>
+<head>
+  {{ form.media }}
+  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+{% include 'mensajes.html' %}
+<h1>Crear Publicación</h1>
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {{ form.as_p }}
+
+  <!-- Botones para enviar el formulario y cancelar -->
+  <button type="submit" class="btn btn-primary" name="accion" value="crear">Crear Publicación</button>
+  <button type="submit" class="btn btn-warning" name="accion" value="guardar_borrador">Guardar como Borrador</button>
+  <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-danger">Cancelar</a>
+</form>
+
 {% endblock %}

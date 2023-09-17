@@ -1,3 +1,6 @@
+{% load static %}
+{% load custom_filters %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
 <style>
   /* Estilo para el contenedor de cada publicación */
   .publicacion {
@@ -6,68 +9,143 @@
     align-items: flex-start; /* Alinea el contenido en la esquina superior izquierda */
     margin-bottom: 20px; /* Espacio entre las publicaciones */
     padding: 20px; /* Espaciado interno para el recuadro de la publicación */
-  /*border: 1px solid #ccc; /* Borde alrededor de la publicación */
-  /*border-radius: 5px; /* Bordes redondeados para el recuadro de la publicación */
+    position: relative; /* Añadimos posición relativa al contenedor de la publicación */
   }
 
-  /* Estilo para el círculo de perfil y nombre del autor */
-  .perfil-y-nombre {
+  /* Estilo para el círculo de perfil, nombre del autor y fecha */
+  .perfil-nombre-fecha {
     display: flex;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 10px; /* Espacio entre el círculo y el nombre */
-  }
-
-  /* Estilo para el círculo de perfil */
-  .perfil-circle {
-    width: 50px; /* Tamaño deseado para el círculo */
-    height: 50px; /* Tamaño deseado para el círculo */
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: #f0f0f0; /* Color de fondo del círculo */
-    margin-right: 10px; /* Espacio entre el círculo y el nombre */
-  }
-
-  /* Estilo para la imagen de perfil dentro del círculo */
-  .perfil-circle img {
-    width: 100%; /* La imagen ocupará todo el ancho del círculo */
-    height: 100%; /* La imagen ocupará todo el alto del círculo */
-    object-fit: cover; /* La imagen se ajustará para llenar el círculo sin deformarla */
+    align-items: flex-start; /* Alinea los elementos verticalmente al principio */
+    margin-bottom: 10px; /* Espacio entre el nombre del autor y la fecha */
   }
 
   /* Estilo para el nombre del autor en negrita */
   .nombre-autor {
-    font-weight: bold; /* Texto en negrita */
+    color: #000; /* Color de texto negro */
   }
 
-  /* Estilo para el contenido de la publicación */
-  .contenido-publicacion {
-    /* text-align: center; /* Eliminado para alinear el texto a la izquierda */
-    margin-bottom: 10px; /* Espacio entre la publicación y los botones */
-    font-size: 10px; /* Tamaño de fuente más pequeño */
-    line-height: 1.4; /* Espaciado entre líneas */
+  /* Estilo para la fecha de publicación en tono gris */
+  .fecha-publicacion {
+    color: #888; /* Color gris para la fecha */
+  }
+  .espacio-i-a {
+    margin-right: 15px; /* Espacio entre el nombre del autor y la fecha */
+  }
+  .espacio-a-f {
+    margin-right: 10px; /* Espacio entre el nombre del autor y la fecha */
+  }
+
+  /* Estilo para el título de la vista previa */
+  .titulo-previa {
+    margin-bottom: 10px; /* Espacio entre el título y el contenido */
+    overflow: hidden; /* Oculta el desbordamiento horizontal */
+    white-space: nowrap; /* Evita el salto de línea en el título */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos al final del título si se desborda */
+    font-size: 18px; /* Tamaño de fuente para el texto en el contenido */
+    line-height: 1.5; /* Espaciado entre líneas */
+    font-family: 'Sohne', sans-serif;  /* Fuente genérica en caso de que la fuente específica no esté disponible */
+    font-weight: 800; /* Establece el peso de la fuente en negrita (bold) */    
+    font-style: normal; /* Asegura que no haya estilo itálico */
+    /* Puedes ajustar otros estilos según tus preferencias */
+  }
+
+  /* Estilo para el contenido del medio de la vista previa */
+  .contenido-medio-previa {
+    font-size: 20px; /* Tamaño de fuente de 20px para el contenido del medio */
     text-align: justify; /* Justificar el texto entre los márgenes */
+    line-height: 1.3; /* Espaciado entre líneas */
+    word-spacing: -1px; /* Reducir el espacio entre palabras */
+    overflow: hidden; /* Oculta el desbordamiento horizontal */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos al final del texto */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Muestra hasta 3 líneas de texto */
+    -webkit-box-orient: vertical;
+    color: #444; /* Color de texto negro más suave (#444) */
+    font-family: 'charter';
+    font-weight: 400;
+    font-style: normal;
+    src: url('https://glyph.medium.com/font/be78681/0-3j_4g_53_6bu_6c4_6c8_6c9_6cc_6cd_6ci_6cm/charter-400-normal.woff') format('woff');
+    unicode-range: U+0-7F,U+A0,U+B7,U+200A,U+2014,U+2018,U+2019,U+201C,U+201D,U+2022,U+2026;
   }
 
-  /* Estilo para el botón "Mostrar Información" */
-  .mostrar-informacion {
-    text-decoration: none;
-    color: #007bff;
-    cursor: pointer;
+  /* Estilo para el enlace de la vista previa */
+  .enlace-previa {
+    text-decoration: none; /* Sin subrayado */
+    color: inherit; /* Color de texto heredado */
+    position: relative; /* Añadimos posición relativa al enlace de la vista previa */
+    width: 700px; /* Ancho fijo para el enlace */
+    height: 100px; /* Altura fija para el enlace */
+  }
+  .contenido-previa {
+    position: relative;
+    width: 500px; /* Ancho fijo para el enlace */
+    height: 100px; /* Altura fija para el enlace */
+  }
+  /* Estilo para .imagen-previa */
+  .imagen-previa {
+    width: 100px; /* Tamaño deseado para la imagen de la vista previa (ancho) */
+    height: 100px; /* Tamaño deseado para la imagen de la vista previa (alto) */
+    top: 10px; /* Alineamos la parte superior de la imagen a 25px desde la parte superior del enlace de la vista previa */
+    position: absolute; /* Añadimos posición absoluta para posicionarla en la esquina */
+    bottom: 0; /* Alinea la parte inferior de la imagen con la parte inferior del enlace de la vista previa */
+    right: 0; /* Alinea la parte derecha de la imagen con la parte derecha del enlace de la vista previa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Estilo para los botones principales */
-  .botones-principales {
+  .imagen-previa img {
+    width: 100%; /* Asegura que la imagen cubra todo el espacio disponible */
+    height: 100%; /* Asegura que la imagen cubra todo el espacio disponible */
+    object-fit: cover; /* Hace que la imagen cubra todo el espacio sin distorsión */
+  }
+  /* Estilo para la línea horizontal hr */
+  .hr {
+    width: 700px;
+    border: none; /* Elimina el borde predeterminado */
+    height: 0.9px; /* Establece el grosor deseado (1 píxel en este caso) */
+    background-color: #b4b2b2; /* Cambia el color de la línea a gris claro (puedes ajustarlo según tus preferencias) */
+    margin: 40px 0; /* Agrega espacio vertical alrededor de la línea */
+  }
+  /* Estilo para la línea que muestra la categoría y el enlace de reportar */
+  .categoria-y-enlace {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Alinea verticalmente los botones */
-    width: 100%;
+    align-items: center;
+    width: 700px; /* Ancho fijo para la línea */
+    margin-top: 10px; /* Espacio superior */
+    color: #888; /* Color gris para el texto */
+    margin-top: 60px; /* Agrega un espacio de 40px entre .enlace-previa y .categoria-y-enlace */
   }
 
-  /* Estilo para el espacio entre Mostrar Información y los botones */
-  .espacio {
-    margin-top: 20px; /* Ajusta la cantidad de espacio según tus necesidades */
+  /* Estilo para el enlace de reportar */
+  .enlace-reportar {
+    color: #888; /* Color gris para el enlace de reportar */
+    text-decoration: none; /* Sin subrayado */
+    margin-left: 10px; /* Espacio a la izquierda del enlace de reportar */
   }
+  /* Estilo para el enlace de puntos suspensivos */
+  .puntos-suspensivos {
+      font-size: 24px; /* Tamaño de fuente más grande */
+      font-weight: bold; /* Texto en negrita */
+      cursor: pointer; /* Cambiar el cursor al estilo de selección al pasar el mouse */
+  }
+
+  /* Ajuste de posición para el menú desplegable */
+  .dropdown-menu.dropdown-menu-end {
+      left: auto; /* Alinea el menú desplegable a la derecha */
+      right: 0; /* Alinea el menú desplegable a la derecha */
+  }
+  /* Estilo para la categoría destacada */
+    .categoria-destacada {
+    background-color: #ececec; /* Fondo gris más suave */
+    padding: 2px 6px; /* Espaciado interno más pequeño */
+    border-radius: 10px; /* Borde redondeado */
+    color: #000; /* Texto negro */
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    display: inline-block; /* Para que el fondo se ajuste al contenido */
+  }
+
 
 </style>
 
@@ -77,73 +155,73 @@
 
   {% for publicacion, imagen_autor in publicaciones_con_imagen %}
     <div class="publicacion">
-      <!-- Círculo de perfil y nombre del autor en la esquina superior izquierda -->
-      <div class="perfil-y-nombre">
+      <!-- Círculo de perfil, nombre del autor y fecha en la misma línea -->
+      <div class="perfil-nombre-fecha">
         <div class="perfil-circle">
           {% if imagen_autor %}
-            <img src="{{ imagen_autor }}" alt="Foto de perfil">
+            <img src="{{ imagen_autor }}" alt="Foto de perfil" class="rounded-circle" width="33" height="33" style="object-fit: cover; margin-top: -3px;">
           {% else %}
             <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
           {% endif %}
         </div>
+        <!-- Espacio entre la imagen del autor y el nombre -->
+        <span class="espacio-i-a"></span>
         <!-- Nombre del autor en negrita -->
         <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+
+        <!-- Espacio entre el nombre del autor y la fecha -->
+        <span class="espacio-a-f"></span>
+        <!-- Fecha de publicación (dia, mes, año) -->
+        <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
       </div>
+      <!-- Enlace a la publicación completa (vista previa como enlace) -->
+      <a href="#" class="enlace-previa">
+        <!-- Vista previa de la publicación (imagen y contenido) -->
+        <div class="vista-previa">
+          {% with img_url=publicacion.texto|safe|find_image_url %}
+          <div class="contenido-previa" {% if img_url %}style="width: 500px;"{% else %}style="width: 700px;"{% endif %}>
+          {% endwith %}
+            <!-- Título de la publicación -->
+            <h2 class="titulo-previa">{{ publicacion.titulo }}</h2>
 
-      <!-- Resumen de la publicación sin recuadro -->
-      <div class="contenido-publicacion">
-        <h4>{{ publicacion.texto }}</h4><br>
-      </div>
-
-      <!-- Botones para interactuar con la publicación con iconos de Font Awesome -->
-      <div class="botones-principales">
-        <a href="{% url 'publicaciones:like' publicacion.id %}" class="btn btn-link like-button">
-          <i class="fas fa-thumbs-up"></i> <!-- Icono de "Me gusta" -->
-        </a>
-        <a href="{% url 'publicaciones:dislike' publicacion.id %}" class="btn btn-link dislike-button">
-          <i class="fas fa-thumbs-down"></i> <!-- Icono de "No me gusta" -->
-        </a>
-        <a href="{% url 'publicaciones:compartir' publicacion.id %}" class="btn btn-link compartir-button">
-          <i class="fas fa-share-square"></i> <!-- Icono de "Compartir" -->
-        </a>
-      </div>
-
-      <div class="espacio"></div>
-
-      <!-- Botón/enlace para mostrar/ocultar información adicional (lado derecho) -->
-      <a href="#" class="mostrar-informacion" data-target="{{ publicacion.id }}">Mostrar Información</a>
-
-      <!-- Información adicional oculta -->
-      <div class="informacion-adicional" id="contenido-{{ publicacion.id }}" style="display: none;">
-        <p>Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
-        <p>Categoría: {{ publicacion.categoria.nombre }}</p>
-        <p>Palabras Clave: {{ publicacion.palabras_clave }}</p>
-        <p>Fecha de Creación: {{ publicacion.fecha_creacion }}</p>
-        <!-- Agregar otros campos de la publicación según tus necesidades -->
-      </div>
+            <!-- Contenido del medio de la vista previa -->
+            <div class="contenido-medio-previa">
+              {% spaceless %}
+              {{ publicacion.texto|striptags|truncatechars:400 }} <!-- Limita el contenido a 200 caracteres y agrega puntos suspensivos -->
+              {% endspaceless %}
+            </div>
+          </div>
+          <div class="imagen-previa">
+            {% load custom_filters %} <!-- Cargar los filtros personalizados -->
+            {% with publicacion.texto|safe as html_text %}
+              {% with img_url=html_text|find_image_url %}
+                {% if img_url %}
+                  <img src="{{ img_url }}" alt="Imagen">
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
+          </div>
+        </div>
+  
+      </a>
+      <!-- Línea que muestra la categoría y el enlace de reportar -->
+      <div class="categoria-y-enlace">
+        <!-- Muestra la categoría de la publicación -->
+        <span class="categoria-destacada">{{ publicacion.categoria }}</span>
+        <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+        <div class="dropdown">
+          <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                <li>
+                    <a class="dropdown-item" href="#">Reportar</a>
+                </li>
+            </ul>
+        </div>
+      </div> 
+      <hr class="hr">  
     </div>
-    <!-- Línea separadora -->
-    <hr class="linea-separadora">
+    
   {% endfor %}
+  
 </div>
-
-<!-- Agrega este script para cambiar el texto del enlace -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $(".mostrar-informacion").on("click", function(e) {
-      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
-      var targetId = $(this).data("target");
-      var contenidoAdicional = $("#contenido-" + targetId);
-
-      if (contenidoAdicional.is(":visible")) {
-        contenidoAdicional.hide();
-        $(this).text("Mostrar Información");
-      } else {
-        contenidoAdicional.show();
-        $(this).text("Ocultar Información");
-      }
-    });
-  });
-</script>
 

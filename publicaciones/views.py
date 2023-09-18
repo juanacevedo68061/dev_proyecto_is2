@@ -161,6 +161,12 @@ def visualizar_publicacion(request, publicacion_id):
     return render(request, 'publicaciones/visualizar_publicacion.html', {'publicacion': publicacion, 'datos_publicacion': datos_publicacion, 'redirect_url': redirect_url})
 
 @login_required
+def mostrar_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+
+    return render(request, 'publicaciones/mostrar_publicacion.html', {'publicacion': publicacion})
+
+@login_required
 def rechazar_publicador(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
     redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección

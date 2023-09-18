@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!--<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&display=swap" rel="stylesheet">-->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Black+Ops+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&display=swap" rel="stylesheet">
+<style>
+    .contenido {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .publicacion {
+        width: 1000px;
+        padding: 20px;
+    }
+
+.titulo {
+    /*text-align: center;    */  /*centra todo el titulo*/ 
+    font-size: 60px;
+    margin-bottom: 50px;
+    /*font-family: 'Black Ops One';*/
+    font-family: 'Archivo', sans-serif;
+}
+
+</style>
+
+<div class="contenido">
+    <div class="publicacion">
+        <h1 class="titulo">{{ publicacion.titulo }}</h1>
+        <div class="informacion">
+            <div class="perfil-circle">
+                {% if publicacion.autor.imagen %}
+                <img src="{{ publicacion.autor.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="50"
+                    height="50" style="object-fit: cover; margin-top: -3px;">
+                {% else %}
+                <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+                {% endif %}
+                <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+                
+                <!-- Botón para seguir -->
+                <a href="#" class="seguir">Seguir</a>
+            </div>
+            <span class="fecha-publicacion">Publicado el {{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
+            <!-- Línea que muestra la categoría y el enlace de reportar -->
+            <div class="categoria-y-enlace">
+                <!-- Muestra la categoría de la publicación -->
+                <span class="categoria-destacada">{{ publicacion.categoria }}</span>
+                <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+                
+                <div class="dropdown">
+                    <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false"></span>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                        <li>
+                            <a class="dropdown-item" href="#">Reportar</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    
+        </div>
+        <div>{{ publicacion.texto | safe }}</div>
+    </div>
+</div>
+{% endblock %}

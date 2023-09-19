@@ -83,37 +83,38 @@
 
   <!-- Barra lateral -->
   <div class="barra-lateral">
-    <!-- Categorías recomendadas -->
-    <div class="categorias-recomendadas">
-      <h3>Categorías Recomendadas</h3>
-      <ul>
-        <!-- Itera sobre las primeras 8 categorías -->
-        {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":8" %}
-          <li>{{ publicacion.categoria }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+    <div class="fijado">
+      <!-- Categorías recomendadas -->
+      <div class="categorias-recomendadas">
+        <h3>Categorías Recomendadas</h3>
+        <ul>
+          <!-- Itera sobre las primeras 8 categorías -->
+          {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":8" %}
+            <li>{{ publicacion.categoria }}</li>
+          {% endfor %}
+        </ul>
+      </div>
 
-    <!-- A quién seguir -->
-    <div class="a-quien-seguir">
-      <h3>A quién seguir</h3>
-      <ul>
-        <!-- Itera sobre los primeros 3 usuarios -->
-        {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":3" %}
-          <li>
-            <div class="usuario">
-              <!-- Imagen de usuario -->
-              <img src="{{ imagen_autor }}" alt="Foto de perfil" width="40" height="40">
-              <!-- Nombre de usuario -->
-              <span>{{ publicacion.autor.username }}</span>
-              <!-- Botón para seguir -->
-              <a href="#" class="seguir">Seguir</a>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
+      <!-- A quién seguir -->
+      <div class="a-quien-seguir">
+        <h3>A quién seguir</h3>
+        <ul>
+          <!-- Itera sobre los primeros 3 usuarios -->
+          {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":3" %}
+            <li>
+              <div class="usuario">
+                <!-- Imagen de usuario -->
+                <img src="{{ imagen_autor }}" alt="Foto de perfil" width="40" height="40">
+                <!-- Nombre de usuario -->
+                <span>{{ publicacion.autor.username }}</span>
+                <!-- Botón para seguir -->
+                <a href="#" class="seguir">Seguir</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-
   </div>
   
 </div>

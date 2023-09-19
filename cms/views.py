@@ -2,14 +2,14 @@ from django.shortcuts import render
 from publicaciones.forms import BusquedaAvanzadaForm
 from publicaciones.models import Publicacion_solo_text
 from django.db.models import Q
+from administracion.models import Categoria
+from login.models import Usuario
+from django.shortcuts import render
 
 def principal(request):
     # Inicializa las publicaciones con la lista completa de publicaciones moderadas
     publicaciones = Publicacion_solo_text.objects.filter(
         categoria__moderada=False).order_by('-fecha_creacion')
-
-    # Variable para almacenar las publicaciones con imagen
-    publicaciones_con_imagen = []
 
     # Verificar si se ha enviado un formulario de búsqueda
     if 'q' in request.GET:
@@ -18,17 +18,15 @@ def principal(request):
     else:
         busqueda_avanzada_form = BusquedaAvanzadaForm()
 
-    # Realiza el procesamiento adicional de las publicaciones (como agregar imágenes) aquí
-    for publicacion in publicaciones:
-        imagen_autor = None
-        if publicacion.autor.imagen:
-            imagen_autor = publicacion.autor.imagen.url
-        publicaciones_con_imagen.append((publicacion, imagen_autor))
+    # Obtener todas las categorías y usuarios del sistema
+    categorias = Categoria.objects.all()
+    usuarios = Usuario.objects.all()
 
-    # Puedes pasar la lista de publicaciones con imagen y el formulario de búsqueda avanzada al contexto
     contexto = {
-        'publicaciones_con_imagen': publicaciones_con_imagen,
+        'publicaciones': publicaciones,
         'busqueda_avanzada_form': busqueda_avanzada_form,
+        'categorias': categorias,
+        'usuarios': usuarios,
     }
 
     return render(request, 'cms/principal.html', contexto)

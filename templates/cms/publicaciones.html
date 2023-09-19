@@ -1,149 +1,120 @@
-<style>
-  /* Estilo para el contenedor de cada publicación */
-  .publicacion {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinea el contenido en la esquina superior izquierda */
-    margin-bottom: 20px; /* Espacio entre las publicaciones */
-    padding: 20px; /* Espaciado interno para el recuadro de la publicación */
-  /*border: 1px solid #ccc; /* Borde alrededor de la publicación */
-  /*border-radius: 5px; /* Bordes redondeados para el recuadro de la publicación */
-  }
+{% load static %}
+{% load custom_filters %}
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/publicaciones.css' %}" rel="stylesheet" />
+<div class="contenedor">
+  <div class="publicaciones">
+    <!-- Agrega el enlace para cargar Font Awesome si no lo has hecho aún -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-  /* Estilo para el círculo de perfil y nombre del autor */
-  .perfil-y-nombre {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 10px; /* Espacio entre el círculo y el nombre */
-  }
+    {% for publicacion, imagen_autor in publicaciones_con_imagen %}
+      <div class="publicacion">
+        <!-- Círculo de perfil, nombre del autor y fecha en la misma línea -->
+        <div class="perfil-nombre-fecha">
+          <div class="perfil-circle">
+            {% if imagen_autor %}
+              <img src="{{ imagen_autor }}" alt="Foto de perfil" class="rounded-circle" width="33" height="33" style="object-fit: cover; margin-top: -3px;">
+            {% else %}
+              <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+            {% endif %}
+          </div>
+          <!-- Espacio entre la imagen del autor y el nombre -->
+          <span class="espacio-i-a"></span>
+          <!-- Nombre del autor en negrita -->
+          <span class="nombre-autor">{{ publicacion.autor.username }}</span>
 
-  /* Estilo para el círculo de perfil */
-  .perfil-circle {
-    width: 50px; /* Tamaño deseado para el círculo */
-    height: 50px; /* Tamaño deseado para el círculo */
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: #f0f0f0; /* Color de fondo del círculo */
-    margin-right: 10px; /* Espacio entre el círculo y el nombre */
-  }
-
-  /* Estilo para la imagen de perfil dentro del círculo */
-  .perfil-circle img {
-    width: 100%; /* La imagen ocupará todo el ancho del círculo */
-    height: 100%; /* La imagen ocupará todo el alto del círculo */
-    object-fit: cover; /* La imagen se ajustará para llenar el círculo sin deformarla */
-  }
-
-  /* Estilo para el nombre del autor en negrita */
-  .nombre-autor {
-    font-weight: bold; /* Texto en negrita */
-  }
-
-  /* Estilo para el contenido de la publicación */
-  .contenido-publicacion {
-    /* text-align: center; /* Eliminado para alinear el texto a la izquierda */
-    margin-bottom: 10px; /* Espacio entre la publicación y los botones */
-    font-size: 10px; /* Tamaño de fuente más pequeño */
-    line-height: 1.4; /* Espaciado entre líneas */
-    text-align: justify; /* Justificar el texto entre los márgenes */
-  }
-
-  /* Estilo para el botón "Mostrar Información" */
-  .mostrar-informacion {
-    text-decoration: none;
-    color: #007bff;
-    cursor: pointer;
-  }
-
-  /* Estilo para los botones principales */
-  .botones-principales {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Alinea verticalmente los botones */
-    width: 100%;
-  }
-
-  /* Estilo para el espacio entre Mostrar Información y los botones */
-  .espacio {
-    margin-top: 20px; /* Ajusta la cantidad de espacio según tus necesidades */
-  }
-
-</style>
-
-<div class="publicaciones">
-  <!-- Agrega el enlace para cargar Font Awesome si no lo has hecho aún -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-  {% for publicacion, imagen_autor in publicaciones_con_imagen %}
-    <div class="publicacion">
-      <!-- Círculo de perfil y nombre del autor en la esquina superior izquierda -->
-      <div class="perfil-y-nombre">
-        <div class="perfil-circle">
-          {% if imagen_autor %}
-            <img src="{{ imagen_autor }}" alt="Foto de perfil">
-          {% else %}
-            <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
-          {% endif %}
+          <!-- Espacio entre el nombre del autor y la fecha -->
+          <span class="espacio-a-f"></span>
+          <!-- Fecha de publicación (dia, mes, año) -->
+          <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
         </div>
-        <!-- Nombre del autor en negrita -->
-        <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+        <!-- Enlace a la publicación completa (vista previa como enlace) -->
+        <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id %}" class="enlace-previa">
+          <!-- Vista previa de la publicación (imagen y contenido) -->
+          <div class="vista-previa">
+            {% with img_url=publicacion.texto|safe|find_image_url %}
+            <div class="contenido-previa" {% if img_url %}style="width: 500px;"{% else %}style="width: 700px;"{% endif %}>
+            {% endwith %}
+              <!-- Título de la publicación -->
+              <h2 class="titulo-previa">{{ publicacion.titulo }}</h2>
+
+              <!-- Contenido del medio de la vista previa -->
+              <div class="contenido-medio-previa">
+                {% spaceless %}
+                {{ publicacion.texto|striptags|truncatechars:400 }} <!-- Limita el contenido a 200 caracteres y agrega puntos suspensivos -->
+                {% endspaceless %}
+              </div>
+            </div>
+            <div class="imagen-previa">
+              {% load custom_filters %} <!-- Cargar los filtros personalizados -->
+              {% with publicacion.texto|safe as html_text %}
+                {% with img_url=html_text|find_image_url %}
+                  {% if img_url %}
+                    <img src="{{ img_url }}" alt="Imagen">
+                  {% endif %}
+                {% endwith %}
+              {% endwith %}
+            </div>
+          </div>
+    
+        </a>
+
+        <!-- Línea que muestra la categoría y el enlace de reportar -->
+        <div class="categoria-y-enlace">
+          <!-- Muestra la categoría de la publicación -->
+          <span class="categoria-destacada">{{ publicacion.categoria }}</span>
+          <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+          <div class="dropdown">
+            <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                  <li>
+                      <a class="dropdown-item" href="#">Reportar</a>
+                  </li>
+              </ul>
+          </div>
+        </div> 
+
+        <hr class="hr">  
+      </div>
+      
+    {% endfor %}
+
+  </div>
+
+  <!-- Barra lateral -->
+  <div class="barra-lateral">
+    <div class="fijado">
+      <!-- Categorías recomendadas -->
+      <div class="categorias-recomendadas">
+        <h3>Categorías Recomendadas</h3>
+        <ul>
+          <!-- Itera sobre las primeras 8 categorías -->
+          {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":8" %}
+            <li>{{ publicacion.categoria }}</li>
+          {% endfor %}
+        </ul>
       </div>
 
-      <!-- Resumen de la publicación sin recuadro -->
-      <div class="contenido-publicacion">
-        <h4>{{ publicacion.texto }}</h4><br>
-      </div>
-
-      <!-- Botones para interactuar con la publicación con iconos de Font Awesome -->
-      <div class="botones-principales">
-        <a href="{% url 'publicaciones:like' publicacion.id %}" class="btn btn-link like-button">
-          <i class="fas fa-thumbs-up"></i> <!-- Icono de "Me gusta" -->
-        </a>
-        <a href="{% url 'publicaciones:dislike' publicacion.id %}" class="btn btn-link dislike-button">
-          <i class="fas fa-thumbs-down"></i> <!-- Icono de "No me gusta" -->
-        </a>
-        <a href="{% url 'publicaciones:compartir' publicacion.id %}" class="btn btn-link compartir-button">
-          <i class="fas fa-share-square"></i> <!-- Icono de "Compartir" -->
-        </a>
-      </div>
-
-      <div class="espacio"></div>
-
-      <!-- Botón/enlace para mostrar/ocultar información adicional (lado derecho) -->
-      <a href="#" class="mostrar-informacion" data-target="{{ publicacion.id }}">Mostrar Información</a>
-
-      <!-- Información adicional oculta -->
-      <div class="informacion-adicional" id="contenido-{{ publicacion.id }}" style="display: none;">
-        <p>Tipo de Publicación: {{ publicacion.get_tipo_display }}</p>
-        <p>Categoría: {{ publicacion.categoria.nombre }}</p>
-        <p>Palabras Clave: {{ publicacion.palabras_clave }}</p>
-        <p>Fecha de Creación: {{ publicacion.fecha_creacion }}</p>
-        <!-- Agregar otros campos de la publicación según tus necesidades -->
+      <!-- A quién seguir -->
+      <div class="a-quien-seguir">
+        <h3>A quién seguir</h3>
+        <ul>
+          <!-- Itera sobre los primeros 3 usuarios -->
+          {% for publicacion, imagen_autor in publicaciones_con_imagen|slice:":3" %}
+            <li>
+              <div class="usuario">
+                <!-- Imagen de usuario -->
+                <img src="{{ imagen_autor }}" alt="Foto de perfil" width="40" height="40">
+                <!-- Nombre de usuario -->
+                <span>{{ publicacion.autor.username }}</span>
+                <!-- Botón para seguir -->
+                <a href="#" class="seguir">Seguir</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
-    <!-- Línea separadora -->
-    <hr class="linea-separadora">
-  {% endfor %}
+  </div>
+  
 </div>
-
-<!-- Agrega este script para cambiar el texto del enlace -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $(".mostrar-informacion").on("click", function(e) {
-      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
-      var targetId = $(this).data("target");
-      var contenidoAdicional = $("#contenido-" + targetId);
-
-      if (contenidoAdicional.is(":visible")) {
-        contenidoAdicional.hide();
-        $(this).text("Mostrar Información");
-      } else {
-        contenidoAdicional.show();
-        $(this).text("Ocultar Información");
-      }
-    });
-  });
-</script>
-

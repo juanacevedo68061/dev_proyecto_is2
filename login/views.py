@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol, CargarImagenForm 
 from roles.models import Rol
 from .models import Usuario
+from django.urls import reverse
 
 def inicio_sesion(request):
     """
@@ -54,6 +55,7 @@ def registro(request):
         o muestra la página de registro con mensajes de error.
 
     """
+    redirect_url = None  # Variable para almacenar la URL de redirección
     if request.method == 'POST':
         formulario = FormularioRegistro(request.POST)
         if formulario.is_valid():
@@ -62,13 +64,16 @@ def registro(request):
             contraseña = formulario.cleaned_data.get('password1')
             usuario = authenticate(username=nombre_usuario, password=contraseña)
             login(request, usuario)
-            return redirect('login:inicio_sesion')
+            messages.success(request, 'Registro exitoso.')
+            redirect_url=reverse('login:inicio_sesion')
+            
         else:
             messages.error(request, 'Por favor, corrige los errores a continuación.')
     else:
         formulario = FormularioRegistro()
     
-    contexto = {'formulario': formulario}
+    contexto = {'formulario': formulario,'redirect_url': redirect_url}
+
     return render(request, 'login/registro.html', contexto)
 
 @login_required

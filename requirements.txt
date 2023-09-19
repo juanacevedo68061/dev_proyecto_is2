@@ -1,5 +1,4 @@
 Django
-django-ckeditor
 django-js-asset
 Pillow
 sqlparse
@@ -11,3 +10,5 @@ qrcode
 pandas
 openpyxl
 beautifulsoup4
+autopep8
+django-tinymce

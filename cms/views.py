@@ -27,6 +27,7 @@ def principal(request):
         'busqueda_avanzada_form': busqueda_avanzada_form,
         'categorias': categorias,
         'usuarios': usuarios,
+        'principal': True,
     }
 
     return render(request, 'cms/principal.html', contexto)

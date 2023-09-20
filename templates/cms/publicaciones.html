@@ -81,11 +81,12 @@
     {% endfor %}
 
   </div>
+  {%if principal %}
+    {% block content %}
 
-  {% block content %}
+      {% include 'cms/recomendaciones.html' %}
 
-    {% include 'cms/recomendaciones.html' %}
-
-  {% endblock %}
+    {% endblock %}
+  {%endif%}
   
 </div>

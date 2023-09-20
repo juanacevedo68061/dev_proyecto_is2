@@ -27,9 +27,11 @@
                         <img src="{{ usuario.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="40"
                             height="40" style="object-fit: cover; margin-top: -3px;">
                         {% else %}
-                        <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+                        <i class="fas fa-user" alt="Foto de perfil" class="rounded-circle" width="40"
+                        height="40" style="object-fit: cover; margin-top: -3px;"></i>
+
                         {% endif %}
-                        
+
                         <!-- Nombre de usuario -->
                         <span>{{ usuario.username }}</span>
                         <!-- Botón para seguir -->

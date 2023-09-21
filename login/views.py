@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol, CargarImagenForm 
 from roles.models import Rol
-from .models import Usuario
+from publicaciones.models import Publicacion_solo_text
 from django.urls import reverse
 
 def inicio_sesion(request):
@@ -127,13 +127,10 @@ def activar_rol(request):
 def perfil_usuario(request):
     """
     Vista para mostrar el perfil del usuario.
-
     Esta vista muestra el perfil del usuario, incluidos sus roles activos y la posibilidad de activar un rol adicional.
     Si el usuario no tiene roles, se muestra un mensaje correspondiente.
-
     Parámetros:
         request: La solicitud HTTP entrante.
-
     Retorna:
         Renderiza la plantilla de perfil con la información del usuario.
     """
@@ -157,11 +154,14 @@ def perfil_usuario(request):
     # Obtener formulario de activar rol
     formulario_roles = FormularioActivarRol(instance=usuario)
     
+    publicaciones = Publicacion_solo_text.objects.filter(autor=usuario)
+    
     contexto = {
         'formulario_roles': formulario_roles,
         'usuario': usuario,
         'roles': roles,
         'mensaje_roles': mensaje_roles,
+        'publicaciones':publicaciones
     }
     
     return render(request, 'login/perfil_usuario.html', contexto)

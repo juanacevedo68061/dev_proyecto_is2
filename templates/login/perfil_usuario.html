@@ -100,7 +100,14 @@
     <a href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
     <a href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
     <a href="/">Ir a la Página Principal</a>
-  </div>
+  </div>  
+</div>
+<div>
+  {% if publicaciones %}
+   {% include 'cms/publicaciones.html' %}
+  {% else %} 
+  <h5> No has publicado nada aún  </h5>
+  {% endif %}
 </div>
 {% endblock %}
 

@@ -12,9 +12,9 @@ Models
 Views
 -----
 
-.. automodule:: roles.views
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: roles.views
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
 

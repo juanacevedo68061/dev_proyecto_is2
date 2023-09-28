@@ -4,10 +4,10 @@ Canvan App
 Models
 ------
 
-.. automodule:: canvan.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. .. automodule:: canvan.models
+.. ..    :members:
+.. ..    :undoc-members:
+.. ..    :show-inheritance:
 
 Views
 -----

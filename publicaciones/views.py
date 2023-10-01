@@ -132,7 +132,7 @@ def rechazar_editor(request, publicacion_id):
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
 @login_required
-def visualizar_publicacion(request, publicacion_id):
+def mostar_para_publicador(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
@@ -150,7 +150,7 @@ def visualizar_publicacion(request, publicacion_id):
 
     return render(
         request,
-        'publicaciones/visualizar_publicacion.html',
+        'publicaciones/mostar_para_publicador.html',
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 

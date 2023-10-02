@@ -16,3 +16,24 @@ venv
 comandos.txt
 tests/
 test.py
+
+# Ignorar archivos y carpetas generados automáticamente
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar documentacion generada automaticamente por Sphinx
+
+docs/_build/
+
+# Ignorar migraciones de Django
+*/migrations/
+db.sqlite3
+
+# Ignorar archivos específicos
+
+startbootstrap-sb-admin-gh-pages
+startbootstrap-sb-admin-2-gh-pages
+
+*/codigos_qr/
+*/profile_images/

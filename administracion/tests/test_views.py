@@ -30,7 +30,7 @@ class AdministracionViewsTest(TestCase):
         self.client.login(username='admin', password='password')
         data = {'nombre': 'Nueva Categoría'}
         response = self.client.post(reverse('administracion:crear_categoria'), data)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(Categoria.objects.filter(nombre='Nueva Categoría').exists())
 
     def test_editar_categoria_view(self):

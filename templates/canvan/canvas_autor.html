@@ -89,7 +89,7 @@
       <ul class="tarjetas" id="haciendo-list">
         {% for publicacion in en_progreso %}
           <li class="tarjeta" id="{{ publicacion.id }}">
-            <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id %}">{{ publicacion.titulo }}</a>
+            <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id %}">{{ publicacion.titulo }} ({{ publicacion.estado }})</a>
           </li>
         {% endfor %}
       </ul>

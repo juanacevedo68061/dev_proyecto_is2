@@ -9,3 +9,4 @@ tzdata
 psycopg2-binary
 gunicorn
 qrcode
+django-tinymce

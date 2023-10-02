@@ -135,9 +135,9 @@ def perfil_usuario(request):
     Esta vista muestra el perfil del usuario, incluidos sus roles activos y la posibilidad de activar un rol adicional.
     Si el usuario no tiene roles, se muestra un mensaje correspondiente.
     Parámetros:
-        request: La solicitud HTTP entrante.
+    request: La solicitud HTTP entrante.
     Retorna:
-        Renderiza la plantilla de perfil con la información del usuario.
+    Renderiza la plantilla de perfil con la información del usuario.
     """
     usuario = request.user
 

@@ -14,19 +14,26 @@
 
   /* Estilos para la imagen de perfil */
   .profile-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: #f0f0f0;
-  }
+    width: 100px; /* Ajusta según tu diseño */
+    height: 100px;
+    border-radius: 50%; /* Hacerlo circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0; /* Fondo claro */
+    overflow: hidden; /* Ocultar cualquier contenido que exceda el círculo */
+}
 
-  .profile-image img {
-    width: 100%;
+.profile-image img {
+    width: 150%;
     height: 100%;
-    object-fit: cover;
-  }
+    object-fit: cover; /* Asegura que la imagen cubra todo el espacio */
+}
 
+.profile-image i {
+    color: #7a7a7a !important; /* Color del icono */
+
+  }
   /* Estilos para la información del usuario */
   .user-info {
     margin-top: 20px;
@@ -64,8 +71,59 @@
   }
 
   .profile-buttons a:hover {
-    background-color: #0056b3;
+    background-color: #0056b3;  
   }
+  .lista
+  {
+    margin-top: 60px;
+  }
+
+  .sin_publicaciones
+  {
+    color: grey;
+    
+  }
+
+
+  .custom-nav {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        border-radius: 25px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .custom-nav-item {
+        text-decoration: none;
+        color: #7a7a7a;
+        font-size: 16px;
+        padding: 5px 15px;
+        transition: color 0.2s;
+        position: relative; /* Necesario para el pseudo-elemento */
+    }
+
+    .custom-nav-item::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0; /* Inicialmente no visible */
+        height: 3px;
+        background-color: #3498db;
+        transition: width 0.3s; /* Transición suave */
+    }
+
+    .custom-nav-item:hover {
+        color: #3498db;
+    }
+
+    .custom-nav-item:hover::after {
+        width: 100%; /* Hacerlo totalmente visible al pasar el cursor */
+    }
+
+
 </style>
 
 <div class="profile-container">
@@ -73,7 +131,7 @@
     {% if usuario.imagen %}
       <img src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
     {% else %}
-      <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+      <i class="fa-solid fa-user-tie"></i> <!-- Icono de persona si no hay foto de perfil -->
     {% endif %}
   </div>
 
@@ -96,12 +154,19 @@
     <p>{{ mensaje_roles }}</p>
   {% endif %}
 
-  <div class="profile-buttons">
-    <a href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
-    <a href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
-    <a href="{% url 'publicaciones:crear_publicacion' %}">Crear Publicación</a>
-    <a href="/">Ir a la Página Principal</a>
-  </div>
+<div>
+    <nav class="custom-nav">
+        <a class="custom-nav-item" href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
+        <a class="custom-nav-item" href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
+    </nav>
+</div>
+</div>
+<div class="lista">
+  {% if publicaciones %}
+   {% include 'cms/publicaciones.html' %}
+  {% else %} 
+  <h5 class="sin_publicaciones"> No has publicado nada aún  </h5>
+  {% endif %}
 </div>
 {% endblock %}
 

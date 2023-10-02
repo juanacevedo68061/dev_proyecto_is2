@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}CMS{% endblock %}
 {% block content %}
-  <!-- Espacio para el buscador (aún no implementado) -->
 
-  <!-- Contenedor para las partes modularizadas -->
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-3">
-        <!-- Barra lateral -->
-        {% include 'cms/sidebar.html' %}
-      </div>
-      <div class="col-md-9">
-        <!-- Parte de las publicaciones -->
-        {% include 'cms/publicaciones.html' %}
-      </div>
-    </div>
-  </div>
+    {% include 'cms/publicaciones.html' %}
+
 {% endblock %}
 

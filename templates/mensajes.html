@@ -1,0 +1,35 @@
+<!-- JavaScript y CSS para SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- JavaScript para mostrar el mensaje de éxito con SweetAlert2 -->
+    {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    //title: 'Mensaje de éxito',
+                    //backdrop: 'static',
+                    allowOutsideClick: false, // Evita que se cierre haciendo clic fuera
+                    html: `{% for message in messages %}<p>{{ message }}</p>{% endfor %}`,
+                    icon: `{% for message in messages %}{{ message.tags }}{% endfor %}`,
+                    showConfirmButton: true, // Mostrar el botón de confirmación
+                    customClass: {
+                        confirmButton: 'custom-confirm-button btn btn-primary', // Clase CSS personalizada para el botón de confirmación
+                    },
+                    confirmButtonText: 'Aceptar',
+                    buttonsStyling: false,
+                    
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ redirect_url }}"
+                    }
+                });
+            });
+        </script>
+        <style>
+            .custom-confirm-button {
+                background-color: #007BFF; /* Color de fondo personalizado */
+                border-color: #007BFF; /* Color del borde personalizado (opcional) */
+                color: white !important; /* Color del texto personalizado */
+            }
+        </style>
+{% endif %}

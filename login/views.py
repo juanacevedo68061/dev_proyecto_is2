@@ -5,7 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol, CargarImagenForm 
 from roles.models import Rol
-from .models import Usuario
+from publicaciones.models import Publicacion_solo_text
+from django.urls import reverse
 
 def inicio_sesion(request):
     """
@@ -21,6 +22,7 @@ def inicio_sesion(request):
         o muestra la página de inicio de sesión con mensajes de error.
 
     """
+    redirect_url = None  # Variable para almacenar la URL de redirec
     if request.method == 'POST':
         formulario = AuthenticationForm(request, data=request.POST)
         if formulario.is_valid():
@@ -32,12 +34,15 @@ def inicio_sesion(request):
                 return redirect('/')
             else:
                 messages.error(request, 'Credenciales inválidas. Por favor, inténtalo de nuevo.')
+                redirect_url = request.path
         else:
             messages.error(request, 'Por favor, corrige los errores a continuación.')
+            redirect_url = request.path
     else:
         formulario = AuthenticationForm()
     
-    contexto = {'formulario': formulario}
+    contexto = {'formulario': formulario,
+                'redirect_url': redirect_url}
     return render(request, 'login/inicio_sesion.html', contexto)
 
 def registro(request):
@@ -54,6 +59,7 @@ def registro(request):
         o muestra la página de registro con mensajes de error.
 
     """
+    redirect_url = None  # Variable para almacenar la URL de redirección
     if request.method == 'POST':
         formulario = FormularioRegistro(request.POST)
         if formulario.is_valid():
@@ -62,13 +68,17 @@ def registro(request):
             contraseña = formulario.cleaned_data.get('password1')
             usuario = authenticate(username=nombre_usuario, password=contraseña)
             login(request, usuario)
-            return redirect('login:inicio_sesion')
+            messages.success(request, 'Registro exitoso.')
+            redirect_url=reverse('login:inicio_sesion')
+            
         else:
             messages.error(request, 'Por favor, corrige los errores a continuación.')
+            redirect_url = request.path
     else:
         formulario = FormularioRegistro()
     
-    contexto = {'formulario': formulario}
+    contexto = {'formulario': formulario,'redirect_url': redirect_url}
+
     return render(request, 'login/registro.html', contexto)
 
 @login_required
@@ -122,15 +132,12 @@ def activar_rol(request):
 def perfil_usuario(request):
     """
     Vista para mostrar el perfil del usuario.
-
     Esta vista muestra el perfil del usuario, incluidos sus roles activos y la posibilidad de activar un rol adicional.
     Si el usuario no tiene roles, se muestra un mensaje correspondiente.
-
     Parámetros:
-        request: La solicitud HTTP entrante.
-
+    request: La solicitud HTTP entrante.
     Retorna:
-        Renderiza la plantilla de perfil con la información del usuario.
+    Renderiza la plantilla de perfil con la información del usuario.
     """
     usuario = request.user
 
@@ -152,11 +159,14 @@ def perfil_usuario(request):
     # Obtener formulario de activar rol
     formulario_roles = FormularioActivarRol(instance=usuario)
     
+    publicaciones = Publicacion_solo_text.objects.filter(autor=usuario)
+    
     contexto = {
         'formulario_roles': formulario_roles,
         'usuario': usuario,
         'roles': roles,
         'mensaje_roles': mensaje_roles,
+        'publicaciones':publicaciones
     }
     
     return render(request, 'login/perfil_usuario.html', contexto)

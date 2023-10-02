@@ -1,95 +1,115 @@
-{% extends 'base.html' %}
-{% block title %}Iniciar Sesión{% endblock %}
+{% load static %}
 
-{% block content %}
-<style>
-  .center-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+<!DOCTYPE html>
+<html lang="es">
 
-  .form-group {
-    margin-bottom: 15px; /* Aumenta el espacio entre campos */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+<head>
+    <!-- Enlaces para los íconos de favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
-  input[type="text"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-  }
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Inicio de Sesión</title>
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    <!-- Custom styles for full-height container -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
 
-  input[type="text"]::placeholder,
-  input[type="password"]::placeholder {
-    text-align: center;
-    color: #ccc;
-  }
+        .row.justify-content-center {
+            height: 100vh;
+            /* Establece la altura al 100% del viewport (pantalla) */
+        }
 
-  button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-top: 15px; /* Aumenta el espacio entre campos y botón */
-  }
+        .col-xl-12 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            /* Establece la altura al 100% del viewport (pantalla) */
+        }
 
-  button:hover {
-    background-color: #0056b3;
-  }
+        /* Cambios para el fondo y color del texto en la parte del login */
+        .col-lg-3 {
+            background-color: #000;
+            color: #000;
+            /* Color del texto en negro */
+        }
 
-  p {
-    text-align: center;
-    margin-top: 15px; /* Aumenta el espacio entre el párrafo y el enlace de registro */
-  }
+        /* Resto de tus estilos CSS existentes */
+    </style>
+</head>
 
-  h2 {
-    margin-bottom: 15px; /* Aumenta el espacio debajo del título */
-  }
-</style>
+<body>
+    {% include 'mensajes.html' %}
+    <div class="row justify-content-center">
+        <!--Estos 2 divs componen la logica para que se reproduzca video en vez de la imagen-->
+        <!--Si quieres volver a la imagen, elimina los 2 div-->
+        <!--Y agrega-->
+        <!--
+        <div class="col-lg-9 d-none d-lg-block bg-login-image"></div>
+        <div class="col-lg-3">
+        -->
+        <div class="col-lg-9 d-none d-lg-block bg-login-video">
+            <video autoplay loop muted playsinline>
+                <source src="{% static 'videos/background-video.mp4' %}" type="video/mp4">
+                <!-- Agrega formatos de video adicionales aquí, como WebM y Ogg, si es necesario -->
+            </video>
+        </div>
+        <div class="col-lg-3 offset-lg-9">
+            <div class="p-5">
+                <div class="text-center">
+                    <h1 class="h5 text-gray-100 mb-4">CMS</h1>
+                </div>
 
-<div class="center-form">
-  <h2>Iniciar Sesión</h2>
+                <form method="post" class="user">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="username" placeholder="Usuario">
+                        {% if formulario.username.errors %}
+                        <ul class="errorlist">
+                            {% for error in formulario.username.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
 
-  <form method="post">
-    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                        {% if formulario.password.errors %}
+                        <ul class="errorlist">
+                            {% for error in formulario.password.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
 
-    <div class="form-group">
-      <input type="text" name="username" placeholder="Usuario">
-      {% if formulario.username.errors %}
-      <ul class="errorlist">
-        {% for error in formulario.username.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
+                    <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                </form>
+
+                <hr>
+                <div class="text-center">
+                    <a href="{% url 'login:registro' %}">Regístrate aquí</a>
+                </div>
+            </div>
+        </div>
     </div>
+</body>
 
-    <div class="form-group">
-      <input type="password" name="password" placeholder="Contraseña">
-      {% if formulario.password.errors %}
-      <ul class="errorlist">
-        {% for error in formulario.password.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
-
-    <button type="submit">Iniciar Sesión</button>
-  </form>
-
-  <p>No tienes una cuenta? <a href="{% url 'login:registro' %}">Regístrate aquí</a></p>
-</div>
-{% endblock %}
-
-
-
+</html>

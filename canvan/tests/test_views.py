@@ -36,3 +36,9 @@ class CanvanViewsTests(TestCase):
         response = self.client.get(reverse('canvan:canvas-editor'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'canvan/canvas_editor.html')
+
+    def test_canvas_publicador(self):
+        self.client.login(username='usuario_prueba', password='contraseña123')
+        response = self.client.get(reverse('canvan:canvas-publicador'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'canvan/canvas_publicador.html')

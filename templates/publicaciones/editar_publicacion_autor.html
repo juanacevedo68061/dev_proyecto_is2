@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'mensajes.html' %}
+<head>
+  {{ form.media }}
+  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
 <div class="container">
   <h1>Editar Publicación (Canvas Autor)</h1>
   <a href="{% url 'publicaciones:eliminar-publicacion-autor' publicacion.id %}" class="btn btn-danger">Eliminar Publicación</a>

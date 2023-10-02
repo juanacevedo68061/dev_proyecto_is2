@@ -22,6 +22,7 @@ def inicio_sesion(request):
         o muestra la página de inicio de sesión con mensajes de error.
 
     """
+    redirect_url = None  # Variable para almacenar la URL de redirec
     if request.method == 'POST':
         formulario = AuthenticationForm(request, data=request.POST)
         if formulario.is_valid():
@@ -33,12 +34,15 @@ def inicio_sesion(request):
                 return redirect('/')
             else:
                 messages.error(request, 'Credenciales inválidas. Por favor, inténtalo de nuevo.')
+                redirect_url = request.path
         else:
             messages.error(request, 'Por favor, corrige los errores a continuación.')
+            redirect_url = request.path
     else:
         formulario = AuthenticationForm()
     
-    contexto = {'formulario': formulario}
+    contexto = {'formulario': formulario,
+                'redirect_url': redirect_url}
     return render(request, 'login/inicio_sesion.html', contexto)
 
 def registro(request):
@@ -69,6 +73,7 @@ def registro(request):
             
         else:
             messages.error(request, 'Por favor, corrige los errores a continuación.')
+            redirect_url = request.path
     else:
         formulario = FormularioRegistro()
     

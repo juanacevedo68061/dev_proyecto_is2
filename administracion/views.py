@@ -8,6 +8,7 @@ from django.contrib import messages
 from roles.decorators import rol_requerido
 from roles.models import Rol
 from login.models import Usuario
+from django.urls import reverse
 
 @rol_requerido('administrador')
 @login_required
@@ -52,18 +53,20 @@ def crear_categoria(request):
         HttpResponse: Redirecciona a la vista de lista de categorías si la categoría se crea con éxito,
         o muestra el formulario de creación de categoría con errores.
     """
+    redirect_url = None
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha creado correctamente.')
-            return redirect('administracion:listar_categorias')
+            redirect_url = reverse('administracion:listar_categorias')
         else:
             messages.error(request, 'Hubo un problema al crear la categoría. Por favor, verifica los datos ingresados.')
+            redirect_url = request.path
     else:
         form = CategoriaForm()
 
-    return render(request, 'administracion/crear_categoria.html', {'form': form})
+    return render(request, 'administracion/crear_categoria.html', {'form': form,'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @login_required

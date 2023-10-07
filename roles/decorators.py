@@ -1,6 +1,7 @@
 from functools import wraps
 from django.http import HttpResponseForbidden
 from .models import Rol
+from django.shortcuts import render
 
 def rol_requerido(rol_nombre):
     """
@@ -31,9 +32,9 @@ def rol_requerido(rol_nombre):
                 if request.user.roles.filter(nombre=rol_nombre).exists():
                     return view_func(request, *args, **kwargs)
                 else:
-                    return HttpResponseForbidden("Acceso denegado")
+                    return render(request, '403.html', status=403)
             except Rol.DoesNotExist:
-                return HttpResponseForbidden("Acceso denegado")
+                return render(request, '403.html', status=403)
 
         return _wrapped_view
 

@@ -15,7 +15,7 @@ SECRET_KEY = "django-insecure-l+h5q-)9z0-gsak2r@@er_3ck3-=v8+-j@wtuu$(91&g*t-02b
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+HTTP403_PAGE = '403.html'
 
 # Application definition
 

@@ -1,9 +1,8 @@
-from django.db.models.signals import post_save, pre_migrate, pre_save, post_migrate
-from django.core.signals import request_started
+from django.db.models.signals import post_save, post_migrate
 from django.dispatch import receiver
 from roles.models import Rol
 from .models import Usuario
-from cms.names import actualizar_nombres_vistas  # Importa la función
+from cms.names import actualizar_nombres_vistas
 
 @receiver(post_migrate)
 def ejecutar_actualizacion(sender, **kwargs):

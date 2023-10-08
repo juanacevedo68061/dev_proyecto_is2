@@ -2,7 +2,7 @@
 
 :: Crear un entorno virtual
 python -m venv virtual
-
+python -m pip install --upgrade pip
 :: Activar el entorno virtual
 call virtual\Scripts\activate
 
@@ -10,7 +10,7 @@ call virtual\Scripts\activate
 pip install -r requirements.txt
 
 :: Realizar migraciones en la base de datos
-python manage.py makemigrations cms login canvan roles publicaciones administracion
+python manage.py makemigrations canvan publicaciones administracion roles cms login
 python manage.py migrate
 
 :: Mensaje de finalización

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from cms.models import Vistas
-
+from django.db import models, connection
 class Rol(models.Model):
     """
     Modelo que representa los roles en el sistema.
@@ -16,8 +16,10 @@ class Rol(models.Model):
         save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
 
     """
-    
-    nombres_de_vistas = Vistas.obtener('administracion')
+    table_exists = 'cms_vistas' in connection.introspection.table_names()
+    nombres_de_vistas=''
+    if table_exists:
+        nombres_de_vistas = Vistas.obtener('administracion')
 
     ROLES = (
         ('autor', 'Autor'),

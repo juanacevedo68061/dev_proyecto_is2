@@ -10,7 +10,7 @@ call virtual\Scripts\activate
 pip install -r requirements.txt
 
 :: Realizar migraciones en la base de datos
-python manage.py makemigrations login canvan roles publicaciones administracion
+python manage.py makemigrations cms login canvan roles publicaciones administracion
 python manage.py migrate
 
 :: Mensaje de finalización

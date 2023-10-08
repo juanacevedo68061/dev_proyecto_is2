@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-
-from django.db import models
+from cms.models import Vistas
 
 class Rol(models.Model):
     """
@@ -17,6 +16,9 @@ class Rol(models.Model):
         save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
 
     """
+    
+    nombres_de_vistas = Vistas.obtener('administracion')
+
     ROLES = (
         ('autor', 'Autor'),
         ('editor', 'Editor'),
@@ -40,12 +42,9 @@ class Rol(models.Model):
             'permiso6',
             # Agrega aquí los permisos correspondientes al rol "publicador"
         ],
-        'administrador': [
-            'permiso7',
-            'permiso8',
-            # Agrega aquí los permisos correspondientes al rol "administrador"
-        ],
+        'administrador': nombres_de_vistas,
     }
+    #print(PERMISOS['administrador'])
 
     nombre = models.CharField(max_length=20, choices=ROLES)
     permisos = models.ManyToManyField('auth.Permission', blank=True)

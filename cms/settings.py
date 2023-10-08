@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "canvan",
     "PIL",
     "tinymce",    
+    "cms",
 ]
 
 MIDDLEWARE = [

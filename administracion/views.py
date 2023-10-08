@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from roles.decorators import rol_requerido
+from roles.decorators import rol_requerido, permiso_requerido
 from roles.models import Rol
 from login.models import Usuario
 from django.urls import reverse
@@ -26,6 +26,7 @@ def panel(request):
     return render(request, 'administracion/panel.html')
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def listar_categorias(request):
     """
@@ -41,6 +42,7 @@ def listar_categorias(request):
     return render(request, 'administracion/listar_categorias.html', {'categorias': categorias})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def crear_categoria(request):
     """
@@ -69,6 +71,7 @@ def crear_categoria(request):
     return render(request, 'administracion/crear_categoria.html', {'form': form,'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def editar_categoria(request, categoria_id):
     """
@@ -96,6 +99,7 @@ def editar_categoria(request, categoria_id):
     return render(request, 'administracion/editar_categoria.html', {'form': form, 'categoria': categoria})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def eliminar_categoria(request, categoria_id):
     """
@@ -117,6 +121,7 @@ def eliminar_categoria(request, categoria_id):
     return render(request, 'administracion/eliminar_categoria.html', {'categoria': categoria})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def gestion_usuarios(request):
     """
@@ -132,6 +137,7 @@ def gestion_usuarios(request):
     return render(request, 'administracion/gestion_usuarios.html', {'usuarios': usuarios})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def eliminar_usuario(request, usuario_id):
     """
@@ -157,8 +163,8 @@ def eliminar_usuario(request, usuario_id):
 
     return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario})
 
-
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def asignar_roles_usuario(request, usuario_id):
     """
@@ -193,9 +199,8 @@ def asignar_roles_usuario(request, usuario_id):
 
     return render(request, 'administracion/asignar_roles_usuario.html', {'usuario': usuario, 'roles_disponibles': roles_disponibles})
 
-
-
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def eliminar_roles_usuario(request, usuario_id):
     """
@@ -226,6 +231,7 @@ def eliminar_roles_usuario(request, usuario_id):
     return render(request, 'administracion/eliminar_roles_usuario.html', {'usuario': usuario, 'roles_asignados': roles_asignados})
 
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def agregar_permisos_roles_usuario(request, usuario_id):
     """
@@ -269,8 +275,8 @@ def agregar_permisos_roles_usuario(request, usuario_id):
 
     return render(request, 'administracion/agregar_permisos_roles_usuario.html', {'usuario': usuario, 'form': form})
 
-
 @rol_requerido('administrador')
+@permiso_requerido
 @login_required
 def eliminar_permisos_roles_usuario(request, usuario_id):
     """

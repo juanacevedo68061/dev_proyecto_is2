@@ -6,6 +6,8 @@ python -m venv virtual
 :: Activar el entorno virtual
 call virtual\Scripts\activate
 python -m pip install --upgrade pip
+pip cache purge
+
 
 :: Instalar las dependencias del proyecto desde el archivo requirements.txt
 pip install -r requirements.txt

@@ -13,11 +13,7 @@ pip cache purge
 pip install -r requirements.txt
 
 :: Realizar migraciones en la base de datos
-python manage.py makemigrations administracion 
-python manage.py makemigrations roles
-python manage.py makemigrations cms 
-python manage.py makemigrations login
-python manage.py makemigrations publicaciones
+python manage.py makemigrations canvan administracion roles cms login publicaciones
 python manage.py migrate
 
 :: Mensaje de finalización

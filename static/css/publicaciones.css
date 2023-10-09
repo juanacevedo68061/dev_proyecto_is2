@@ -334,3 +334,14 @@
 .fijado {
     position: fixed;
 }
+
+.centrar-verticalmente {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Esto asegura que el contenedor ocupe toda la altura de la pantalla */
+}
+  /* Estilo para el texto gris */
+.texto-gris {
+    color: gray;
+}

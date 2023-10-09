@@ -207,7 +207,7 @@
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary" name="publicar">Publicar</button>
-                <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id %}" class="btn btn-warning">Rechazar</a>
+                <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id_publicacion %}" class="btn btn-warning">Rechazar</a>
                 <a href="{% url 'canvan:canvas-publicador' %}" class="btn btn-secondary">Cancelar</a>
             </form>
         {% endif %}

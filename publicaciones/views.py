@@ -10,6 +10,7 @@ from .forms import PublicacionForm
 from .models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
+import uuid
 
 @login_required
 def crear_publicacion(request):
@@ -35,6 +36,12 @@ def crear_publicacion(request):
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
                 publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                
+                # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
+                publicacion.id_publicacion = uuid.uuid4()
+                # Genera la URL absoluta para la publicación
+                publicacion.url_publicacion = publicacion.get_absolute_url()
+
                 publicacion.save()
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
@@ -44,7 +51,7 @@ def crear_publicacion(request):
 
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -76,7 +83,7 @@ def editar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def eliminar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -90,7 +97,7 @@ def eliminar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -120,7 +127,7 @@ def editar_publicacion_editor(request, publicacion_id):
 
 @login_required
 def rechazar_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -133,7 +140,7 @@ def rechazar_editor(request, publicacion_id):
 
 @login_required
 def mostar_para_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -157,13 +164,13 @@ def mostar_para_publicador(request, publicacion_id):
 
 @login_required
 def mostrar_publicacion(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
 
     return render(request, 'publicaciones/mostrar_publicacion.html', {'publicacion': publicacion})
 
 @login_required
 def rechazar_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
 
     if request.method == 'POST':

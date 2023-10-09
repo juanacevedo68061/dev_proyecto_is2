@@ -7,78 +7,83 @@
   <div class="publicaciones">
     <!-- Agrega el enlace para cargar Font Awesome si no lo has hecho aún -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    {% if publicaciones %}
+      {% for publicacion in publicaciones %}
+        <div class="publicacion">
+          <!-- Círculo de perfil, nombre del autor y fecha en la misma línea -->
+          <div class="perfil-nombre-fecha">
+            <div class="perfil-circle">
+              {% if publicacion.autor.imagen %}
+                <img src="{{ publicacion.autor.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="33" height="33" style="object-fit: cover; margin-top: -3px;">
+              {% else %}
+                <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
+              {% endif %}
+            </div>
+            <!-- Espacio entre la imagen del autor y el nombre -->
+            <span class="espacio-i-a"></span>
+            <!-- Nombre del autor en negrita -->
+            <span class="nombre-autor">{{ publicacion.autor.username }}</span>
 
-    {% for publicacion in publicaciones %}
-      <div class="publicacion">
-        <!-- Círculo de perfil, nombre del autor y fecha en la misma línea -->
-        <div class="perfil-nombre-fecha">
-          <div class="perfil-circle">
-            {% if publicacion.autor.imagen %}
-              <img src="{{ publicacion.autor.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="33" height="33" style="object-fit: cover; margin-top: -3px;">
-            {% else %}
-              <i class="fas fa-user"></i> <!-- Icono de persona si no hay foto de perfil -->
-            {% endif %}
+            <!-- Espacio entre el nombre del autor y la fecha -->
+            <span class="espacio-a-f"></span>
+            <!-- Fecha de publicación (dia, mes, año) -->
+            <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
           </div>
-          <!-- Espacio entre la imagen del autor y el nombre -->
-          <span class="espacio-i-a"></span>
-          <!-- Nombre del autor en negrita -->
-          <span class="nombre-autor">{{ publicacion.autor.username }}</span>
+          <!-- Enlace a la publicación completa (vista previa como enlace) -->
+          <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id_publicacion %}" class="enlace-previa">
+            <!-- Vista previa de la publicación (imagen y contenido) -->
+            <div class="vista-previa">
+              {% with img_url=publicacion.texto|safe|find_image_url %}
+              <div class="contenido-previa" {% if img_url %}style="width: 500px;"{% else %}style="width: 700px;"{% endif %}>
+              {% endwith %}
+                <!-- Título de la publicación -->
+                <h2 class="titulo-previa">{{ publicacion.titulo }}</h2>
 
-          <!-- Espacio entre el nombre del autor y la fecha -->
-          <span class="espacio-a-f"></span>
-          <!-- Fecha de publicación (dia, mes, año) -->
-          <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
-        </div>
-        <!-- Enlace a la publicación completa (vista previa como enlace) -->
-        <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id %}" class="enlace-previa">
-          <!-- Vista previa de la publicación (imagen y contenido) -->
-          <div class="vista-previa">
-            {% with img_url=publicacion.texto|safe|find_image_url %}
-            <div class="contenido-previa" {% if img_url %}style="width: 500px;"{% else %}style="width: 700px;"{% endif %}>
-            {% endwith %}
-              <!-- Título de la publicación -->
-              <h2 class="titulo-previa">{{ publicacion.titulo }}</h2>
-
-              <!-- Contenido del medio de la vista previa -->
-              <div class="contenido-medio-previa">
-                {% spaceless %}
-                {{ publicacion.texto|striptags|truncatechars:400 }} <!-- Limita el contenido a 200 caracteres y agrega puntos suspensivos -->
-                {% endspaceless %}
+                <!-- Contenido del medio de la vista previa -->
+                <div class="contenido-medio-previa">
+                  {% spaceless %}
+                  {{ publicacion.texto|striptags|truncatechars:400 }} <!-- Limita el contenido a 200 caracteres y agrega puntos suspensivos -->
+                  {% endspaceless %}
+                </div>
+              </div>
+              <div class="imagen-previa">
+                {% load custom_filters %} <!-- Cargar los filtros personalizados -->
+                {% with publicacion.texto|safe as html_text %}
+                  {% with img_url=html_text|find_image_url %}
+                    {% if img_url %}
+                      <img src="{{ img_url }}" alt="Imagen">
+                    {% endif %}
+                  {% endwith %}
+                {% endwith %}
               </div>
             </div>
-            <div class="imagen-previa">
-              {% load custom_filters %} <!-- Cargar los filtros personalizados -->
-              {% with publicacion.texto|safe as html_text %}
-                {% with img_url=html_text|find_image_url %}
-                  {% if img_url %}
-                    <img src="{{ img_url }}" alt="Imagen">
-                  {% endif %}
-                {% endwith %}
-              {% endwith %}
-            </div>
-          </div>
-    
-        </a>
-
-        <!-- Línea que muestra la categoría y el enlace de reportar -->
-        <div class="categoria-y-enlace">
-          <!-- Muestra la categoría de la publicación -->
-          <span class="categoria-destacada">{{ publicacion.categoria }}</span>
-          <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
-          <div class="dropdown">
-            <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                  <li>
-                      <a class="dropdown-item" href="#">Reportar</a>
-                  </li>
-              </ul>
-          </div>
-        </div> 
-
-        <hr class="hr">  
-      </div>
       
-    {% endfor %}
+          </a>
+
+          <!-- Línea que muestra la categoría y el enlace de reportar -->
+          <div class="categoria-y-enlace">
+            <!-- Muestra la categoría de la publicación -->
+            <span class="categoria-destacada">{{ publicacion.categoria }}</span>
+            <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+            <div class="dropdown">
+              <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                    <li>
+                        <a class="dropdown-item" href="#">Reportar</a>
+                    </li>
+                </ul>
+            </div>
+          </div> 
+
+          <hr class="hr">  
+        </div>
+        
+      {% endfor %}
+    {% else %}
+      <div class="centrar-verticalmente">
+        <p class="texto-gris">No se han creado publicaciones aún</p>
+      </div>
+    {% endif %}
 
   </div>
   {% if principal and publicaciones %}

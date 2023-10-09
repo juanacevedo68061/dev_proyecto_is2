@@ -11,6 +11,7 @@ from .models import Categoria
 from django.contrib import messages
 from django.urls import reverse
 import uuid
+from django.http import HttpResponse
 
 @login_required
 def crear_publicacion(request):
@@ -196,14 +197,29 @@ def dislike_publicacion(request, pk):
     return JsonResponse({'dislikes': publicacion.dislikes.count()})
 
 @login_required
-def compartir_publicacion(request, pk):
-    # Generar código QR
-    #qr_img = qrcode.make(publicacion.id_publicacion)
-    #qr_io = BytesIO()
-    #qr_img.save(qr_io, 'JPEG')
-    #publicacion.codigo_qr.save('codigo_qr.jpg', ContentFile(qr_io.getvalue()))
-    
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.share.all():
-        publicacion.share.add(request.user)
-    return JsonResponse({'compartir': publicacion.share.count()})
+def generar_qr(request, publicacion_id):
+    # Obtén la publicación con el ID proporcionado
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+
+    # Crea el código QR con la URL de la publicación
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(publicacion.get_absolute_url())  # Utiliza la URL absoluta de la publicación
+    qr.make(fit=True)
+
+    # Crea una imagen PIL a partir del código QR
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Guarda la imagen en un objeto BytesIO
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    img_data = buffer.getvalue()
+
+    # Devuelve la imagen del código QR como una respuesta HTTP
+    response = HttpResponse(content_type="image/png")
+    response.write(img_data)
+    return response

@@ -2,6 +2,9 @@
 {% load static %}
 {% block content %}
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
+<script src="{% static 'js/mostrar_qr.js' %}"></script>
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,10 +181,23 @@
                 
                     <!-- Segundo grupo de botones -->
                     <div class="btn-group">
+
                         <!-- Botón de Compartir con ícono personalizado -->
-                        <a href="#" class="btn-icon">
+                        <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="btn-icon compartir-btn">
                             <i class="fas fa-share icon-share"></i>
-                        </a>    
+                        </a>
+
+                        <!-- Mostrar la cantidad de veces compartidas al lado del botón -->
+                        <span class="compartido-veces">{{ publicacion.share.count }}</span>
+
+                        <!-- Modal para mostrar el código QR -->
+                        <!-- Modal para mostrar el código QR -->
+                        <div id="qrModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close-modal">&times;</span>
+                                <img id="qrImage" src="" alt="Código QR">
+                            </div>
+                        </div>
                 
                         <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
                         <div class="dropdown">

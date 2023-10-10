@@ -150,3 +150,7 @@
     top: -4px; /* Ajustar la posición vertical según sea necesario */
 }
 
+/* Estilo para el icono "Me gusta" cuando se ha dado "Me gusta" */
+.like-button.liked .icon-like {
+    color: #007bff; /* Cambia el color a azul o el color deseado */
+}

@@ -167,8 +167,14 @@ def mostar_para_publicador(request, publicacion_id):
 @login_required
 def mostrar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+        # Verificar si el usuario autenticado ha dado "Me gusta" a esta publicación
+    ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
 
-    return render(request, 'publicaciones/mostrar_publicacion.html', {'publicacion': publicacion})
+    context = {
+        'publicacion': publicacion,
+        'ha_dado_like': ha_dado_like,  # Pasa el resultado de la verificación al template
+    }
+    return render(request, 'publicaciones/mostrar_publicacion.html', context)
 
 @login_required
 def rechazar_publicador(request, publicacion_id):
@@ -232,13 +238,20 @@ def like(request, publicacion_id):
         # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
         publicacion.like_usuario.remove(usuario)
         publicacion.likes -= 1
+        ha_dado_like = False
     else:
         # Si el usuario no le ha dado "Me gusta", agrégale "Me gusta" y aumenta el contador de likes
         publicacion.like_usuario.add(usuario)
         publicacion.likes += 1
+        ha_dado_like = True
 
     publicacion.save()  # Guarda la publicación actualizada
 
-    return redirect('publicaciones:mostrar_publicacion', publicacion_id=publicacion_id)
+    # Devuelve una respuesta JSON con la nueva cantidad de likes y si el usuario dio "Me gusta"
+    response_data = {
+        'likes': publicacion.likes,
+        'ha_dado_like': ha_dado_like,
+    }
 
+    return JsonResponse(response_data)
 

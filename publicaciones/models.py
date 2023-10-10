@@ -32,6 +32,7 @@ class Publicacion_solo_text(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=True, null=True)
     palabras_clave = models.CharField(max_length=100, blank=True)
     likes = models.PositiveIntegerField(default=0)
+    like_usuario = models.ManyToManyField(Usuario, blank=True, related_name='publicaciones_likes')
     dislikes = models.PositiveIntegerField(default=0)
     comments = models.PositiveIntegerField(default=0)
     shared = models.PositiveIntegerField(default=0)

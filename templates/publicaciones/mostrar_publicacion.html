@@ -47,9 +47,9 @@
                     <!-- Primer grupo de botones -->
                     <div class="btn-group">
                         <!-- Botón de Like con ícono personalizado -->
-                        <a href="#">
+                        <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}">
                             <i class="fas fa-thumbs-up icon-like"></i>
-                        </a>
+                        </a>                        
                         <p class="btn-icon cantidad">{{ publicacion.likes }}</p>
                         
                         <!-- Botón de Dislike con ícono personalizado -->

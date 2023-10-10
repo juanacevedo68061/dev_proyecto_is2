@@ -222,3 +222,23 @@ def compartidas(request, publicacion_id):
     # Devuelve la cantidad de compartidas en formato JSON
     data = {'shared_count': cantidad_compartidas}
     return JsonResponse(data)
+
+@login_required
+def like(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+    else:
+        # Si el usuario no le ha dado "Me gusta", agrégale "Me gusta" y aumenta el contador de likes
+        publicacion.like_usuario.add(usuario)
+        publicacion.likes += 1
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    return redirect('publicaciones:mostrar_publicacion', publicacion_id=publicacion_id)
+
+

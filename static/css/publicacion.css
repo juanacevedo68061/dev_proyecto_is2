@@ -55,7 +55,7 @@
 
 /* Espacio mayor entre los dos grupos de botones */
 .reacciones .btn-group {
-    margin-right: 630px;
+    margin-right: 550px;
     /* Espacio entre grupos */
 }
 
@@ -152,5 +152,10 @@
 
 /* Estilo para el icono "Me gusta" cuando se ha dado "Me gusta" */
 .like-button.liked .icon-like {
+    color: #007bff; /* Cambia el color a azul o el color deseado */
+}
+
+/* Estilo para el icono "No me gusta" cuando se ha dado "No me gusta" */
+.dislike-button.disliked .icon-dislike {
     color: #007bff; /* Cambia el color a azul o el color deseado */
 }

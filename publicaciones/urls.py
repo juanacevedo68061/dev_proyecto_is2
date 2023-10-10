@@ -15,6 +15,7 @@ urlpatterns = [
     path('rechazar_publicador/<uuid:publicacion_id>/', views.rechazar_publicador, name='rechazar_publicador'),
     path('compartidas/<uuid:publicacion_id>/', views.compartidas, name='compartidas'),
     path('like/<uuid:publicacion_id>/', views.like, name='like'),
+    path('dislike/<uuid:publicacion_id>/', views.dislike, name='dislike'),
 ]
 
 

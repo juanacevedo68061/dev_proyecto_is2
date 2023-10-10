@@ -163,16 +163,16 @@ def mostar_para_publicador(request, publicacion_id):
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 
-
 @login_required
 def mostrar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-        # Verificar si el usuario autenticado ha dado "Me gusta" a esta publicación
     ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
+    ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
 
     context = {
         'publicacion': publicacion,
-        'ha_dado_like': ha_dado_like,  # Pasa el resultado de la verificación al template
+        'ha_dado_like': ha_dado_like,
+        'ha_dado_dislike': ha_dado_dislike,
     }
     return render(request, 'publicaciones/mostrar_publicacion.html', context)
 
@@ -233,7 +233,12 @@ def compartidas(request, publicacion_id):
 def like(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     usuario = request.user
-
+    tiene_dislike = False
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        tiene_dislike = True
     if usuario in publicacion.like_usuario.all():
         # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
         publicacion.like_usuario.remove(usuario)
@@ -250,8 +255,44 @@ def like(request, publicacion_id):
     # Devuelve una respuesta JSON con la nueva cantidad de likes y si el usuario dio "Me gusta"
     response_data = {
         'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
         'ha_dado_like': ha_dado_like,
+        'tiene_dislike': tiene_dislike,
     }
 
     return JsonResponse(response_data)
 
+@login_required
+def dislike(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    tiene_like = False
+
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+        tiene_like = True
+
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        ha_dado_dislike = False
+    else:
+        # Si el usuario no le ha dado "No me gusta", agrégale "No me gusta" y aumenta el contador de dislikes
+        publicacion.dislike_usuario.add(usuario)
+        publicacion.dislikes += 1
+        ha_dado_dislike = True
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    # Devuelve una respuesta JSON con la nueva cantidad de likes, dislikes y las respectivas banderas
+    response_data = {
+        'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
+        'ha_dado_dislike': ha_dado_dislike,
+        'tiene_like': tiene_like,
+    }
+
+    return JsonResponse(response_data)

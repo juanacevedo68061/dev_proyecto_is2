@@ -7,6 +7,7 @@
 <link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
 <script src="{% static 'js/mostrar_qr.js' %}"></script>
 <script src="{% static 'js/like.js' %}"></script>
+<script src="{% static 'js/dislike.js' %}"></script>
 
 
 
@@ -53,11 +54,12 @@
                         </a>
                         <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
                         
-                        <!-- Botón de Dislike con ícono personalizado -->
-                        <a href="#">
+                        <!-- Botón de No me gusta con ícono personalizado -->
+                        <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
                             <i class="fas fa-thumbs-down icon-dislike"></i>
                         </a>
-                        <p class="btn-icon cantidad">{{ publicacion.dislikes }}</p>
+                        <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
+
                         <!-- Botón de Comentar con ícono personalizado -->
                         <a href="#">
                             <i class="fas fa-comment icon-comment"></i>

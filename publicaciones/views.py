@@ -206,10 +206,6 @@ def generar_qr(request, publicacion_id):
     img.save(buffer, format="PNG")
     img_data = buffer.getvalue()
 
-    # Incrementa el contador de compartidas
-    publicacion.shared += 1
-    publicacion.save()
-
     # Devuelve la imagen del código QR como una respuesta HTTP
     response = HttpResponse(content_type="image/png")
     response.write(img_data)
@@ -218,9 +214,11 @@ def generar_qr(request, publicacion_id):
 @login_required
 def compartidas(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    # Incrementa el contador de compartidas
+    publicacion.shared += 1
+    publicacion.save()
     # Lógica para obtener la cantidad de compartidas para la publicación con publicacion_id
     cantidad_compartidas = publicacion.shared
-    print("ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     # Devuelve la cantidad de compartidas en formato JSON
     data = {'shared_count': cantidad_compartidas}
     return JsonResponse(data)

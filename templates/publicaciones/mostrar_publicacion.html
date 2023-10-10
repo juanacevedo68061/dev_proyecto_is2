@@ -71,13 +71,11 @@
                     <div class="btn-group">
 
                         <!-- Botón de Compartir con ícono personalizado -->
-                        <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn">
+                        <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
                             <i class="fas fa-share icon-share"></i>
                         </a>
                         <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
-
-
-
+                        
                         <!-- Modal para mostrar el código QR -->
                         <div id="qrModal" class="modal">
                             <div class="modal-content">

@@ -4,6 +4,7 @@ from administracion.models import Categoria
 from tinymce.models import HTMLField
 from django.urls import reverse
 import uuid
+from django.conf import settings
 
 class Publicacion_solo_text(models.Model):
     ESTADOS_CONTENIDO = [
@@ -30,14 +31,19 @@ class Publicacion_solo_text(models.Model):
     suscriptores_exclusivos = models.BooleanField(default=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=True, null=True)
     palabras_clave = models.CharField(max_length=100, blank=True)
-    likes = models.ManyToManyField(Usuario, related_name='publicaciones_liked', blank=True)
-    dislikes = models.ManyToManyField(Usuario, related_name='publicaciones_disliked', blank=True)
-    share = models.ManyToManyField(Usuario, related_name='publicaciones_shared', blank=True)
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
+    comments = models.PositiveIntegerField(default=0)
+    shared = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.titulo
-    
+
     def get_absolute_url(self):
-        return reverse('publicaciones:mostrar_publicacion', args=[str(self.id_publicacion)])
+        domain = f'{settings.SITE_DOMAIN}:{settings.SITE_PORT}'
+        path = reverse('publicaciones:mostrar_publicacion', args=[str(self.id_publicacion)])
+        url= f'http://{domain}{path}'
+        return url
+    
 
 

@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.urls import reverse
 import uuid
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 @login_required
 def crear_publicacion(request):
@@ -183,20 +184,6 @@ def rechazar_publicador(request, publicacion_id):
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
 @login_required
-def like_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.likes.all():
-        publicacion.likes.add(request.user)
-    return JsonResponse({'likes': publicacion.likes.count()})
-
-@login_required
-def dislike_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.dislikes.all():
-        publicacion.dislikes.add(request.user)
-    return JsonResponse({'dislikes': publicacion.dislikes.count()})
-
-@login_required
 def generar_qr(request, publicacion_id):
     # Obtén la publicación con el ID proporcionado
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
@@ -219,7 +206,21 @@ def generar_qr(request, publicacion_id):
     img.save(buffer, format="PNG")
     img_data = buffer.getvalue()
 
+    # Incrementa el contador de compartidas
+    publicacion.shared += 1
+    publicacion.save()
+
     # Devuelve la imagen del código QR como una respuesta HTTP
     response = HttpResponse(content_type="image/png")
     response.write(img_data)
     return response
+
+@login_required
+def compartidas(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    # Lógica para obtener la cantidad de compartidas para la publicación con publicacion_id
+    cantidad_compartidas = publicacion.shared
+    print("ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    # Devuelve la cantidad de compartidas en formato JSON
+    data = {'shared_count': cantidad_compartidas}
+    return JsonResponse(data)

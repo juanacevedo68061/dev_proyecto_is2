@@ -22,12 +22,23 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModalBtn.addEventListener('click', function () {
         // Cierra el modal al hacer clic en el botón "x"
         modal.style.display = 'none';
+
+        // Recarga la página después de cerrar el modal
+        location.reload();
+    });
+
+    // Evita que el modal se cierre al hacer clic fuera del contenido del modal
+    modal.addEventListener('click', function (event) {
+        event.stopPropagation();
     });
 
     window.addEventListener('click', function (event) {
-        // Cierra el modal al hacer clic fuera del contenido del modal
-        if (event.target === modal) {
+        // Cierra el modal al hacer clic en cualquier parte fuera del contenido del modal
+        if (event.target === modal && event.target !== qrImage) {
             modal.style.display = 'none';
+
+            // Recarga la página después de cerrar el modal
+            location.reload();
         }
     });
 });

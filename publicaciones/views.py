@@ -187,7 +187,6 @@ def rechazar_publicador(request, publicacion_id):
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@login_required
 def generar_qr(request, publicacion_id):
     # Obtén la publicación con el ID proporcionado
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
@@ -215,7 +214,6 @@ def generar_qr(request, publicacion_id):
     response.write(img_data)
     return response
 
-@login_required
 def compartidas(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     # Incrementa el contador de compartidas
@@ -295,7 +293,6 @@ def dislike(request, publicacion_id):
 
     return JsonResponse(response_data)
 
-@login_required
 def track_view(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     publicacion.views += 1

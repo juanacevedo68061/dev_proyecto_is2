@@ -5,15 +5,16 @@
 
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
 <link href="{% static 'css/publicacion.css' %}" rel="stylesheet" />
-<link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
-<script src="{% static 'js/mostrar_qr.js' %}"></script>
-<script src="{% static 'js/like.js' %}"></script>
-<script src="{% static 'js/dislike.js' %}"></script>
-<script src="{% static 'js/track_view.js' %}"></script>
+{%if not publicador %}
+    <link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/mostrar_qr.js' %}"></script>
+    <script src="{% static 'js/track_view.js' %}"></script>
 
-
-
-
+    {% if user.is_authenticated %}
+        <script src="{% static 'js/like.js' %}"></script>
+        <script src="{% static 'js/dislike.js' %}"></script>
+    {% endif %}
+{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!--<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&display=swap" rel="stylesheet">-->
@@ -47,66 +48,65 @@
                         
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
+                {%if not publicador %}    
+                    <div class="reacciones">
+                            <!-- Primer grupo de botones -->
+                            <div class="btn-group">
+                                <!-- Botón de Like con ícono personalizado -->
+                                <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}" class="like-button {% if ha_dado_like %}liked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                    <i class="fas fa-thumbs-up icon-like"></i>
+                                </a>
+                                <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
+                                
+                                <!-- Botón de No me gusta con ícono personalizado -->
+                                <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                    <i class="fas fa-thumbs-down icon-dislike"></i>
+                                </a>
+                                <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
 
-                <div class="reacciones">
-                    {% if user.is_authenticated %}
-                        <!-- Primer grupo de botones -->
+                                <!-- Botón de Comentar con ícono personalizado -->
+                                <a href="#">
+                                    <i class="fas fa-comment icon-comment"></i>
+                                </a>
+                                <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
+                            </div>
+
+                        <!-- Espacio mayor entre los dos grupos de botones -->
+                        <div class="espacio"></div>
+                    
+                        <!-- Segundo grupo de botones -->
                         <div class="btn-group">
-                            <!-- Botón de Like con ícono personalizado -->
-                            <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}" class="like-button {% if ha_dado_like %}liked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
-                                <i class="fas fa-thumbs-up icon-like"></i>
+
+                            <!-- Botón de Vistas con ícono personalizado -->
+                            <i class="fas fa-eye icon-view vistas"></i>
+                            <p id="publicacion-data" data-id="{{ publicacion.id_publicacion }}" class="btn-icon cantidad">{{ publicacion.views }}</p>
+
+                            <!-- Botón de Compartir con ícono personalizado -->
+                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <i class="fas fa-share icon-share"></i>
                             </a>
-                            <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
+                            <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
                             
-                            <!-- Botón de No me gusta con ícono personalizado -->
-                            <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
-                                <i class="fas fa-thumbs-down icon-dislike"></i>
-                            </a>
-                            <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
-
-                            <!-- Botón de Comentar con ícono personalizado -->
-                            <a href="#">
-                                <i class="fas fa-comment icon-comment"></i>
-                            </a>
-                            <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
-                        </div>
-                    {% endif %}
-                    <!-- Espacio mayor entre los dos grupos de botones -->
-                    <div class="espacio"></div>
-                
-                    <!-- Segundo grupo de botones -->
-                    <div class="btn-group">
-
-                        <!-- Botón de Vistas con ícono personalizado -->
-                        <i class="fas fa-eye icon-view vistas"></i>
-                        <p id="publicacion-data" data-id="{{ publicacion.id_publicacion }}" class="btn-icon cantidad">{{ publicacion.views }}</p>
-
-                        <!-- Botón de Compartir con ícono personalizado -->
-                        <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
-                            <i class="fas fa-share icon-share"></i>
-                        </a>
-                        <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
-                        
-                        <!-- Modal para mostrar el código QR -->
-                        <div id="qrModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close-modal">&times;</span>
-                                <img id="qrImage" src="" alt="Código QR">
+                            <!-- Modal para mostrar el código QR -->
+                            <div id="qrModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-modal">&times;</span>
+                                    <img id="qrImage" src="" alt="Código QR">
+                                </div>
+                            </div>
+                    
+                            <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+                            <div class="dropdown">
+                                <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                                    <li>
+                                        <a class="dropdown-item" href="#">Reportar</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                
-                        <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
-                        <div class="dropdown">
-                            <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                <li>
-                                    <a class="dropdown-item" href="#">Reportar</a>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                </div>
-                
+                {% endif %}
                 
                 
             </div>

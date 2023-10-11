@@ -163,13 +163,10 @@ def mostar_para_publicador(request, publicacion_id):
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 
-@login_required
 def mostrar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
     ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
-    publicacion.views += 1
-    publicacion.save()
     context = {
         'publicacion': publicacion,
         'ha_dado_like': ha_dado_like,
@@ -297,3 +294,10 @@ def dislike(request, publicacion_id):
     }
 
     return JsonResponse(response_data)
+
+@login_required
+def track_view(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.views += 1
+    publicacion.save()
+    return JsonResponse({'status': 'success', 'views': publicacion.views})

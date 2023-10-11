@@ -2,6 +2,7 @@ from functools import wraps
 from django.http import HttpResponseForbidden
 from .models import Rol
 from django.shortcuts import render
+import inspect
 
 def rol_requerido(rol_nombre):
     """
@@ -40,4 +41,39 @@ def rol_requerido(rol_nombre):
 
     return decorator
 
+def permiso_requerido(view_func):
+    """
+    Decorador que verifica si el usuario tiene un permiso específico en cualquiera de sus roles antes de permitir el acceso a una vista.
 
+    Parámetros:
+        view_func: La vista a decorar.
+
+    Retorna:
+        función: La vista decorada.
+    """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        """
+        Función interna que verifica si el usuario tiene el permiso especificado en cualquiera de sus roles.
+
+        Parámetros:
+            request (HttpRequest): La solicitud HTTP.
+            *args: Argumentos adicionales.
+            **kwargs: Argumentos de palabras clave adicionales.
+
+        Retorna:
+            HttpResponse: La respuesta HTTP o un mensaje de "Acceso denegado".
+        """
+        try:
+            # Obtener el nombre de la vista
+            view_name = view_func.__name__
+            
+            # Verificar si el usuario tiene el permiso en al menos uno de sus roles
+            if any(rol.permisos.filter(codename=view_name).exists() for rol in request.user.roles.all()):
+                return view_func(request, *args, **kwargs)
+            else:
+                return render(request, '403.html', status=403)
+        except Rol.DoesNotExist:
+            return render(request, '403.html', status=403)
+
+    return _wrapped_view

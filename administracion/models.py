@@ -1,7 +1,4 @@
 from django.db import models
-from login.models import Usuario
-from django.core.exceptions import ValidationError
-
 class Categoria(models.Model):
     """
     Modelo que representa una categoría para las publicaciones.

@@ -73,6 +73,10 @@
                     <!-- Segundo grupo de botones -->
                     <div class="btn-group">
 
+                        <!-- Botón de Vistas con ícono personalizado -->
+                        <i class="fas fa-eye icon-view vistas"></i>
+                        <p class="btn-icon cantidad">{{ publicacion.views }}</p>
+
                         <!-- Botón de Compartir con ícono personalizado -->
                         <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
                             <i class="fas fa-share icon-share"></i>

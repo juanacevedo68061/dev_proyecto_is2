@@ -35,6 +35,7 @@ class Publicacion_solo_text(models.Model):
     like_usuario = models.ManyToManyField(Usuario, blank=True, related_name='publicaciones_likes')
     dislikes = models.PositiveIntegerField(default=0)
     dislike_usuario = models.ManyToManyField(Usuario, blank=True, related_name='publicaciones_dislikes')
+    views = models.PositiveIntegerField(default=0)
     comments = models.PositiveIntegerField(default=0)
     shared = models.PositiveIntegerField(default=0)
 

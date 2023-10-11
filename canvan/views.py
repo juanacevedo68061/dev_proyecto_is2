@@ -16,7 +16,7 @@ def canvas_autor(request):
 @login_required
 @rol_requerido('editor')
 def canvas_editor(request):
-    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='revision', activo=True)
+    en_progreso = Publicacion_solo_text.objects.filter(estado='revision', activo=True)
     completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar', activo=True)
 
     return render(request, 'canvan/canvas_editor.html', {'en_progreso': en_progreso, 'completadas': completadas})
@@ -25,7 +25,7 @@ def canvas_editor(request):
 @rol_requerido('publicador')
 def canvas_publicador(request):
     # Obtener todas las publicaciones activas del publicador ordenadas por fecha de creación
-    en_progreso = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar', activo=True)
+    en_progreso = Publicacion_solo_text.objects.filter(estado='publicar', activo=True)
     completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicado', activo=True)
 
     return render(request, 'canvan/canvas_publicador.html', {'en_progreso': en_progreso, 'completadas': completadas})

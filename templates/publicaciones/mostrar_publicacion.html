@@ -1,130 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/publicacion.css' %}" rel="stylesheet" />
+{%if not publicador %}
+    <link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/mostrar_qr.js' %}"></script>
+    <script src="{% static 'js/track_view.js' %}"></script>
+
+    {% if user.is_authenticated %}
+        <script src="{% static 'js/like.js' %}"></script>
+        <script src="{% static 'js/dislike.js' %}"></script>
+    {% endif %}
+{% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!--<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&display=swap" rel="stylesheet">-->
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Black+Ops+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&display=swap" rel="stylesheet">
-<style>
-    .contenido {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .publicacion {
-        width: 1000px;
-        padding: 20px;
-    }
-
-    .titulo {
-        /*text-align: center;    */  /*centra todo el titulo*/ 
-        font-size: 60px;
-        margin-bottom: 50px;
-        /*font-family: 'Black Ops One';*/
-        font-family: 'Archivo', sans-serif;
-    }
-
-    /* Estilos para el contenedor de reacciones */
-    .reacciones {
-        display: flex; /* Usa flexbox para colocar los enlaces en línea */
-        max-width: 1000px; /* Limita el ancho del contenedor a 1000px */
-        margin: 0 auto; /* Centra el contenedor horizontalmente */
-        padding: 40px 0; /* Añade un espacio superior e inferior */
-    }
-
-    /* Estilos para los botones de íconos */
-    .btn-icon {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-    }
-
-    /* Estilos para los íconos */
-    .icon-like,
-    .icon-dislike,
-    .icon-comment,
-    .icon-share,
-    .puntos-suspensivos {
-        font-size: 18px;
-        color: gray;
-    }
-
-    /* Margen de 10px entre los botones dentro de cada grupo */
-    .reacciones .btn-icon {
-        margin-right: 60px;
-    }
-
-    /* Espacio mayor entre los dos grupos de botones */
-    .reacciones .btn-group {
-        margin-right: 630px; /* Espacio entre grupos */
-    }
-
-    /* Elimina el margen derecho del último grupo para evitar espacio adicional */
-    .reacciones .btn-group:last-child {
-        margin-right: 0;
-    }
-
-    /* Estilos para el enlace "Seguir" */
-    .seguir {
-        color: green; /* Cambia el color del texto a verde */
-        text-decoration: none; /* Quita el subrayado */
-        padding: 0 10px; /* Añade espacio de 0 arriba/abajo y 10px izquierda/derecha */
-    }
-
-/* Estilos para el contenedor de perfil y publicación */
-.perfil-info {
-    display: grid; /* Utiliza un diseño de cuadrícula para organizar elementos */
-    grid-template-columns: 60px auto; /* Dos columnas: imagen de perfil y datos de publicación */
-    align-items: center; /* Centra verticalmente los elementos */
-    margin-bottom: 10px; /* Espacio inferior entre perfil y fecha */
-}
-
-/* Estilos para la imagen de perfil */
-.imagen-perfil img {
-    width: 60px; /* Ajusta el ancho de la imagen de perfil */
-    height: 60px; /* Ajusta la altura de la imagen de perfil */
-    object-fit: cover; /* Cubre el contenedor con la imagen */
-    border-radius: 50%; /* Aplica un borde redondeado para un aspecto circular */
-}
-
-/* Estilos para los datos de la publicación */
-.datos-publicacion {
-    display: grid; /* Utiliza un diseño de cuadrícula para organizar elementos */
-    grid-template-rows: auto auto; /* Dos filas: línea 1 y línea 2 */
-    grid-gap: 5px; /* Espacio entre líneas */
-    margin-left: 10px; /* Espacio a la izquierda de los datos de publicación */
-}
-
-.fecha-publicacion  { 
-    color: black;
-}
-
-/* Estilos para la línea 1 (nombre de usuario y enlace de seguir) */
-.linea-1 {
-    display: flex; /* Muestra elementos en línea */
-    align-items: center; /* Centra verticalmente los elementos */
-}
-
-/* Estilos para el enlace "Seguir" */
-.seguir {
-    color: green; /* Cambia el color del enlace "Seguir" a verde */
-    text-decoration: none; /* Quita el subrayado */
-    margin-left: 10px; /* Espacio a la izquierda del enlace "Seguir" */
-}
-
-.linea-2 {
-    color: rgb(83, 83, 83);
-}
-
-.categoria-destacada {
-    color: black;
-}
-</style>
 
 <div class="contenido">
     <div class="publicacion">
@@ -153,48 +48,65 @@
                         
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
+                {%if not publicador %}    
+                    <div class="reacciones">
+                            <!-- Primer grupo de botones -->
+                            <div class="btn-group">
+                                <!-- Botón de Like con ícono personalizado -->
+                                <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}" class="like-button {% if ha_dado_like %}liked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                    <i class="fas fa-thumbs-up icon-like"></i>
+                                </a>
+                                <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
+                                
+                                <!-- Botón de No me gusta con ícono personalizado -->
+                                <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                    <i class="fas fa-thumbs-down icon-dislike"></i>
+                                </a>
+                                <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
 
-                <div class="reacciones">
-                    <!-- Primer grupo de botones -->
-                    <div class="btn-group">
-                        <!-- Botón de Like con ícono personalizado -->
-                        <a href="#" class="btn-icon">
-                            <i class="fas fa-thumbs-up icon-like"></i>
-                        </a>
-                        
-                        <!-- Botón de Dislike con ícono personalizado -->
-                        <a href="#" class="btn-icon">
-                            <i class="fas fa-thumbs-down icon-dislike"></i>
-                        </a>
-                
-                        <!-- Botón de Comentar con ícono personalizado -->
-                        <a href="#" class="btn-icon">
-                            <i class="fas fa-comment icon-comment"></i>
-                        </a>
-                    </div>
-                
-                    <!-- Espacio mayor entre los dos grupos de botones -->
-                    <div class="espacio"></div>
-                
-                    <!-- Segundo grupo de botones -->
-                    <div class="btn-group">
-                        <!-- Botón de Compartir con ícono personalizado -->
-                        <a href="#" class="btn-icon">
-                            <i class="fas fa-share icon-share"></i>
-                        </a>    
-                
-                        <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
-                        <div class="dropdown">
-                            <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                                <li>
-                                    <a class="dropdown-item" href="#">Reportar</a>
-                                </li>
-                            </ul>
+                                <!-- Botón de Comentar con ícono personalizado -->
+                                <a href="#">
+                                    <i class="fas fa-comment icon-comment"></i>
+                                </a>
+                                <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
+                            </div>
+
+                        <!-- Espacio mayor entre los dos grupos de botones -->
+                        <div class="espacio"></div>
+                    
+                        <!-- Segundo grupo de botones -->
+                        <div class="btn-group">
+
+                            <!-- Botón de Vistas con ícono personalizado -->
+                            <i class="fas fa-eye icon-view vistas"></i>
+                            <p id="publicacion-data" data-id="{{ publicacion.id_publicacion }}" class="btn-icon cantidad">{{ publicacion.views }}</p>
+
+                            <!-- Botón de Compartir con ícono personalizado -->
+                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <i class="fas fa-share icon-share"></i>
+                            </a>
+                            <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
+                            
+                            <!-- Modal para mostrar el código QR -->
+                            <div id="qrModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-modal">&times;</span>
+                                    <img id="qrImage" src="" alt="Código QR">
+                                </div>
+                            </div>
+                    
+                            <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
+                            <div class="dropdown">
+                                <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                                    <li>
+                                        <a class="dropdown-item" href="#">Reportar</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
+                {% endif %}
                 
                 
             </div>
@@ -207,7 +119,7 @@
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary" name="publicar">Publicar</button>
-                <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id %}" class="btn btn-warning">Rechazar</a>
+                <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id_publicacion %}" class="btn btn-warning">Rechazar</a>
                 <a href="{% url 'canvan:canvas-publicador' %}" class="btn btn-secondary">Cancelar</a>
             </form>
         {% endif %}

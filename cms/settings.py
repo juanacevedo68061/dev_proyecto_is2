@@ -14,8 +14,11 @@ SECRET_KEY = "django-insecure-l+h5q-)9z0-gsak2r@@er_3ck3-=v8+-j@wtuu$(91&g*t-02b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+SITE_DOMAIN = '127.0.0.1'
+SITE_PORT = '8000'
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost']
 HTTP403_PAGE = '403.html'
+SITE_ID = 1
 
 # Application definition
 
@@ -26,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "login",
     "administracion",
     "roles",

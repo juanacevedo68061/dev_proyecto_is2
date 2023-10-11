@@ -10,6 +10,9 @@ from .forms import PublicacionForm
 from .models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
+import uuid
+from django.http import HttpResponse
+from django.http import JsonResponse
 
 @login_required
 def crear_publicacion(request):
@@ -35,6 +38,12 @@ def crear_publicacion(request):
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
                 publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                
+                # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
+                publicacion.id_publicacion = uuid.uuid4()
+                # Genera la URL absoluta para la publicación
+                publicacion.url_publicacion = publicacion.get_absolute_url()
+
                 publicacion.save()
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
@@ -44,7 +53,7 @@ def crear_publicacion(request):
 
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -76,7 +85,7 @@ def editar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def eliminar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -90,7 +99,7 @@ def eliminar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -120,7 +129,7 @@ def editar_publicacion_editor(request, publicacion_id):
 
 @login_required
 def rechazar_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -133,7 +142,7 @@ def rechazar_editor(request, publicacion_id):
 
 @login_required
 def mostar_para_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -154,16 +163,20 @@ def mostar_para_publicador(request, publicacion_id):
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 
-
-@login_required
 def mostrar_publicacion(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
-
-    return render(request, 'publicaciones/mostrar_publicacion.html', {'publicacion': publicacion})
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
+    ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
+    context = {
+        'publicacion': publicacion,
+        'ha_dado_like': ha_dado_like,
+        'ha_dado_dislike': ha_dado_dislike,
+    }
+    return render(request, 'publicaciones/mostrar_publicacion.html', context)
 
 @login_required
 def rechazar_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -174,29 +187,114 @@ def rechazar_publicador(request, publicacion_id):
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@login_required
-def like_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.likes.all():
-        publicacion.likes.add(request.user)
-    return JsonResponse({'likes': publicacion.likes.count()})
+def generar_qr(request, publicacion_id):
+    # Obtén la publicación con el ID proporcionado
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+
+    # Crea el código QR con la URL de la publicación
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(publicacion.get_absolute_url())  # Utiliza la URL absoluta de la publicación
+    qr.make(fit=True)
+
+    # Crea una imagen PIL a partir del código QR
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Guarda la imagen en un objeto BytesIO
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    img_data = buffer.getvalue()
+
+    # Devuelve la imagen del código QR como una respuesta HTTP
+    response = HttpResponse(content_type="image/png")
+    response.write(img_data)
+    return response
+
+def compartidas(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    # Incrementa el contador de compartidas
+    publicacion.shared += 1
+    publicacion.save()
+    # Lógica para obtener la cantidad de compartidas para la publicación con publicacion_id
+    cantidad_compartidas = publicacion.shared
+    # Devuelve la cantidad de compartidas en formato JSON
+    data = {'shared_count': cantidad_compartidas}
+    return JsonResponse(data)
 
 @login_required
-def dislike_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.dislikes.all():
-        publicacion.dislikes.add(request.user)
-    return JsonResponse({'dislikes': publicacion.dislikes.count()})
+def like(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    tiene_dislike = False
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        tiene_dislike = True
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+        ha_dado_like = False
+    else:
+        # Si el usuario no le ha dado "Me gusta", agrégale "Me gusta" y aumenta el contador de likes
+        publicacion.like_usuario.add(usuario)
+        publicacion.likes += 1
+        ha_dado_like = True
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    # Devuelve una respuesta JSON con la nueva cantidad de likes y si el usuario dio "Me gusta"
+    response_data = {
+        'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
+        'ha_dado_like': ha_dado_like,
+        'tiene_dislike': tiene_dislike,
+    }
+
+    return JsonResponse(response_data)
 
 @login_required
-def compartir_publicacion(request, pk):
-    # Generar código QR
-    #qr_img = qrcode.make(publicacion.id_publicacion)
-    #qr_io = BytesIO()
-    #qr_img.save(qr_io, 'JPEG')
-    #publicacion.codigo_qr.save('codigo_qr.jpg', ContentFile(qr_io.getvalue()))
-    
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.share.all():
-        publicacion.share.add(request.user)
-    return JsonResponse({'compartir': publicacion.share.count()})
+def dislike(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    tiene_like = False
+
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+        tiene_like = True
+
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        ha_dado_dislike = False
+    else:
+        # Si el usuario no le ha dado "No me gusta", agrégale "No me gusta" y aumenta el contador de dislikes
+        publicacion.dislike_usuario.add(usuario)
+        publicacion.dislikes += 1
+        ha_dado_dislike = True
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    # Devuelve una respuesta JSON con la nueva cantidad de likes, dislikes y las respectivas banderas
+    response_data = {
+        'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
+        'ha_dado_dislike': ha_dado_dislike,
+        'tiene_like': tiene_like,
+    }
+
+    return JsonResponse(response_data)
+
+def track_view(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.views += 1
+    publicacion.save()
+    return JsonResponse({'status': 'success', 'views': publicacion.views})

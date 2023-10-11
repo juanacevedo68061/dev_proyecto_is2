@@ -86,8 +86,8 @@
       <h2>En Progreso</h2>
       <ul class="tarjetas" id="en-progreso-list">
         {% for publicacion in en_progreso %}
-          <li class="tarjeta" id="{{ publicacion.id }}">
-            <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id %}">{{ publicacion.titulo }} ({{ publicacion.estado }})</a>
+          <li class="tarjeta" id="{{ publicacion.id_publicacion }}">
+            <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">{{ publicacion.titulo }} ({{ publicacion.estado }})</a>
           </li>
         {% endfor %}
       </ul>
@@ -98,7 +98,7 @@
       <h2>Completadas</h2>
       <ul class="tarjetas" id="hecho-list">
         {% for publicacion in completadas %}
-          <li class="tarjeta" id="{{ publicacion.id }}">
+          <li class="tarjeta" id="{{ publicacion.id_publicacion }}">
             {{ publicacion.titulo }}
           </li>
         {% endfor %}

@@ -9,7 +9,9 @@ from django.shortcuts import render
 def principal(request):
     # Inicializa las publicaciones con la lista completa de publicaciones moderadas
     publicaciones = Publicacion_solo_text.objects.filter(
-        categoria__moderada=False).order_by('-fecha_creacion')
+    categoria__moderada=False,
+    activo=True).order_by('-fecha_creacion')
+
 
     # Verificar si se ha enviado un formulario de búsqueda
     if 'q' in request.GET:

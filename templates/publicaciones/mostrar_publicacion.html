@@ -5,6 +5,11 @@
 
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
 <link href="{% static 'css/publicacion.css' %}" rel="stylesheet" />
+
+{%if rol_publicador or user == publicacion.autor %}
+    <script src="{% static 'js/activate.js' %}"></script>
+{%endif%}
+
 {%if not publicador %}
     <link href="{% static 'css/modal_qr.css' %}" rel="stylesheet" />
     <script src="{% static 'js/mostrar_qr.js' %}"></script>
@@ -23,6 +28,17 @@
 
 <div class="contenido">
     <div class="publicacion">
+        
+        {% if rol_publicador or user == publicacion.autor %}
+            <a class="btn-estado" data-publicacion-id="{{ publicacion.id_publicacion }}" data-activo="{{ publicacion.activo }}">
+                {% if publicacion.activo %}
+                    <i class="fas fa-toggle-on btn-encendido"></i> <span class="descripcion">Inactivar</span>
+                {% else %}
+                    <i class="fas fa-toggle-off btn-apagado"></i> <span class="descripcion">Activar</span>
+                {% endif %}
+            </a><br><br>                         
+        {% endif %}
+
         <h1 class="titulo">{{ publicacion.titulo }}</h1>
         <div class="informacion">
             

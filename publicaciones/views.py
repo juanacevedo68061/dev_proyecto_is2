@@ -167,11 +167,18 @@ def mostrar_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
     ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
+    
+    rol_publicador = None
+    if request.user.is_authenticated:
+        if request.user.roles.filter(nombre="publicador").exists():
+            rol_publicador = True
     context = {
         'publicacion': publicacion,
         'ha_dado_like': ha_dado_like,
         'ha_dado_dislike': ha_dado_dislike,
+        'rol_publicador': rol_publicador
     }
+
     return render(request, 'publicaciones/mostrar_publicacion.html', context)
 
 @login_required
@@ -298,3 +305,11 @@ def track_view(request, publicacion_id):
     publicacion.views += 1
     publicacion.save()
     return JsonResponse({'status': 'success', 'views': publicacion.views})
+
+@login_required
+def estado(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.activo = not publicacion.activo
+    publicacion.save()
+    return JsonResponse({'activo': publicacion.activo})
+

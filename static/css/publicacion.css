@@ -164,3 +164,33 @@
 .vistas {
     margin-top: 2px; /* Ajusta la cantidad de espacio en la parte superior según tus necesidades */
 }
+
+/* Estilos de los iconos */
+
+.btn-estado {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-encendido {
+    color: #007BFF; /* Color azul para el icono de encendido */
+    font-size: 30px; /* Tamaño del icono (ajusta según tus preferencias) */
+    cursor: pointer;
+}
+
+.btn-apagado {
+    color: #808080; /* Color gris para el icono de apagado */
+    font-size: 30px; /* Tamaño del icono (ajusta según tus preferencias) */
+    cursor: pointer;
+}
+
+/* Estilos de la descripción (letras) */
+.descripcion {
+    font-size: 16px; /* Tamaño del texto (ajusta según tus preferencias) */
+    color: black; /* Color del texto (negro) */
+    margin: 5px;
+}

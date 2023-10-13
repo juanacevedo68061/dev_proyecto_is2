@@ -18,6 +18,7 @@ urlpatterns = [
     path('dislike/<uuid:publicacion_id>/', views.dislike, name='dislike'),
     path('track_view/<uuid:publicacion_id>/', views.track_view, name='track_view'),
     path('estado/<uuid:publicacion_id>/', views.estado, name='estado'),
+    path('vista_auxiliar_email/<uuid:publicacion_id>/', views.vista_auxiliar_email, name='vista_auxiliar_email'),
 ]
 
 

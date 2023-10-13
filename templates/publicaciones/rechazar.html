@@ -1,13 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+  /* Estilos personalizados para el campo de entrada de texto */
+  .custom-input {
+    width: 35%;
+    /* Hacer que el campo de entrada de texto tenga el mismo ancho que el párrafo */
+    height: 200px;
+    /* Ajustar la altura a tu preferencia */
+    border: 1px solid #ccc;
+    /* Agregar un borde ligero */
+    border-radius: 5px;
+    /* Hacer que las esquinas sean redondeadas */
+    padding: 10px;
+    /* Añadir un relleno para mejorar la apariencia */
+    vertical-align: top;
+    /* Alinear el texto en la parte superior del campo */
+    box-sizing: border-box;
+    /* Evitar que el relleno afecte al ancho y alto */
+    resize: none;
+    /* Deshabilitar la redimensión del textarea */
+  }
+</style>
 <div class="container">
   <h1>Rechazar Publicación</h1>
   <br><br>
-  <p>¿Está seguro de que desea rechazar esta publicación?</p>
-
   <form method="post">
     {% csrf_token %}
+    <p>Por favor, ingrese una razón para rechazar esta publicación:</p>
+    <textarea name="razon" required class="custom-input"></textarea>
+    <br><br>
+    {% if canvan_publicador %}
+      <p>Seleccione el destinatario:</p>
+      <div>
+        <input type="radio" name="destinatario" id="para_editor" value="1" required>
+        <label for="para_editor">Para Editor</label>
+      </div>
+      <div>
+        <input type="radio" name="destinatario" id="para_autor" value="0" required>
+        <label for="para_autor">Para Autor</label>
+      </div>
+    {% endif %}
+
+    <br><br>
     <button type="submit" class="btn btn-danger" name="confirmar_rechazo">Confirmar Rechazo</button>
     <a href="{{ redirect_url }}" class="btn btn-primary">Cancelar</a>
   </form>

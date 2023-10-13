@@ -29,6 +29,8 @@
 
 <div class="contenido">
     <div class="publicacion">
+
+        <a href="{% url 'publicaciones:vista_auxiliar_email' publicacion.id_publicacion %}" >email</a><br><br>
         
         <!--Si quieres que el publicador pueda desactivar solo desde el canvan, quitale rol_-->
         {% if rol_publicador or user == publicacion.autor %}

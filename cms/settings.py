@@ -20,6 +20,13 @@ ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'juan.acevedo68061@gmail.com'  # Tu dirección de correo de Gmail
+EMAIL_HOST_PASSWORD = 'rebk rysq pevu wewy'  # Tu contraseña de correo de Gmail (o usa variables de entorno)
+
 # Application definition
 
 INSTALLED_APPS = [

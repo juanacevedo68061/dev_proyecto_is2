@@ -46,6 +46,7 @@ def crear_publicacion(request):
                 publicacion.url_publicacion = publicacion.get_absolute_url()
 
                 publicacion.save()
+                notificar(publicacion,3)
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
@@ -75,7 +76,9 @@ def editar_publicacion_autor(request, publicacion_id):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+
                 publicacion.save()
+                notificar(publicacion,3)
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
@@ -120,7 +123,9 @@ def editar_publicacion_editor(request, publicacion_id):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+
                 publicacion.save()
+                notificar(publicacion,3)
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-editor')  
     else:
@@ -136,10 +141,11 @@ def rechazar_editor(request, publicacion_id):
     if request.method == 'POST':
         if 'confirmar_rechazo' in request.POST:
             razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
-            print(razon)
             publicacion.estado = 'rechazado'  # Cambiar el estado a "borrador"
             publicacion.para_editor = False
+
             publicacion.save()
+            notificar(publicacion,2,razon)
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
@@ -158,10 +164,12 @@ def rechazar_publicador(request, publicacion_id):
             destinatario = request.POST.get('destinatario')  # Obtener el valor del campo "destinatario" del formulario
             if destinatario == '1':
                 publicacion.para_editor = True  # Para Editor
+                razon += ", tu publicación fue enviada al Editor"
             else:
                 publicacion.para_editor = False  # Para Autor
-                
+            
             publicacion.save()
+            notificar(publicacion,2,razon)
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
     context = {
         'publicacion': publicacion,
@@ -184,6 +192,7 @@ def mostar_para_publicador(request, publicacion_id):
             # Cambiar el estado de la publicación a "publicado"
             publicacion.estado = 'publicado'
             publicacion.save()
+            notificar(publicacion,3)
             message = 'La publicación ha sido publicada con éxito.'
             redirect_url = reverse('canvan:canvas-publicador')
             messages.success(request, message)
@@ -329,7 +338,8 @@ def estado(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     publicacion.activo = not publicacion.activo
     publicacion.save()
-    notificar(publicacion,1)
+    if(not publicacion.activo):
+        notificar(publicacion,1)
     return JsonResponse({'activo': publicacion.activo})
 
 from django.conf import settings
@@ -341,7 +351,7 @@ def vista_auxiliar_email(request, publicacion_id):
     #razon: 3 - es para otros estados
     context = {
         'publicacion': publicacion,
-        'cambio': 2,
+        'cambio': 3,
         'razon': 'No cumple con nuestras normas de seguridad', 
         'from_email':from_email
     }

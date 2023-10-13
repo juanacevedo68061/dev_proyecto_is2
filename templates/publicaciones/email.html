@@ -187,7 +187,7 @@
                                 <tr>
                                   <td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="center">
 
-                                    <img align="center" border="0" src="{% static 'img/image-1.png' %}" alt="image"
+                                    <img align="center" border="0" src="https://cdn.templates.unlayer.com/assets/1677846458754-Asset%201.png" alt="image"
                                       title="image"
                                       style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 500px;"
                                       width="500" class="v-src-width v-src-max-width" />
@@ -252,23 +252,23 @@
 
                               <div class="v-text-align" style="font-family: 'Montserrat',sans-serif; color: white; font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
                                 {% if cambio == 1 %}<!--para inactivo-->
-                                  <p style="line-height: 140%;">Te informamos que tu publicación ha sido marcada como "inactiva".</p>
+                                  <p style="line-height: 140%;">Te informamos que tu publicación con el titulo {{publicacion.titulo}} ha sido marcada como "inactiva".</p>
                                   <br>
                                   <p style="line-height: 140%;">Si deseas obtener más detalles al respecto, por favor ponte en contacto con nuestro equipo de soporte.</p>
                                   <br>
                                   <p style="line-height: 140%;">Gracias por tu comprensión.</p>
                                 {% elif cambio == 2 %}<!--para rechazo-->
-                                  <p style="line-height: 140%;">Te informamos que tu publicación ha sido rechazada por la siguiente razón: {{ razon }}.</p>
+                                  <p style="line-height: 140%;">Te informamos que tu publicación con el titulo {{publicacion.titulo}} ha sido rechazada por la siguiente razón: {{ razon }}.</p>
                                   <br>
                                   <p style="line-height: 140%;">Si deseas obtener más detalles al respecto, por favor ponte en contacto con nuestro equipo de soporte.</p>
                                   <br>
                                   <p style="line-height: 140%;">Gracias por tu comprensión.</p>
                                 {% elif cambio == 3 %}<!--para otros estados-->
-                                <p style="line-height: 140%;">Te informamos que tu publicación ha cambiado al estado {{publicacion.estado}}.</p>
+                                <p style="line-height: 140%;">Te informamos que tu publicación con el titulo {{publicacion.titulo}} ahora tiene el estado {{publicacion.estado}}.</p>
                                   <br>
                                   <p style="line-height: 140%;">Si deseas obtener más detalles al respecto, por favor ponte en contacto con nuestro equipo de soporte.</p>
                                   <br>
-                                  <p style="line-height: 140%;">Gracias por tu comprensión.</p>
+                                  <p style="line-height: 140%;">Gracias por tu atención.</p>
                                 {% endif %}
                               </div>
 
@@ -330,7 +330,7 @@
                                 <tr>
                                   <td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="center">
 
-                                    <img align="center" border="0" src="{% static 'img/image-3.png' %}" alt="image"
+                                    <img align="center" border="0" src="http://cmsholdings.io/wp-content/uploads/2019/11/CMS-Logo-Full-Black-1-300x139.png" alt="image"
                                       title="image"
                                       style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 146.65px;"
                                       width="146.65" class="v-src-width v-src-max-width" />

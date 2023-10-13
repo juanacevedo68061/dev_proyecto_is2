@@ -12,6 +12,7 @@ class Publicacion_solo_text(models.Model):
         ('revision', 'Revisión'),
         ('publicar', 'Publicar'),
         ('publicado', 'Publicado'),
+        ('rechazado', 'Rechazado'),
     ]
 
     activo = models.BooleanField(default=True)
@@ -24,6 +25,7 @@ class Publicacion_solo_text(models.Model):
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     version = models.PositiveIntegerField(default=1)
     estado = models.CharField(max_length=20, choices=ESTADOS_CONTENIDO)
+    para_editor = models.BooleanField(default=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     programar_publicacion = models.DateTimeField(null=True, blank=True)

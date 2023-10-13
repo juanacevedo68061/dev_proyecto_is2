@@ -137,7 +137,8 @@ def rechazar_editor(request, publicacion_id):
         if 'confirmar_rechazo' in request.POST:
             razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
             print(razon)
-            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
+            publicacion.estado = 'rechazado'  # Cambiar el estado a "borrador"
+            publicacion.para_editor = False
             publicacion.save()
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
 
@@ -152,11 +153,23 @@ def rechazar_publicador(request, publicacion_id):
         if 'confirmar_rechazo' in request.POST:
             razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
             print(razon)
-            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
+            publicacion.estado = 'rechazado'  # Cambiar el estado a "rechazado"
+
+            destinatario = request.POST.get('destinatario')  # Obtener el valor del campo "destinatario" del formulario
+            if destinatario == '1':
+                publicacion.para_editor = True  # Para Editor
+            else:
+                publicacion.para_editor = False  # Para Autor
+                
             publicacion.save()
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
+    context = {
+        'publicacion': publicacion,
+        'redirect_url': redirect_url,
+        'canvan_publicador': True,
+    }
+    return render(request, 'publicaciones/rechazar.html', context)
 
-    return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
 @login_required
 def mostar_para_publicador(request, publicacion_id):

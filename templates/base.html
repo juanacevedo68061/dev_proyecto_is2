@@ -89,26 +89,39 @@
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-
-
-                        <div class="sb-sidenav-menu-heading">Principal</div>
-                        <a class="nav-link" href="/">
-                            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
-                            Publicaciones
-                        </a>
+                        
+                            <div class="sb-sidenav-menu-heading">Principal</div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseLayoutsPublicaciones" aria-expanded="false" aria-controls="collapseLayouts">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                    Publicaciones
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseLayoutsPublicaciones" aria-labelledby="headingOne"
+                                    data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="/">Inicio</a>        
+                                        {% if user.roles %}
+                                            {% for rol in user.roles.all %}
+                                                {% if rol.nombre == 'autor' %}
+                                                    <a class="nav-link" href="{% url 'publicaciones:crear_publicacion' %}">Crear Publicación</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </nav>
+                                </div>
                         
                         {% if user.roles %}
                             <div class="sb-sidenav-menu-heading">Acceso</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                                data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                data-bs-target="#collapseLayoutsKanban" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 kanban
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+                            <div class="collapse" id="collapseLayoutsKanban" aria-labelledby="headingOne"
                                 data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                 {% for rol in user.roles.all %}
@@ -123,6 +136,7 @@
                                 </nav>
                             </div>
                         {% endif %}
+                        
                         {% for rol in user.roles.all %}
                             {% if rol.nombre == 'administrador' %}
                                 <div class="sb-sidenav-menu-heading">Panel</div>

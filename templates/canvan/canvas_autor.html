@@ -1,111 +1,47 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
+{% load static %}
 {% block title %}Canvas Autor{% endblock %}
 {% block content %}
-  <style>
-    /* Estilos generales */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link href="{% static 'css/canvas.css' %}" rel="stylesheet" />
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+<br>
+<h1>Canvas del Autor</h1>
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    /* Estilos para el canvas Kanban */
-    .canvas {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .column {
-      flex: 1;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin: 10px;
-      background-color: #f9f9f9;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    .tarjetas {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .tarjeta {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin: 5px 0;
-      cursor: pointer;
-    }
-
-    /* Estilos para el botón */
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      text-decoration: none;      
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background-color: #007bff;
-    }
-
-    .btn-warning {
-      background-color: #ffc107;
-      color: #000;
-    }
-
-    .btn:hover {
-      opacity: 0.8;
-    }
-  </style>
-
-  <h1>Canvas del Autor</h1>
-    <!-- Botón para crear una nueva publicación -->
-    <a href="{% url 'publicaciones:crear_publicacion' %}" class="btn btn-primary">Crear Nueva Publicación</a><br><br>
-  <div class="canvas">
-    <!-- Columna "Haciendo" -->
-    <div class="column">
-      <h2>En Progreso</h2>
-      <ul class="tarjetas" id="haciendo-list">
+  <!-- Columna "En Progreso" -->
+  <div class="column progreso">
+    <h2>
+      En Progreso
+    </h2>
+    <ul class="tarjetas" id="en-progreso-list">
+      {% if en_progreso %}  
         {% for publicacion in en_progreso %}
-          <li class="tarjeta" id="{{ publicacion.id_publicacion }}">
-            <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">{{ publicacion.titulo }} ({{ publicacion.estado }})</a>
-          </li>
+        <li class="en_progreso" id="{{ publicacion.id_publicacion }}">
+          <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">{{ publicacion.titulo }} ( <span class="{% if publicacion.estado == 'rechazado' %}rojo{% else %}verde{% endif %}">{{ publicacion.estado }}</span> )</a>
+        </li>
         {% endfor %}
-      </ul>
-    </div>
+      {% else %}
+        <p class="completadas" style="color: gray;">No tiene publicaciones disponibles</p>
+      {% endif %}
+    </ul>
 
-    <!-- Columna "Completadas" -->
-    <div class="column">
-      <h2>Completadas</h2>
-      <ul class="tarjetas" id="hecho-list">
-        {% for publicacion in completadas %}
-          <li class="tarjeta" id="{{ publicacion.id_publicacion }}">
-            {{ publicacion.titulo }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
   </div>
-{% endblock %}
 
+  <!-- Columna "Completadas" -->
+  <div class="column completada">
+    <h2>Completadas</h2>
+    <ul class="tarjetas" id="hecho-list">
+      {% if completadas %}  
+        {% for registro in completadas %}
+        <li class="completadas" id="{{ publicacion.id_publicacion }}">
+          {{ registro.publicacion_titulo }} con estado {{registro.nuevo_estado}}
+        </li>
+        {% endfor %}
+      {% else %}
+        <p class="completadas" style="color: gray;">No tiene publicaciones completadas</p>
+      {% endif %}
+    </ul>
+  </div>
+
+{% endblock %}

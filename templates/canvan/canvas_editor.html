@@ -7,10 +7,11 @@
 <link href="{% static 'css/canvas.css' %}" rel="stylesheet" />
 <script src="{% static 'js/filtro.js' %}"></script>
 
+<br>
 <h1>Canvas del Editor</h1>
-<div class="canvas">
+
   <!-- Columna "En Progreso" -->
-  <div class="column">
+  <div class="column progreso">
     <h2>
       En Progreso
       <a href="#" id="filter-button"><i class="fas fa-filter"></i></a>
@@ -26,7 +27,7 @@
     <ul class="tarjetas" id="en-progreso-list">
       {% for publicacion in en_progreso %}
       <li class="en_progreso" id="{{ publicacion.id_publicacion }}" data-categoria="{{ publicacion.categoria.id }}">
-        <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">{{ publicacion.titulo }} ({{ publicacion.estado }})</a>
+        <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">{{ publicacion.titulo }} ( <span class="{% if publicacion.estado == 'rechazado' %}rojo{% else %}verde{% endif %}">{{ publicacion.estado }}</span> )</a>
       </li>
       {% endfor %}
     </ul>
@@ -36,15 +37,19 @@
   </div>
 
   <!-- Columna "Completadas" -->
-  <div class="column">
+  <div class="column completada">
     <h2>Completadas</h2>
     <ul class="tarjetas" id="hecho-list">
-      {% for publicacion in completadas %}
-      <li class="completadas" id="{{ publicacion.id_publicacion }}">
-        {{ publicacion.titulo }}
-      </li>
-      {% endfor %}
+      {% if completadas %}  
+        {% for registro in completadas %}
+          <li class="completadas" id="{{ publicacion.id_publicacion }}">
+            {{ registro.publicacion_titulo }} con estado {{registro.nuevo_estado}}
+          </li>
+        {% endfor %}
+      {% else %}
+        <p class="completadas" style="color: gray;">No tiene publicaciones completadas</p>
+      {% endif %}
     </ul>
   </div>
-</div>
+
 {% endblock %}

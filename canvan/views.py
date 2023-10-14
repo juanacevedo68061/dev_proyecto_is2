@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from publicaciones.models import Publicacion_solo_text
 from roles.decorators import rol_requerido
 from django.db.models import Q
+from administracion.models import Categoria
 
 
 @login_required
@@ -26,8 +27,9 @@ def canvas_editor(request):
     Q(estado='rechazado', para_editor=True, activo=True)
     )
     completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicar', activo=True)
+    categorias = Categoria.objects.all()
 
-    return render(request, 'canvan/canvas_editor.html', {'en_progreso': en_progreso, 'completadas': completadas})
+    return render(request, 'canvan/canvas_editor.html', {'en_progreso': en_progreso, 'completadas': completadas, 'categorias': categorias})
 
 @login_required
 @rol_requerido('publicador')
@@ -35,6 +37,8 @@ def canvas_publicador(request):
     # Obtener todas las publicaciones activas del publicador ordenadas por fecha de creación
     en_progreso = Publicacion_solo_text.objects.filter(estado='publicar', activo=True)
     completadas = Publicacion_solo_text.objects.filter(autor=request.user, estado='publicado', activo=True)
+    categorias = Categoria.objects.all()
 
-    return render(request, 'canvan/canvas_publicador.html', {'en_progreso': en_progreso, 'completadas': completadas})
+    return render(request, 'canvan/canvas_publicador.html', {'en_progreso': en_progreso, 'completadas': completadas, 'categorias': categorias})
+
 

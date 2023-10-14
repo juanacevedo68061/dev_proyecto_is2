@@ -1,0 +1,127 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para el canvas Kanban */
+.canvas {
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    max-height: 500px; /* Cambia esto al valor máximo deseado */
+    overflow-y: auto; /* Agrega barras de desplazamiento si es necesario */
+}
+
+#en-progreso-list {
+    max-height: 500px; /* Límite de altura para la columna "En Progreso" */
+}
+
+#hecho-list {
+    max-height: 500px; /* Límite de altura para la columna "Completadas" */
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.tarjetas {
+    list-style-type: none;
+    padding: 0;
+}
+
+.en_progreso {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+.completadas {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.en_progreso a {
+    text-decoration: none;
+}
+
+/* Estilos para el botón */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* Estilo para la descripción de la categoría */
+#categoria-description {
+    display: none;
+    color: gray;
+    margin-top: 10px;
+    text-align: center; /* Centra el texto en la descripción */
+    border: 1px solid #ccc; /* Agrega un borde a la descripción */
+    padding: 10px;
+    background-color: #fff;
+}
+
+/* Estilos para el menú desplegable de opciones */
+.dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    list-style-type: none;
+}
+
+.dropdown-menu a {
+    color: black; /* Texto negro */
+    text-decoration: none; /* Sin subrayado */
+    display: block;
+    padding: 5px;
+    transition: color 0.3s; /* Transición de color al pasar el ratón */
+}
+
+.dropdown-menu a:hover {
+    color: #007bff; /* Color azul al pasar el ratón */
+}

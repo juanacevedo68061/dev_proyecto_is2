@@ -8,7 +8,6 @@ import re
 import bleach
 
 def principal(request):
-    # Inicializa las publicaciones con la lista completa de publicaciones con estado publicado
     publicaciones = obtener_publicaciones(request)
 
     categorias = Categoria.objects.all()
@@ -24,7 +23,7 @@ def principal(request):
     return render(request, 'cms/principal.html', contexto)
 
 def buscador(request):    
-    query = request.GET.get('q', '')  # Obtén el valor de búsqueda de la solicitud GET
+    query = request.GET.get('q')
     publicaciones = obtener_publicaciones(request)
     avanzada_form = BusquedaAvanzadaForm()
 

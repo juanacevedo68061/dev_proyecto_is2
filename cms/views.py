@@ -79,10 +79,7 @@ def obtener_publicaciones(request):
     ).order_by('-fecha_creacion')
 
     # Verificamos si los campos están vacíos o no
-    if not any(categorias) and not fecha_publicacion and not autor:
-        print("NO ENTRO")
-    else:
-        print("SI ENTRO")
+    if not (not any(categorias) and not fecha_publicacion and not autor):
         
         if categorias:
             publicaciones = publicaciones.filter(categoria__in=categorias)

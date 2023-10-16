@@ -32,37 +32,9 @@
         <!-- Logo del Navbar -->
         <a class="navbar-brand ps-3" href="/">CMS</a>
 
-        <!--buscador temporal-->
-        <a href="{% url 'buscador' %}">Ir al buscador</a>
-
         <!-- Contenedor para centrar el buscador y el botón "+" -->
         <div class="mx-auto d-flex align-items-center">
-            <!-- Navbar Search (Búsqueda Normal) -->
-            <form class="form-inline">
-                <div class="input-group">
-                    <input class="form-control" type="text" name="q" placeholder="Buscar..." aria-label="Buscar..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-                </div>
-            </form>
-
-            <!-- Ícono de búsqueda avanzada como enlace -->
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link" id="btnMostrarBusquedaAvanzada" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-cog"></i>
-                    </a>
-                    <!-- Dropdown de búsqueda avanzada -->
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <!-- Contenido del formulario de búsqueda avanzada -->
-                        <h6 class="dropdown-header">Búsqueda Avanzada</h6>
-                        <form class="dropdown-item" method="GET" action="{% url 'principal' %}">
-                            {% csrf_token %}
-                            {{ busqueda_avanzada_form.as_p }}
-                            <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
-                        </form>
-                    </ul>
-                </li>        
-            </ul>
+            <!--aqui deberia ir el buscador-->
         </div>
 
         <!-- Navbar Dropdown (Usuario) -->
@@ -106,6 +78,7 @@
                                     data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link" href="/">Inicio</a>        
+                                        <a class="nav-link" href="{% url 'buscador' %}">Ir al buscador</a>
                                         {% if user.roles %}
                                             {% for rol in user.roles.all %}
                                                 {% if rol.nombre == 'autor' %}

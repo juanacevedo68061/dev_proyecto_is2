@@ -7,25 +7,12 @@ from django.shortcuts import render
 import re
 import bleach
 
-def principal(request):
-    publicaciones = obtener_publicaciones(request)
-
-    categorias = Categoria.objects.all()
-    usuarios = Usuario.objects.all()
-
-    contexto = {
-        'publicaciones': publicaciones,
-        'categorias': categorias,
-        'usuarios': usuarios,
-        'principal': True,
-    }
-
-    return render(request, 'cms/principal.html', contexto)
-
-def buscador(request):    
+def principal(request):    
     query = request.GET.get('q')
     publicaciones = obtener_publicaciones(request)
     avanzada_form = BusquedaAvanzadaForm()
+    categorias = Categoria.objects.all()
+    usuarios = Usuario.objects.all()
 
     if query:
         # Utilizamos expresiones regulares para buscar la consulta en el campo "texto"
@@ -43,10 +30,13 @@ def buscador(request):
         
     contexto = {
         'publicaciones': publicaciones,
-        'avanzada_form': avanzada_form
+        'avanzada_form': avanzada_form,
+        'categorias': categorias,
+        'usuarios': usuarios,
+        'principal': True,
     }
 
-    return render(request, 'cms/buscador.html', contexto)
+    return render(request, 'cms/principal.html', contexto)
 
 def obtener_publicaciones(request):
     categorias = request.GET.getlist('categorias')

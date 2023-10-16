@@ -4,9 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # ... otras URLs ...
     path('', views.principal, name='principal'),
-    path('buscador/', views.buscador, name='buscador'),
     path('tinymce/', include('tinymce.urls')),
     path('login/', include('login.urls', namespace='login')),
     path('administracion/', include('administracion.urls', namespace='administracion')),

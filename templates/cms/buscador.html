@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="{% static 'css/buscador.css' %}" rel="stylesheet" />
+
+<form id="search-form" action="{% url 'buscador' %}" method="GET" onsubmit="return submitBothForms()">
+    <div id="search-container">
+        <input type="text" id="q" name="q" placeholder="Buscar">
+        <i class="fas fa-search"></i> <!-- Icono de búsqueda -->
+    </div>
+
+    <div id="advanced-search-fields">
+        {{ avanzada_form.as_p }}
+    </div>
+</form>
+
+<script>
+document.getElementById("q").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        submitBothForms();
+    }
+});
+
+function submitBothForms() {
+    var q = document.getElementById("q");
+    var q_avanzada = document.getElementById("id_q");
+    q_avanzada.value = q.value;
+    document.getElementById("search-form").submit();
+    return true;
+}
+</script>
+
+{% if publicaciones %}
+<div id="results">
+    {% include 'cms/publicaciones.html' %}
+</div>
+{% else %}
+<p id="search-form">No hubo resultados</p>
+{% endif %}
+{% endblock %}

@@ -12,8 +12,8 @@ from .models import Registro
 def canvas_autor(request):
     # Obtener todas las publicaciones activas del autor ordenadas por fecha de creación
     en_progreso = Publicacion_solo_text.objects.filter(
-    Q(autor=request.user, estado='borrador', activo=True) |
-    Q(autor=request.user, estado='rechazado', para_editor=False, activo=True)
+    Q(autor=request.user, estado='borrador', activo=True, categoria__moderada=True) |
+    Q(autor=request.user, estado='rechazado', para_editor=False, activo=True, categoria__moderada=True)
     )
     completadas = Registro.objects.filter(canvas='autor', usuario=request.user).order_by('fecha_cambio')
 
@@ -24,9 +24,10 @@ def canvas_autor(request):
 def canvas_editor(request):
     
     en_progreso = Publicacion_solo_text.objects.filter(
-    Q(estado='revision', activo=True) |
-    Q(estado='rechazado', para_editor=True, activo=True)
+    Q(estado='revision', activo=True, categoria__moderada=True) |
+    Q(estado='rechazado', para_editor=True, activo=True, categoria__moderada=True)
     )
+
     completadas = Registro.objects.filter(canvas='editor', usuario=request.user).order_by('fecha_cambio')
     categorias = Categoria.objects.all()
 
@@ -36,7 +37,7 @@ def canvas_editor(request):
 @rol_requerido('publicador')
 def canvas_publicador(request):
     # Obtener todas las publicaciones activas del publicador ordenadas por fecha de creación
-    en_progreso = Publicacion_solo_text.objects.filter(estado='publicar', activo=True)
+    en_progreso = Publicacion_solo_text.objects.filter(estado='publicar', activo=True, categoria__moderada=True)
     completadas = Registro.objects.filter(canvas='publicador', usuario=request.user).order_by('fecha_cambio')
     categorias = Categoria.objects.all()
 

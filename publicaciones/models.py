@@ -28,6 +28,7 @@ class Publicacion_solo_text(models.Model):
     para_editor = models.BooleanField(default=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
+    fecha_publicacion = models.DateField(blank=True, null=True)
     programar_publicacion = models.DateTimeField(null=True, blank=True)
     vigencia_publicacion = models.DateTimeField(null=True, blank=True)
     suscriptores_exclusivos = models.BooleanField(default=True)

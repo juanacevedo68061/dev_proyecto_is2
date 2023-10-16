@@ -27,6 +27,11 @@ class PublicacionForm(forms.ModelForm):
 
 
 class BusquedaAvanzadaForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(attrs={'id': 'id_q'}),
+    )
+
     categorias = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,
@@ -50,6 +55,7 @@ class BusquedaAvanzadaForm(forms.Form):
             (c.id, c.nombre) for c in categorias_disponibles]
 
         # Puedes personalizar las etiquetas de campo y otros atributos si es necesario
+        self.fields['q'].label = 'Buscar'
         self.fields['categorias'].label = 'Categorías'
         self.fields['fecha_publicacion'].label = 'Fecha de Publicación'
         self.fields['autor'].label = 'Autor'

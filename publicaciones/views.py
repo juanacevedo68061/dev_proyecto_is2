@@ -15,6 +15,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from .utils import notificar
 from canvan.models import Registro
+from django.utils import timezone
 
 @login_required
 def crear_publicacion(request):
@@ -235,6 +236,7 @@ def mostar_para_publicador(request, publicacion_id):
         if 'publicar' in request.POST:
             # Cambiar el estado de la publicación a "publicado"
             publicacion.estado = 'publicado'
+            publicacion.fecha_publicacion = timezone.now().date()
             publicacion.save()
             notificar(publicacion,3)
             nuevo_registro = Registro.objects.create(

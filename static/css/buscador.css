@@ -21,6 +21,17 @@
         /* Margen superior para subir el buscador */
     }
 
+    #respuesta {
+        margin-top: -100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+    }
+
+    #respuestas {
+        margin-top: -200px;
+    }
     #search-container {
         position: relative;
     }

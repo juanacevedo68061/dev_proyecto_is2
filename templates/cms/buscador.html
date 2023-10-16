@@ -21,15 +21,15 @@
         </div>
     </div>
 </form>
-
-{% if publicaciones %}
-<div id="results">
-    {% include 'cms/publicaciones.html' %}
+<div id="respuestas">
+    {% if publicaciones %}
+        <div id="results">
+            {% include 'cms/publicaciones.html' %}
+        </div>
+    {% elif busqueda %}
+        <p id="respuesta">No hubo resultados</p>
+    {% endif %}
 </div>
-{% else %}
-<p id="search-form">No hubo resultados</p>
-{% endif %}
-
 <!-- Incluye el archivo JavaScript externo -->
 <script src="{% static 'js/buscador.js' %}"></script>
 {% endblock %}

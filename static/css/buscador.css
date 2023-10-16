@@ -27,7 +27,7 @@
 
     #filter-icon {
         position: absolute;
-        right: -20px;
+        right: -25px;
         /* Ajusta la cantidad para mover el icono fuera del rectángulo */
         top: 50%;
         /* Centra verticalmente el icono */
@@ -60,8 +60,11 @@
         /* Cambiar el color del ícono al pasar el mouse */
     }
 
-    /* Estilo para el formulario avanzado */
-    .avanzada-form-container {
-        margin-top: 10px;
-        /* Agregar margen superior para separar del campo de búsqueda */
+    /* Agregar espacio entre los iconos de búsqueda y fa-cog */
+    #search-icon {
+        margin-right: 20px;
+    }
+
+    #gris {
+        color: #777;
     }

@@ -5,13 +5,24 @@
 <link href="{% static 'css/buscador.css' %}" rel="stylesheet" />
 
 <form id="search-form" action="{% url 'buscador' %}" method="GET" onsubmit="return submitBothForms()">
+    {% csrf_token %}
     <div id="search-container">
         <input type="text" id="q" name="q" placeholder="Buscar">
-        <i class="fas fa-search"></i> <!-- Icono de búsqueda -->
-    </div>
+        <a id="gris" href="javascript:void(0);" onclick="submitBothForms()">
+            <i class="fas fa-search"></i>
+        </a>
+        
+        <div id="filter-icon">
+            <a class="nav-link" id="btnMostrarBusquedaAvanzada" href="#!" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-cog"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <!-- Contenido del formulario de búsqueda avanzada -->
+                <h6 class="dropdown-header">Búsqueda Avanzada</h6>
 
-    <div id="advanced-search-fields">
-        {{ avanzada_form.as_p }}
+                <div class="dropdown-item" >{{ avanzada_form.as_p }}</div>
+            </ul>
+        </div>
     </div>
 </form>
 

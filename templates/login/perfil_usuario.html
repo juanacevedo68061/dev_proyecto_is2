@@ -1,172 +1,60 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Perfil de {{ usuario.username }}{% endblock %}
 
 {% block content %}
-<style>
-  /* Estilos para el contenedor principal */
-  .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  /* Estilos para la imagen de perfil */
-  .profile-image {
-    width: 100px; /* Ajusta según tu diseño */
-    height: 100px;
-    border-radius: 50%; /* Hacerlo circular */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #e0e0e0; /* Fondo claro */
-    overflow: hidden; /* Ocultar cualquier contenido que exceda el círculo */
-}
-
-.profile-image img {
-    width: 150%;
-    height: 100%;
-    object-fit: cover; /* Asegura que la imagen cubra todo el espacio */
-}
-
-.profile-image i {
-    color: #7a7a7a !important; /* Color del icono */
-
-  }
-  /* Estilos para la información del usuario */
-  .user-info {
-    margin-top: 20px;
-  }
-
-  .user-info p {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  /* Estilos para los roles */
-  .roles {
-    margin-top: 20px;
-    font-size: 16px;
-  }
-
-  .roles label {
-    margin-right: 10px;
-  }
-
-  /* Estilos para los botones */
-  .profile-buttons {
-    margin-top: 20px;
-  }
-
-  .profile-buttons a {
-    display: inline-block;
-    margin: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-  }
-
-  .profile-buttons a:hover {
-    background-color: #0056b3;  
-  }
-  .lista
-  {
-    margin-top: 60px;
-  }
-
-  .sin_publicaciones
-  {
-    color: grey;
-    
-  }
-
-
-  .custom-nav {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 20px;
-        background-color: #ffffff;
-        border-radius: 25px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-
-    .custom-nav-item {
-        text-decoration: none;
-        color: #7a7a7a;
-        font-size: 16px;
-        padding: 5px 15px;
-        transition: color 0.2s;
-        position: relative; /* Necesario para el pseudo-elemento */
-    }
-
-    .custom-nav-item::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0; /* Inicialmente no visible */
-        height: 3px;
-        background-color: #3498db;
-        transition: width 0.3s; /* Transición suave */
-    }
-
-    .custom-nav-item:hover {
-        color: #3498db;
-    }
-
-    .custom-nav-item:hover::after {
-        width: 100%; /* Hacerlo totalmente visible al pasar el cursor */
-    }
-
-
-</style>
+<link href="{% static 'css/perfil_usuario.css' %}" rel="stylesheet" />
 
 <div class="profile-container">
   <div class="profile-image">
     {% if usuario.imagen %}
-      <img src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
+    <img src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
     {% else %}
-      <i class="fa-solid fa-user-tie"></i> <!-- Icono de persona si no hay foto de perfil -->
+    <i class="fas fa-user fa-fw fa-3x" style="color: white;"></i>
     {% endif %}
   </div>
 
   <div class="user-info">
-    <h1>{{ usuario.username }}</h1>
-    <p>Correo electrónico: {{ usuario.email }}</p>
+    <h1 style="font-weight: 700;">{{ usuario.username }}</h1>
+    <br>
+    <p><span style="font-weight: 600;">Correo electrónico:</span>&nbsp;&nbsp;<span style="color: #777;">{{ usuario.email }}</span></p>
   </div>
 
   {% if roles %}
-    <div class="roles">
-      <h2>Roles:</h2>
-      <p>
+  <div class="roles">
+    <p>
+      <span style="font-weight: 600;">Roles:</span>&nbsp;
+      <span style="color: #777;">
         {% for rol in roles %}
-          {{ rol.nombre }}
-          {% if not forloop.last %}, {% endif %} <!-- Coma entre roles excepto el último -->
+        {{ rol.nombre }}
+        {% if not forloop.last %}&nbsp;{% endif %} <!-- Coma entre roles excepto el último -->
         {% endfor %}
-      </p>
-    </div>
+    </span>
+    </p>
+  </div>
   {% else %}
-    <p>{{ mensaje_roles }}</p>
+  <p>{{ mensaje_roles }}</p>
   {% endif %}
 
-<div>
+  <div>
+    <br>
     <nav class="custom-nav">
-        <a class="custom-nav-item" href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
-        <a class="custom-nav-item" href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
+      <a class="custom-nav-item" href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
+      <a class="custom-nav-item" href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
     </nav>
+  </div>
+  <hr style="width: 56%;margin: 0 auto; margin-top: 100px;">
+  <h4 style="margin-top: 10px; padding-right: 500px;font-weight: 500; color:#777;">Mis publicaciones</h4>
+  <hr style="width: 56%;margin: 0 auto; margin-top: 10px;">
 </div>
-</div>
+
 <div class="lista">
   {% if publicaciones %}
-   {% include 'cms/publicaciones.html' %}
-  {% else %} 
-  <h5 class="sin_publicaciones"> No has publicado nada aún  </h5>
+    {% include 'cms/publicaciones.html' %}
+  {% else %}
+    <h5 class="sin_publicaciones"> No has publicado nada aún </h5>
   {% endif %}
+  
 </div>
 {% endblock %}
-

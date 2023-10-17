@@ -64,6 +64,7 @@
                     {% else %}
                     <i class="fas fa-user fa-fw"></i>
                     {% endif %}
+                    <span style="margin-left: 6px; font-weight: 600;">{{user.username}}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     {% if user.is_authenticated %}
@@ -143,12 +144,6 @@
 
                     </div>
                 </div>
-                {% if user.is_authenticated %}
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Conectado como:</div>
-                        {{user.username}}
-                    </div>
-                {% endif %}
             </nav>
         </div>
 

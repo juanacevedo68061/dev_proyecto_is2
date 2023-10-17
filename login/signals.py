@@ -32,7 +32,7 @@ def asignar_roles(sender, instance, created, **kwargs):
             instance.roles.add(admin_rol)
             #print(f'Permisos del rol de Administrador: {admin_rol.permisos.all()}')
 
-        autor_rol = Rol.objects.create(nombre='autor')
-        instance.roles.add(autor_rol)
+        #autor_rol = Rol.objects.create(nombre='autor')
+        #instance.roles.add(autor_rol)
         #print(f'Permisos del rol de Autor: {autor_rol.permisos.all()}')
         

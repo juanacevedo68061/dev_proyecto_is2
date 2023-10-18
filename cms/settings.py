@@ -16,7 +16,7 @@ DEBUG = True
 
 SITE_DOMAIN = '127.0.0.1'
 SITE_PORT = '8000'
-ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost']
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
 

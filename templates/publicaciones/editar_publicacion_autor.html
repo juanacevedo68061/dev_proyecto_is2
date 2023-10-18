@@ -14,7 +14,7 @@
     {% csrf_token %}
     {{ form.as_p }}
 
-    <button type="submit" class="btn btn-warning" name="accion" value="completar_borrador">Completar Borrador</button>
+    <button type="submit" class="btn btn-warning" name="accion" value="completar_borrador">Completar</button>
     <button type="submit" class="btn btn-primary" name="accion" value="guardar">Guardar Cambios</button>
     <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-secondary">Cancelar</a>
   </form>

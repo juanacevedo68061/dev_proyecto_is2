@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="container">
-    <h1>Editar Categoría</h1>
+<style>
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        /* Centra el contenido horizontalmente */
+        padding: 20px;
+    }
+</style>
 
+<div class="container">
+    <br>
+    <h1>Editar Categoría</h1>
+    <br><br>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        <br><br>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{% url 'administracion:gestion_categorias' %}" class="btn btn-secondary">Cancelar</a>
     </form>
-
-    <a href="{% url 'administracion:listar_categorias' %}" class="btn btn-secondary">Cancelar</a>
 </div>
 {% endblock %}

@@ -135,7 +135,7 @@ LOGIN_REDIRECT_URL = 'login:perfil'  # Configura la URL de redirección después
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
-    "width": "960px",
+    "width": "780px",
     "menubar": "file edit view insert format tools table help",
     "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
     "fullscreen insertdatetime media table paste code help wordcount spellchecker",

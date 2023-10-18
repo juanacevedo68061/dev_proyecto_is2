@@ -2881,7 +2881,7 @@ textarea.form-control-lg {
   border-top: 0.5px solid rgba(0, 0, 0, 0.125);
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.125);
   border-right: 0.5px solid rgba(0, 0, 0, 0.125);
-  border-left: 0.5px solid white;
+  border-left: 0.5px solid rgba(0, 0, 0, 0.125);
 }
 
 .btn-secondary {

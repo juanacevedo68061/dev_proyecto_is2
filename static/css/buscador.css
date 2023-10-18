@@ -3,9 +3,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Centrar horizontalmente */
-        height: 80vh;
-        /* Reduje la altura para subir el buscador */
         color:#777;
     }
 

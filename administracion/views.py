@@ -28,7 +28,7 @@ def panel(request):
 @rol_requerido('administrador')
 @permiso_requerido
 @login_required
-def listar_categorias(request):
+def gestion_categorias(request):
     """
     Vista para listar categorías.
 
@@ -39,7 +39,7 @@ def listar_categorias(request):
         HttpResponse: Muestra la lista de categorías.
     """
     categorias = Categoria.objects.all()
-    return render(request, 'administracion/listar_categorias.html', {'categorias': categorias})
+    return render(request, 'administracion/gestion_categorias.html', {'categorias': categorias})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -61,7 +61,7 @@ def crear_categoria(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha creado correctamente.')
-            redirect_url = reverse('administracion:listar_categorias')
+            redirect_url = reverse('administracion:gestion_categorias')
         else:
             messages.error(request, 'Hubo un problema al crear la categoría. Por favor, verifica los datos ingresados.')
             redirect_url = request.path
@@ -91,7 +91,7 @@ def editar_categoria(request, categoria_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha actualizado correctamente.')
-            return redirect('administracion:listar_categorias')
+            return redirect('administracion:gestion_categorias')
         else:
             messages.error(request, 'Hubo un problema al actualizar la categoría. Por favor, verifica los datos ingresados.')
     else:
@@ -117,7 +117,7 @@ def eliminar_categoria(request, categoria_id):
     if request.method == 'POST':
         categoria.delete()
         messages.success(request, 'La categoría se ha eliminado correctamente.')
-        return redirect('administracion:listar_categorias')
+        return redirect('administracion:gestion_categorias')
     return render(request, 'administracion/eliminar_categoria.html', {'categoria': categoria})
 
 @rol_requerido('administrador')

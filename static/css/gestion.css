@@ -1,0 +1,46 @@
+.container {
+    max-width: 1000px;
+    /* Establece el ancho máximo que desees */
+    margin: 0 auto;
+    /* Centra el contenido horizontalmente */
+    padding: 20px;
+}
+
+.custom-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.custom-nav-item {
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    padding: 5px 15px;
+    transition: color 0.2s;
+    position: relative;
+    font-weight: 650;
+}
+
+.custom-nav-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: #3498db;
+    transition: width 0.3s;
+}
+
+.custom-nav-item:hover {
+    color: #3498db;
+}
+
+.custom-nav-item:hover::after {
+    width: 100%;
+}

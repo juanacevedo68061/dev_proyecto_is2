@@ -1,23 +1,11 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<link href="{% static 'css/gestion.css' %}" rel="stylesheet" />
+
 <div class="container">
+    <br>
     <h1>Gestión de Usuarios</h1>
-
-    <style>
-        /* Estilo para el contenedor de los botones */
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        /* Estilo para los botones */
-        .user-button {
-            flex: 1; /* Distribuye el espacio de manera uniforme entre los botones */
-            min-width: 120px; /* Tamaño fijo mínimo para los botones */
-            margin: 5px; /* Espacio entre botones */
-        }
-    </style>
 
     {% if usuarios %}
     <table class="table table-striped">
@@ -26,7 +14,6 @@
                 <th>Nombre de Usuario</th>
                 <th>Correo Electrónico</th>
                 <th>Roles</th>
-                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -36,17 +23,26 @@
                 <td>{{ usuario.email }}</td>
                 <td>
                     {% for rol in usuario.roles.all %}
-                        {{ rol.nombre }}
-                        {% if not forloop.last %}, {% endif %}
+                    {{ rol.nombre }}
+                    {% if not forloop.last %}, {% endif %}
                     {% endfor %}
                 </td>
-                <td>
-                    <div class="button-container">
-                        <a href="{% url 'administracion:eliminar_usuario' usuario.id %}" class="btn btn-sm btn-danger user-button">Eliminar Usuario</a>
-                        <a href="{% url 'administracion:asignar_roles_usuario' usuario.id %}" class="btn btn-sm btn-success user-button">Asignar Roles</a>
-                        <a href="{% url 'administracion:eliminar_roles_usuario' usuario.id %}" class="btn btn-sm btn-danger user-button">Eliminar Roles</a>
-                        <a href="{% url 'administracion:agregar_permisos_roles_usuario' usuario.id %}" class="btn btn-sm btn-warning user-button">Agregar Permisos</a>
-                        <a href="{% url 'administracion:eliminar_permisos_roles_usuario' usuario.id %}" class="btn btn-sm btn-danger user-button">Eliminar Permisos</a>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div>
+                        <nav class="custom-nav">
+                            <a href="{% url 'administracion:eliminar_usuario' usuario.id %}"
+                                class="custom-nav-item">Eliminar Usuario</a>
+                            <a href="{% url 'administracion:asignar_roles_usuario' usuario.id %}"
+                                class="custom-nav-item">Asignar Roles</a>
+                            <a href="{% url 'administracion:eliminar_roles_usuario' usuario.id %}"
+                                class="custom-nav-item">Eliminar Roles</a>
+                            <a href="{% url 'administracion:agregar_permisos_roles_usuario' usuario.id %}"
+                                class="custom-nav-item">Agregar Permisos</a>
+                            <a href="{% url 'administracion:eliminar_permisos_roles_usuario' usuario.id %}"
+                                class="custom-nav-item">Eliminar Permisos</a>
+                        </nav>
                     </div>
                 </td>
             </tr>
@@ -56,6 +52,7 @@
     {% else %}
     <p>No hay usuarios disponibles.</p>
     {% endif %}
+    <a href="{% url 'administracion:panel' %}" class="boton-principal">Volver al panel</a>
 </div>
-<a href="{% url 'administracion:panel' %}" class="boton-principal">Volver al panel</a>
+
 {% endblock %}

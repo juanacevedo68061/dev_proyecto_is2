@@ -17,8 +17,7 @@ class Usuario(AbstractUser):
     imagen = models.ImageField(upload_to='profile_images', blank=True, null=True)
     roles = models.ManyToManyField(Rol, related_name='usuarios')
     suscriptor = models.BooleanField(default=False)
-    rol_activo = models.ForeignKey(Rol, on_delete=models.SET_NULL, null=True, blank=True, related_name='usuarios_activos')
-
+    
     def __str__(self):
         return self.username
 

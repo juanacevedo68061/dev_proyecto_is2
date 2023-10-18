@@ -9,7 +9,7 @@
 <div class="profile-container">
   <div class="profile-image">
     {% if usuario.imagen %}
-    <img src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
+    <img id="imagen-de-perfil" src="{{ usuario.imagen.url }}" alt="Imagen de perfil">
     {% else %}
     <i class="fas fa-user fa-fw fa-3x" style="color: white;"></i>
     {% endif %}
@@ -40,7 +40,37 @@
   <div>
     <br>
     <nav class="custom-nav">
-      <a class="custom-nav-item" href="{% url 'login:cargar_imagen' %}">Cambiar Foto de Perfil</a>
+      <label for="imagen-input" class="custom-nav-item" style="cursor: pointer;">
+        Cambiar Foto de Perfil
+    </label>
+    <input type="file" id="imagen-input" name="imagen" style="display: none;" accept="image/*">
+    
+    <script>
+    document.getElementById('imagen-input').addEventListener('change', function() {
+        var fileInput = this;
+        if (fileInput.files.length > 0) {
+            var formData = new FormData();
+            formData.append('imagen', fileInput.files[0]);
+            fetch("{% url 'login:cargar_imagen' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    // La imagen se cargó exitosamente.
+                    // Puedes redirigir o realizar alguna otra acción si es necesario.
+                    window.location.href = "{% url 'login:perfil' %}";
+                } else {
+                    // Manejar errores si es necesario.
+                }
+            });
+        }
+    });
+    </script>
+    
       <a class="custom-nav-item" href="{% url 'login:perfil_actualizar' %}">Actualizar Perfil</a>
     </nav>
   </div>

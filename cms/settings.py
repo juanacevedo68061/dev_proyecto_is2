@@ -144,6 +144,8 @@ TINYMCE_DEFAULT_CONFIG = {
     "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
+    "images_upload_url": '/tinymce/upload/',
+    "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",
     "content_css": [

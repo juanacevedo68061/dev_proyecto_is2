@@ -6,6 +6,9 @@ from administracion.models import Categoria
 from login.models import Usuario
 from django.shortcuts import render
 
+from django.views.decorators.csrf import csrf_exempt #solucion temporal
+
+
 def principal(request):
     # Inicializa las publicaciones con la lista completa de publicaciones moderadas
     publicaciones = Publicacion_solo_text.objects.filter(
@@ -74,3 +77,16 @@ def busqueda_avanzada(publicaciones, formulario):
         publicaciones = publicaciones.filter(autor__username=autor)
 
     return publicaciones
+
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+
+@csrf_exempt #solucion temporal
+def tinymce_upload(request):
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(file.name, file)
+        file_url = fs.url(filename)
+        return JsonResponse({'location': file_url})
+    return JsonResponse({'error': 'Failed to upload image.'})

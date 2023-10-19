@@ -3,7 +3,6 @@ from django.test import TestCase
 from administracion.forms import CategoriaForm, AsignarPermisosForm, EliminarPermisosForm
 from roles.models import Rol
 from django.contrib.auth.models import Permission
-from login.models import Usuario
 
 class CategoriaFormTest(TestCase):
     def test_categoria_form_valid(self):

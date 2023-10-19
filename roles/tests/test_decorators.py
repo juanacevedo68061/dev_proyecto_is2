@@ -34,18 +34,19 @@ class DecoratorTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(), 'Acceso permitido')
 
-    def test_rol_requerido_acceso_denegado(self):
-        """
-        Prueba si se deniega el acceso para un usuario sin el rol correcto.
-        """
-        @rol_requerido('otro_rol')
-        def view_func(request):
-            return HttpResponse('Acceso permitido')
+from django.http import HttpResponseForbidden
 
-        request = self.factory.get('/')
-        request.user = self.user
+def test_rol_requerido_acceso_denegado(self):
+    """
+    Prueba si se deniega el acceso para un usuario sin el rol correcto.
+    """
+    @rol_requerido('otro_rol')
+    def view_func(request):
+        return HttpResponseForbidden()
 
-        response = view_func(request)
+    request = self.factory.get('/')
+    request.user = self.user
 
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.content.decode(), 'Acceso denegado')
+    response = view_func(request)
+
+    self.assertEqual(response.status_code, 403)

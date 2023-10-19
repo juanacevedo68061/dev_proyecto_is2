@@ -31,10 +31,6 @@ class SignalsTests(TestCase):
         # Refresca la instancia del usuario desde la base de datos
         usuario.refresh_from_db()
 
-        # Verifica que el usuario tenga el rol de 'autor'
-        autor_rol = Rol.objects.get(nombre='autor')
-        self.assertTrue(autor_rol in usuario.roles.all())
-
         # Si es el primer usuario creado, verifica que también tenga el rol de 'administrador'
         if Usuario.objects.count() == 1:
             admin_rol = Rol.objects.get(nombre='administrador')

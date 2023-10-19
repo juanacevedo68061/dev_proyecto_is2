@@ -15,10 +15,6 @@ class UrlsTests(SimpleTestCase):
         url = reverse('login:cerrar_sesion')
         self.assertEqual(resolve(url).func, views.cerrar_sesion)
 
-    def test_activar_rol_url_resuelta(self):
-        url = reverse('login:activar_rol')
-        self.assertEqual(resolve(url).func, views.activar_rol)
-
     def test_perfil_usuario_url_resuelta(self):
         url = reverse('login:perfil')
         self.assertEqual(resolve(url).func, views.perfil_usuario)

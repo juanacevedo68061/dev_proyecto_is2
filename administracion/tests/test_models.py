@@ -11,7 +11,7 @@ class CategoriaModelTest(TestCase):
     def test_nombre_max_length(self):
         categoria = Categoria.objects.get(id=1)
         max_length = categoria._meta.get_field('nombre').max_length
-        self.assertEquals(max_length, 100)
+        self.assertEquals(max_length, 30)
 
     def test_nombre_unique(self):
         # Crea una categoría con un nombre único

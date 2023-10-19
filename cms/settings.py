@@ -16,7 +16,7 @@ DEBUG = True
 
 SITE_DOMAIN = '127.0.0.1'
 SITE_PORT = '8000'
-ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost']
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
 
@@ -144,6 +144,8 @@ TINYMCE_DEFAULT_CONFIG = {
     "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
+    "images_upload_url": '/tinymce/upload/',
+    "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",
     "content_css": [

@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.principal, name='principal'),
+    path('tinymce/upload/', views.tinymce_upload, name='tinymce_upload'),  # Add this line for image uploads
     path('tinymce/', include('tinymce.urls')),
     path('login/', include('login.urls', namespace='login')),
     path('administracion/', include('administracion.urls', namespace='administracion')),

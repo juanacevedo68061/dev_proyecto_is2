@@ -1,7 +1,7 @@
 Publicaciones App
 =================
 
-Models
+Modelos
 ------
 
 .. automodule:: publicaciones.models
@@ -9,7 +9,7 @@ Models
    :undoc-members:
    :show-inheritance:
 
-Views
+Vistas
 -----
 
 .. automodule:: publicaciones.views

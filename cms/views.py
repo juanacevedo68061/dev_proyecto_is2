@@ -8,6 +8,7 @@ import re
 import bleach
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 def principal(request):    
     query = request.GET.get('q')
@@ -72,3 +73,15 @@ def publicaciones_categoria(request, categoria_id):
     
     
     return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+
+@csrf_exempt #solucion temporal
+def tinymce_upload(request):
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(file.name, file)
+        file_url = fs.url(filename)
+        return JsonResponse({'location': file_url})
+    return JsonResponse({'error': 'Failed to upload image.'})

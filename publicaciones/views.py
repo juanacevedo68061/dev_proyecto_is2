@@ -1,3 +1,12 @@
+"""
+Módulo views.py para gestionar las publicaciones
+=============================================
+Este módulo contiene las vistas relacionadas con la gestión de publicaciones, 
+incluyendo la creación, edición, eliminación, visualización y funcionalidades adicionales 
+como generación de códigos QR y gestión de likes/dislikes.
+"""
+
+
 import qrcode
 from io import BytesIO
 from PIL import Image
@@ -19,6 +28,12 @@ from django.utils import timezone
 
 @login_required
 def crear_publicacion(request):
+    """
+    Crea una nueva publicación.
+
+    :param request: Objeto HttpRequest.
+    :return: Objeto HttpResponse.
+    """
     categorias = Categoria.objects.all()
     form = PublicacionForm()
     redirect_url = None  # Variable para almacenar la URL de redirección
@@ -65,6 +80,14 @@ def crear_publicacion(request):
 
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
+    """
+    Edita una publicación existente por parte del autor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a editar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
@@ -102,6 +125,14 @@ def editar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def eliminar_publicacion_autor(request, publicacion_id):
+    """
+    Elimina una publicación existente.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a eliminar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
@@ -116,6 +147,15 @@ def eliminar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
+
+    """
+    Edita una publicación existente por parte del editor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a editar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
@@ -151,6 +191,15 @@ def editar_publicacion_editor(request, publicacion_id):
 
 @login_required
 def rechazar_editor(request, publicacion_id):
+
+    """
+    Rechaza una publicación por parte del editor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a rechazar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
 
@@ -171,6 +220,15 @@ def rechazar_editor(request, publicacion_id):
 
 @login_required
 def rechazar_publicador(request, publicacion_id):
+
+    """
+    Rechaza una publicación por parte del publicador.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a rechazar.
+    :return: Objeto HttpResponse.
+    """
+    
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
 
@@ -203,6 +261,15 @@ def rechazar_publicador(request, publicacion_id):
 
 @login_required
 def mostar_para_publicador(request, publicacion_id):
+
+    """
+    Muestra una publicación para el publicador.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a mostrar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
@@ -230,6 +297,15 @@ def mostar_para_publicador(request, publicacion_id):
     )
 
 def mostrar_publicacion(request, publicacion_id):
+
+    """
+    Muestra una publicación al usuario.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a mostrar.
+    :return: Objeto HttpResponse.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
     ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
@@ -248,6 +324,15 @@ def mostrar_publicacion(request, publicacion_id):
     return render(request, 'publicaciones/mostrar_publicacion.html', context)
 
 def generar_qr(request, publicacion_id):
+
+    """
+    Genera un código QR que redirige a una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación para la que se genera el QR.
+    :return: Objeto HttpResponse con la imagen del código QR.
+    """
+
     # Obtén la publicación con el ID proporcionado
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
 
@@ -275,6 +360,15 @@ def generar_qr(request, publicacion_id):
     return response
 
 def compartidas(request, publicacion_id):
+
+    """
+    Gestiona el contador de veces que una publicación ha sido compartida.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación compartida.
+    :return: Objeto JsonResponse con la cantidad de veces compartida.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     # Incrementa el contador de compartidas
     publicacion.shared += 1
@@ -287,6 +381,15 @@ def compartidas(request, publicacion_id):
 
 @login_required
 def like(request, publicacion_id):
+
+    """
+    Gestiona los likes de una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación que recibe el like.
+    :return: Objeto JsonResponse con la cantidad de likes y el estado del like del usuario.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     usuario = request.user
     tiene_dislike = False
@@ -320,6 +423,15 @@ def like(request, publicacion_id):
 
 @login_required
 def dislike(request, publicacion_id):
+
+    """
+    Gestiona los dislikes de una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación que recibe el dislike.
+    :return: Objeto JsonResponse con la cantidad de dislikes y el estado del dislike del usuario.
+    """
+
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     usuario = request.user
     tiene_like = False

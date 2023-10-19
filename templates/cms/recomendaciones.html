@@ -1,16 +1,28 @@
 {% block content %}
 
-<!-- Barra lateral -->
+<style>
+    .categoria-item {
+        text-decoration: none; /* Elimina el subrayado del enlace */
+        color: black;          /* Establece el color del texto en negro */
+        transition: color 0.2s; /* Agrega una transición suave para el cambio de color */
+    }
+    
+    .categoria-item a:hover {
+        color: blue;           /* Cambia el color del texto a azul al pasar el mouse por encima */
+    }
+</style>
+        
 <div class="barra-lateral">
     <div class="fijado">
         {%if categorias%}
         <!-- Categorías recomendadas -->
         <div class="categorias-recomendadas">
             <h3>Categorías Recomendadas</h3>
+            <br>
             <ul>
                 <!-- Itera sobre las primeras 8 categorías del contexto -->
                 {% for categoria in categorias|slice:":8" %}
-                <li>{{ categoria }}</li>
+                <li class="categoria-item"><a class="categoria-item" href="{% url 'publicaciones_categoria' categoria.id %}">{{ categoria }}</a></li>
                 {% endfor %}
             </ul>
         </div>

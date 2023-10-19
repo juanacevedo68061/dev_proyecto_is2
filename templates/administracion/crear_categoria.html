@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
-
 {% block content %}
+<style>
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        /* Centra el contenido horizontalmente */
+        padding: 20px;
+    }
+</style>
 <div class="container">
     <h1>Crear Nueva Categoría</h1>
 
@@ -8,8 +15,9 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Crear</button>
+        <a href="{% url 'administracion:gestion_categorias' %}" class="btn btn-secondary">Cancelar</a>
     </form>
 
-    <a href="{% url 'administracion:listar_categorias' %}" class="btn btn-secondary">Volver a la lista de Categorías</a>
+    
 </div>
 {% endblock %}

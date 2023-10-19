@@ -6,6 +6,8 @@ from login.models import Usuario
 from django.shortcuts import render
 import re
 import bleach
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 def principal(request):    
     query = request.GET.get('q')
@@ -61,3 +63,15 @@ def obtener_publicaciones(request):
             publicaciones = [publicacion for publicacion in publicaciones if re.search(re.escape(autor), publicacion.autor.username, re.IGNORECASE)]
 
     return publicaciones
+
+def publicaciones_categoria(request, categoria_id):
+    categoria = get_object_or_404(Categoria, id=categoria_id)
+    publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
+    categorias = Categoria.objects.all()
+    redirect_url = None
+    
+    if not publicaciones:
+        messages.error(request, "No se encontraron publicaciones en esta categoría.")
+        redirect_url = "/"  # Redirige al usuario a la página principal
+    
+    return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })

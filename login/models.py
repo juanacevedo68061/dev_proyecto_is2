@@ -14,6 +14,11 @@ class Usuario(AbstractUser):
     Métodos:
         __str__: Representación en cadena del usuario (nombre de usuario).
     """
+    username = models.CharField(
+        max_length=20,
+        unique=True,
+        help_text='Máximo 20 caracteres. Requerido. Letras, dígitos y @/./+/-/_ solamente.',
+    )
     imagen = models.ImageField(upload_to='profile_images', blank=True, null=True)
     roles = models.ManyToManyField(Rol, related_name='usuarios')
     suscriptor = models.BooleanField(default=False)

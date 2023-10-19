@@ -4,7 +4,7 @@
 <link href="{% static 'css/publicaciones.css' %}" rel="stylesheet" />
 
 <div class="contenedor">
-  <div class="publicaciones">
+  <div>
     <!-- Agrega el enlace para cargar Font Awesome si no lo has hecho aún -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     {% if publicaciones %}
@@ -80,10 +80,10 @@
         
       {% endfor %}
     {% else %}
-      <div class="centrar-verticalmente">
-        <p class="texto-gris">
-          <i class="fas fa-frown fa-5x" aria-label="No hay publicaciones"></i>
-        </p>
+      <br><br><br><br>
+      <div class="container">
+        <i class="fas fa-frown fa-7x" style ="color: #999; padding: 100px;"></i><br><br><br>      
+        <h3 style ="color: #999; margin-top: -130px; padding: 25px;">No hay publicaciones</h3>
       </div>
     {% endif %}
 

@@ -146,13 +146,14 @@ def perfil_actualizar(request):
         Redirecciona a la vista 'perfil_usuario' después de actualizar el perfil.
     """
     usuario = request.user
-
+    redirect_url = None
     if request.method == 'POST':
         formulario = FormularioActualizarPerfil(request.POST, instance=usuario)
         if formulario.is_valid():
             contraseña_actual = formulario.cleaned_data.get('contraseña_actual')
             if contraseña_actual and not usuario.check_password(contraseña_actual):
                 messages.error(request, 'La contraseña actual no es correcta.')
+                redirect_url=request.path
             else:
                 nueva_contraseña1 = formulario.cleaned_data.get('nueva_contraseña1')
                 nueva_contraseña2 = formulario.cleaned_data.get('nueva_contraseña2')
@@ -160,13 +161,13 @@ def perfil_actualizar(request):
                     usuario.set_password(nueva_contraseña1)
                 formulario.save()
                 messages.success(request, 'Perfil actualizado exitosamente.')
-                return redirect('login:perfil')
+                redirect_url = reverse('login:perfil')
     else:
         formulario = FormularioActualizarPerfil(instance=usuario)
-
     contexto = {
-        'formulario': formulario,
+        'form': formulario,
         'usuario': usuario,
+        'redirect_url': redirect_url
     }
 
     return render(request, 'login/perfil_actualizar.html', contexto)

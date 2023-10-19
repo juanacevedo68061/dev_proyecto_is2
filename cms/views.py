@@ -70,8 +70,5 @@ def publicaciones_categoria(request, categoria_id):
     categorias = Categoria.objects.all()
     redirect_url = None
     
-    if not publicaciones:
-        messages.error(request, "No se encontraron publicaciones en esta categoría.")
-        redirect_url = "/"  # Redirige al usuario a la página principal
     
     return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })

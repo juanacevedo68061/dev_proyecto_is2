@@ -26,11 +26,6 @@ class AsignarPermisosForm(forms.Form):
     Este formulario se utiliza para asignar permisos específicos a roles de usuario
     en el sistema.
     """
-    rol = forms.ModelChoiceField(
-        queryset=Rol.objects.all(),
-        label='Rol',
-        required=True
-    )
     permisos = forms.MultipleChoiceField(
         choices=(),
         widget=forms.CheckboxSelectMultiple,
@@ -40,24 +35,33 @@ class AsignarPermisosForm(forms.Form):
     def __init__(self, *args, roles_asignados=None, **kwargs):
         super(AsignarPermisosForm, self).__init__(*args, **kwargs)
 
-        # Limitar las opciones de roles a los roles asignados al usuario
         if roles_asignados:
-            self.fields['rol'].queryset = roles_asignados
+            # Limitar las opciones de roles a los roles asignados al usuario
+            self.fields['rol'] = forms.ModelChoiceField(
+                queryset=roles_asignados,
+                label='Rol',
+                required=True
+            )
 
-        # Obtener todos los nombres de permisos en la clase Rol
-        nombres_permisos_roles = []
-        for rol_permisos in Rol.PERMISOS.values():
-            nombres_permisos_roles.extend(rol_permisos)
+            # Obtener todos los nombres de permisos en la clase Rol
+            nombres_permisos_roles = []
+            for rol_permisos in Rol.PERMISOS.values():
+                nombres_permisos_roles.extend(rol_permisos)
 
-        # Obtener los permisos asignados a los roles del usuario
-        permisos_asignados = Permission.objects.filter(rol__in=roles_asignados).values_list('codename', flat=True)
+            # Obtener los permisos asignados a los roles del usuario
+            permisos_asignados = Permission.objects.filter(rol__in=roles_asignados).values_list('codename', flat=True)
 
-        # Obtener los nombres de permisos disponibles excluyendo los ya asignados
-        permisos_disponibles = set(nombres_permisos_roles) - set(permisos_asignados)
+            # Obtener los nombres de permisos disponibles excluyendo los ya asignados
+            permisos_disponibles = set(nombres_permisos_roles) - set(permisos_asignados)
 
-        # Configurar las opciones del campo permisos
-        self.fields['permisos'].choices = [(nombre, nombre) for nombre in permisos_disponibles]
-
+            # Configurar las opciones del campo permisos
+            self.fields['permisos'].choices = [(nombre, nombre) for nombre in permisos_disponibles]
+        else:
+            self.fields['rol'] = forms.ModelChoiceField(
+                queryset=Rol.objects.none(),  # Si no hay roles asignados, no mostrar ningún rol
+                label='Rol',
+                required=True
+            )
             
 class EliminarPermisosForm(forms.Form):
     """

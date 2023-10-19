@@ -24,8 +24,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'juan.acevedo68061@gmail.com'  # Tu dirección de correo de Gmail
-EMAIL_HOST_PASSWORD = 'rebk rysq pevu wewy'  # Tu contraseña de correo de Gmail (o usa variables de entorno)
+EMAIL_HOST_USER = 'cms.team.is2@gmail.com'  # Tu dirección de correo de Gmail
+EMAIL_HOST_PASSWORD = 'vseb krgh vskk zdch'  # Tu contraseña de correo de Gmail (o usa variables de entorno)
 
 # Application definition
 
@@ -135,7 +135,7 @@ LOGIN_REDIRECT_URL = 'login:perfil'  # Configura la URL de redirección después
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
-    "width": "960px",
+    "width": "780px",
     "menubar": "file edit view insert format tools table help",
     "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
     "fullscreen insertdatetime media table paste code help wordcount spellchecker",

@@ -12,3 +12,4 @@ openpyxl
 beautifulsoup4
 autopep8
 django-tinymce
+bleach

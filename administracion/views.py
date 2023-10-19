@@ -9,6 +9,7 @@ from roles.decorators import rol_requerido, permiso_requerido
 from roles.models import Rol
 from login.models import Usuario
 from django.urls import reverse
+from roles.forms import AgregarRolForm
 
 @rol_requerido('administrador')
 @login_required
@@ -28,7 +29,7 @@ def panel(request):
 @rol_requerido('administrador')
 @permiso_requerido
 @login_required
-def listar_categorias(request):
+def gestion_categorias(request):
     """
     Vista para listar categorías.
 
@@ -39,7 +40,7 @@ def listar_categorias(request):
         HttpResponse: Muestra la lista de categorías.
     """
     categorias = Categoria.objects.all()
-    return render(request, 'administracion/listar_categorias.html', {'categorias': categorias})
+    return render(request, 'administracion/gestion_categorias.html', {'categorias': categorias})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -61,7 +62,7 @@ def crear_categoria(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha creado correctamente.')
-            redirect_url = reverse('administracion:listar_categorias')
+            redirect_url = reverse('administracion:gestion_categorias')
         else:
             messages.error(request, 'Hubo un problema al crear la categoría. Por favor, verifica los datos ingresados.')
             redirect_url = request.path
@@ -91,7 +92,7 @@ def editar_categoria(request, categoria_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha actualizado correctamente.')
-            return redirect('administracion:listar_categorias')
+            return redirect('administracion:gestion_categorias')
         else:
             messages.error(request, 'Hubo un problema al actualizar la categoría. Por favor, verifica los datos ingresados.')
     else:
@@ -117,7 +118,7 @@ def eliminar_categoria(request, categoria_id):
     if request.method == 'POST':
         categoria.delete()
         messages.success(request, 'La categoría se ha eliminado correctamente.')
-        return redirect('administracion:listar_categorias')
+        return redirect('administracion:gestion_categorias')
     return render(request, 'administracion/eliminar_categoria.html', {'categoria': categoria})
 
 @rol_requerido('administrador')
@@ -289,8 +290,9 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
         usuario_id (int): El ID del usuario del que se eliminarán permisos de sus roles.
 
     Retorna:
-        HttpResponse: Una respuesta HTTP que redirige al administrador a la gestión de usuarios
-                      después de eliminar los permisos de los roles del usuario especificado.
+        HttpResponse: 
+        Una respuesta HTTP que redirige al administrador a la gestión de usuarios
+        después de eliminar los permisos de los roles del usuario especificado.
 
     """
     usuario = get_object_or_404(Usuario, id=usuario_id)
@@ -315,3 +317,26 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
         'permisos_seleccionados': permisos_seleccionados,
         'form': form,
     })
+
+@rol_requerido('administrador')
+@permiso_requerido
+@login_required
+def crear_rol(request):
+    redirect_url = None
+    if request.method == 'POST':
+        form = AgregarRolForm(request.POST)
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
+            
+            nombre_minusculas = nombre.lower()  # Convierte todo a minúsculas
+            nombre_mayuscula = nombre.capitalize()  # Pone la primera letra en mayúscula
+            Rol.agregar_rol(nombre_minusculas, nombre_mayuscula)
+            messages.success(request, 'El Rol se ha creado correctamente.')
+            redirect_url = reverse('administracion:gestion_usuarios')
+        else:
+            messages.error(request, 'Hubo un problema al crear el Rol. Por favor, verifica los datos ingresados.')
+            redirect_url = request.path
+    else:
+        form = AgregarRolForm()
+
+    return render(request, 'administracion/crear_rol.html', {'form': form,'redirect_url': redirect_url})

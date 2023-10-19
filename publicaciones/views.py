@@ -2,7 +2,7 @@ import qrcode
 from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
@@ -14,6 +14,8 @@ import uuid
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .utils import notificar
+from canvan.models import Registro
+from django.utils import timezone
 
 @login_required
 def crear_publicacion(request):
@@ -38,17 +40,25 @@ def crear_publicacion(request):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
-                publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                
                 # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
                 publicacion.id_publicacion = uuid.uuid4()
                 # Genera la URL absoluta para la publicación
                 publicacion.url_publicacion = publicacion.get_absolute_url()
 
-                publicacion.save()
+                if(publicacion.categoria.moderada):
+                    publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                    publicacion.save()
+                else:
+                    publicacion.estado = 'publicado'
+                    publicacion.calcular_vigencia()
+                    print(publicacion.vigencia_tiempo)
+                
                 notificar(publicacion,3)
+                
+                registrar(request, publicacion,'autor')
+
                 messages.success(request, message)
-                redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
+                redirect_url = "/"
 
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
 
@@ -78,7 +88,10 @@ def editar_publicacion_autor(request, publicacion_id):
                 publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
 
                 publicacion.save()
+
                 notificar(publicacion,3)
+                registrar(request, publicacion, 'autor')
+
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
@@ -125,7 +138,10 @@ def editar_publicacion_editor(request, publicacion_id):
                 publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
 
                 publicacion.save()
+                
                 notificar(publicacion,3)
+                registrar(request, publicacion, 'editor')
+
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-editor')  
     else:
@@ -145,7 +161,10 @@ def rechazar_editor(request, publicacion_id):
             publicacion.para_editor = False
 
             publicacion.save()
+
             notificar(publicacion,2,razon)
+            registrar(request, publicacion, 'editor')
+
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
@@ -169,7 +188,10 @@ def rechazar_publicador(request, publicacion_id):
                 publicacion.para_editor = False  # Para Autor
             
             publicacion.save()
+
             notificar(publicacion,2,razon)
+            registrar(request, publicacion, 'publicador')
+
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
     context = {
         'publicacion': publicacion,
@@ -191,8 +213,12 @@ def mostar_para_publicador(request, publicacion_id):
         if 'publicar' in request.POST:
             # Cambiar el estado de la publicación a "publicado"
             publicacion.estado = 'publicado'
+            publicacion.fecha_publicacion = timezone.now().date()
             publicacion.save()
+            
             notificar(publicacion,3)
+            registrar(request, publicacion, 'publicador')
+
             message = 'La publicación ha sido publicada con éxito.'
             redirect_url = reverse('canvan:canvas-publicador')
             messages.success(request, message)
@@ -340,7 +366,20 @@ def estado(request, publicacion_id):
     publicacion.save()
     if(not publicacion.activo):
         notificar(publicacion,1)
+        registros_a_eliminar = Registro.objects.filter(usuario=request.user, publicacion_id=publicacion_id)
+        registros_a_eliminar.delete()
     return JsonResponse({'activo': publicacion.activo})
+
+@login_required
+def registrar(request, publicacion, canvas):
+    nuevo_registro = Registro.objects.create(
+        usuario=request.user,
+        publicacion_id=publicacion.id_publicacion,
+        publicacion_titulo=publicacion.titulo,
+        nuevo_estado=publicacion.estado,
+        canvas=canvas
+    )
+    nuevo_registro.save()
 
 from django.conf import settings
 def vista_auxiliar_email(request, publicacion_id):

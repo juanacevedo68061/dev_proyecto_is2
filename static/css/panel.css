@@ -1,0 +1,56 @@
+/* Estilos para el panel de administración */
+.admin-panel {
+    max-width: 400px;
+    margin: 100px auto;
+    /* Centra horizontalmente y agrega un espacio en la parte superior */
+    padding: 20px;
+    /* Agrega espaciado alrededor del contenido */
+    text-align: center;
+    /* Centra el contenido dentro del elemento */
+}
+
+.custom-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.custom-nav-item {
+    text-decoration: none;
+    color: #555;
+    font-size: 16px;
+    padding: 10px 10px;
+    transition: color 0.2s;
+    position: relative;
+    font-weight: 650;
+    /* Utiliza flexbox para centrar texto horizontal y verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-nav-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    /* Inicialmente no visible */
+    height: 3px;
+    background-color: #3498db;
+    transition: width 0.3s;
+    /* Transición suave */
+}
+
+.custom-nav-item:hover {
+    color: #3498db;
+}
+
+.custom-nav-item:hover::after {
+    width: 100%;
+    /* Hacerlo totalmente visible al pasar el cursor */
+}

@@ -45,17 +45,5 @@ class FormularioActualizarPerfil(forms.ModelForm):
             'email': 'Correo Electrónico'
         }
 
-class FormularioActivarRol(forms.ModelForm):
-    """Formulario para activar un rol para un usuario."""
-    class Meta:
-        model = Usuario
-        fields = ['rol_activo']
-
-class CargarImagenForm(forms.ModelForm):
-    class Meta:
-        model = Usuario
-        fields = ['imagen']
-
-    imagen = forms.FileInput(attrs={'accept': 'image/*'})
 
 

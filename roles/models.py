@@ -21,12 +21,16 @@ class Rol(models.Model):
     if table_exists:
         nombres_de_vistas = Vistas.obtener('administracion')
 
-    ROLES = (
+    ROLES = [
         ('autor', 'Autor'),
         ('editor', 'Editor'),
         ('publicador', 'Publicador'),
         ('administrador', 'Administrador'),
-    )
+    ]
+
+    @classmethod
+    def agregar_rol(cls, nombre, display):
+        cls.ROLES.append((nombre, display))
 
     PERMISOS = {
         'autor': [

@@ -51,18 +51,3 @@ class FormularioActualizarPerfil(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
-
-    def clean_username(self):
-        # Obtén el valor del campo 'username'
-        username = self.cleaned_data.get('username')
-        
-        # Verifica si el 'username' comienza con "@" y no contiene otros "@"
-        if not username.startswith('@') or username.count('@') != 1:
-            raise ValidationError("El nombre de usuario debe comenzar con un '@' y no puede contener más de un '@'.")
-        
-        # Verifica si ya existe un usuario con el mismo 'username'
-        existing_user = Usuario.objects.filter(username=username).exclude(pk=self.instance.pk)
-        if existing_user.exists():
-            raise ValidationError("Este nombre de usuario ya está en uso.")
-        
-        return username

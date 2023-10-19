@@ -108,7 +108,7 @@
                                     </nav>
                                 </div>
                         
-                        {% if user.roles %}
+                        {% if user.roles.all %}
                             <div class="sb-sidenav-menu-heading">Acceso</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                                 data-bs-target="#collapseLayoutsKanban" aria-expanded="false" aria-controls="collapseLayouts">
@@ -128,9 +128,7 @@
                                             {% elif rol.nombre == 'publicador' %}
                                                 <a class="nav-link" href="{% url 'canvan:canvas-publicador' %}">Canvas Publicador</a>
                                             {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <div class="nav-link">No tienes roles asignados, ponte en contacto con el administrador.</div>
+                                        {% endfor %}                                        
                                     {% endif %}
                                 </nav>
                             </div>

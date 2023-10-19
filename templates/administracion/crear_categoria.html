@@ -7,7 +7,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="submit" class="btn btn-primary">Crear</button>
     </form>
 
     <a href="{% url 'administracion:listar_categorias' %}" class="btn btn-secondary">Volver a la lista de Categorías</a>

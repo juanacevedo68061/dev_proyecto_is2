@@ -6,7 +6,9 @@
 <div class="container">
     <br>
     <h1>Gestión de Usuarios</h1>
-
+    <br>
+    <a href="{% url 'administracion:crear_rol'%}" class="btn btn-primary">Crear Rol</a>
+    <br><br>
     {% if usuarios %}
     <table class="table table-striped">
         <thead>

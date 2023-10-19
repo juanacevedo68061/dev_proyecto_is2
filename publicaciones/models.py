@@ -7,6 +7,7 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 import datetime
+from .utils import notificar
 
 class Publicacion_solo_text(models.Model):
     ESTADOS_CONTENIDO = [
@@ -32,8 +33,8 @@ class Publicacion_solo_text(models.Model):
     url_publicacion = models.CharField(max_length=200, blank=True, null=True)
     codigo_qr = models.ImageField(upload_to='codigos_qr/', blank=True)
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    version = models.PositiveIntegerField(default=1)
-    estado = models.CharField(max_length=20, choices=ESTADOS_CONTENIDO)
+    version = models.PositiveIntegerField(default=1)    
+    estado = models.CharField(max_length=20, choices=ESTADOS_CONTENIDO, null=True, blank=True)
     para_editor = models.BooleanField(default=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateField(blank=True, null=True)
@@ -50,10 +51,12 @@ class Publicacion_solo_text(models.Model):
     shared = models.PositiveIntegerField(default=0)
 
     vigencia = models.BooleanField(default=False)
+    vigencia_tiempo = models.DateTimeField(null=True, blank=True)
     vigencia_unidad = models.CharField(max_length=1, choices=UNIDADES_TIEMPO, null=True, blank=True)
     vigencia_cantidad = models.PositiveIntegerField(null=True, blank=True)
     
     programar = models.BooleanField(default=False)
+    programar_tiempo = models.DateTimeField(null=True, blank=True)
     programar_unidad = models.CharField(max_length=1, choices=UNIDADES_TIEMPO, null=True, blank=True)
     programar_cantidad = models.PositiveIntegerField(null=True, blank=True)
 
@@ -72,8 +75,10 @@ class Publicacion_solo_text(models.Model):
             else:
                 delta = datetime.timedelta(minutes=self.vigencia_cantidad)
             
-            self.vigencia = timezone.now() + delta
-
+            self.vigencia_tiempo = timezone.now() + delta
+            self.save()
+            print(self.vigencia_tiempo)
+    
     def calcular_programar(self):
         if self.programar_unidad and self.programar_cantidad:
             if self.programar_unidad == 'd':
@@ -83,7 +88,8 @@ class Publicacion_solo_text(models.Model):
             else:
                 delta = datetime.timedelta(minutes=self.programar_cantidad)
             
-            self.programar = timezone.now() + delta
+            self.programar_tiempo = timezone.now() + delta
+            self.save()
 
     def save(self, *args, **kwargs):
         original = None

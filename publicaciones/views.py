@@ -40,16 +40,21 @@ def crear_publicacion(request):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
-                publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                
                 # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
                 publicacion.id_publicacion = uuid.uuid4()
                 # Genera la URL absoluta para la publicación
                 publicacion.url_publicacion = publicacion.get_absolute_url()
 
-                publicacion.save()
+                if(publicacion.categoria.moderada):
+                    publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                    publicacion.save()
+                else:
+                    publicacion.estado = 'publicado'
+                    publicacion.calcular_vigencia()
+                    print(publicacion.vigencia_tiempo)
+                
                 notificar(publicacion,3)
-
+                
                 registrar(request, publicacion,'autor')
 
                 messages.success(request, message)

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.container {
+    max-width: 1000px;
+    /* Establece el ancho máximo que desees */
+    margin: 0 auto;
+    /* Centra el contenido horizontalmente */
+    padding: 20px;
+}
+</style>
+<div class="container">
+    <h1>Crear Nuevo Rol</h1>
+    <form method="post" action="{% url 'administracion:crear_rol' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a href="{% url 'administracion:gestion_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+{% endblock %}

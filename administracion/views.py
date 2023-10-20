@@ -161,8 +161,11 @@ def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
     redirect_url = None
     if request.method == 'POST':
-        usuario.delete()
-        messages.success(request, 'Usuario eliminado correctamente.')
+        if usuario == request.user:    
+            messages.error(request, 'No puedes eliminarte a ti mismo.')
+        else:
+            usuario.delete()
+            messages.success(request, 'Usuario eliminado correctamente.')
         redirect_url = reverse('administracion:gestion_usuarios')
 
     return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario, 'redirect_url': redirect_url})

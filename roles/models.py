@@ -44,7 +44,7 @@ class Rol(models.Model):
             # Agrega aquí los permisos correspondientes al rol "editor"
         ],
         'publicador': [
-            'permiso5',
+            'publicar_no_moderada',
             'permiso6',
             # Agrega aquí los permisos correspondientes al rol "publicador"
         ],

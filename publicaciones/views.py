@@ -22,9 +22,11 @@ from django.urls import reverse
 import uuid
 from django.http import HttpResponse
 from django.http import JsonResponse
-from .utils import notificar
+from .utils import notificar, publicar_no_moderada
 from canvan.models import Registro
 from django.utils import timezone
+from django.http import HttpResponse
+from django.template import loader
 
 @login_required
 def crear_publicacion(request):
@@ -42,13 +44,14 @@ def crear_publicacion(request):
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         if 'accion' in request.POST:
+
             if request.POST['accion'] == 'crear':
                 form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
                 message = 'Publicación creada con éxito.'
             elif request.POST['accion'] == 'guardar_borrador':
-                form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
+                form_fields_required = ['titulo', 'categoria']  # Solo el campo "titulo" requerido
                 message = 'Borrador guardado con éxito.'
-
+                
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
 
@@ -59,17 +62,27 @@ def crear_publicacion(request):
                 publicacion.id_publicacion = uuid.uuid4()
                 # Genera la URL absoluta para la publicación
                 publicacion.url_publicacion = publicacion.get_absolute_url()
-
-                if(publicacion.categoria.moderada):
+                
+                if publicacion.categoria.moderada:
                     publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                    publicacion.save()
-                else:
+                elif request.POST['accion'] == 'crear':
+                    if not publicar_no_moderada(request.user):
+                        mostrar="No cuentas con permisos para Categorias no moderada"
+                        template = loader.get_template('403.html')
+                        context = {'mostrar': mostrar}
+                        return HttpResponse(template.render(context, request), status=403)
+                    
                     publicacion.estado = 'publicado'
                     publicacion.calcular_vigencia()
                     print(publicacion.vigencia_tiempo)
+                else:
+                    message="No esta permitido crear Borradores con Categorias no moderada"
+                    redirect_url = request.path   
+                    messages.error(request, message)
+                    return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
                 
+                publicacion.save()                
                 notificar(publicacion,3)
-                
                 registrar(request, publicacion,'autor')
 
                 messages.success(request, message)

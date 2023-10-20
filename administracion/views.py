@@ -86,18 +86,20 @@ def editar_categoria(request, categoria_id):
         HttpResponse: Redirecciona a la vista de lista de categorías si la categoría se edita con éxito,
         o muestra el formulario de edición de categoría con errores.
     """
+    redirect_url = None
     categoria = get_object_or_404(Categoria, pk=categoria_id)
     if request.method == 'POST':
         form = CategoriaForm(request.POST, instance=categoria)
         if form.is_valid():
             form.save()
             messages.success(request, 'La categoría se ha actualizado correctamente.')
-            return redirect('administracion:gestion_categorias')
+            redirect_url = reverse('administracion:gestion_categorias')
         else:
             messages.error(request, 'Hubo un problema al actualizar la categoría. Por favor, verifica los datos ingresados.')
+            redirect_url = request.path
     else:
         form = CategoriaForm(instance=categoria)
-    return render(request, 'administracion/editar_categoria.html', {'form': form, 'categoria': categoria})
+    return render(request, 'administracion/editar_categoria.html', {'form': form, 'categoria': categoria, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -114,12 +116,13 @@ def eliminar_categoria(request, categoria_id):
         HttpResponse: Redirecciona a la vista de lista de categorías si la categoría se elimina con éxito,
         o muestra la confirmación de eliminación de categoría con errores.
     """
+    redirect_url = None
     categoria = get_object_or_404(Categoria, pk=categoria_id)
     if request.method == 'POST':
         categoria.delete()
         messages.success(request, 'La categoría se ha eliminado correctamente.')
-        return redirect('administracion:gestion_categorias')
-    return render(request, 'administracion/eliminar_categoria.html', {'categoria': categoria})
+        redirect_url = reverse('administracion:gestion_categorias')
+    return render(request, 'administracion/eliminar_categoria.html', {'categoria': categoria, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -156,13 +159,16 @@ def eliminar_usuario(request, usuario_id):
 
     """
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    
+    redirect_url = None
     if request.method == 'POST':
-        usuario.delete()
-        messages.success(request, 'Usuario eliminado correctamente.')
-        return redirect('administracion:gestion_usuarios')
+        if usuario == request.user:    
+            messages.error(request, 'No puedes eliminarte a ti mismo.')
+        else:
+            usuario.delete()
+            messages.success(request, 'Usuario eliminado correctamente.')
+        redirect_url = reverse('administracion:gestion_usuarios')
 
-    return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario})
+    return render(request, 'administracion/eliminar_usuario.html', {'usuario': usuario, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -183,7 +189,7 @@ def asignar_roles_usuario(request, usuario_id):
 
     """    
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    
+    redirect_url = None
     # Obtener los nombres de roles que el usuario aún no tiene asignados
     roles_asignados_nombres = usuario.roles.values_list('nombre', flat=True)
     roles_disponibles = [rol[0] for rol in Rol.ROLES if rol[0] not in roles_asignados_nombres]
@@ -196,9 +202,9 @@ def asignar_roles_usuario(request, usuario_id):
                 Rol.objects.create(nombre=rol_nombre)
                 usuario.roles.create(nombre=rol_nombre)
         messages.success(request, 'Roles asignados correctamente.')
-        return redirect('administracion:gestion_usuarios')
+        redirect_url = reverse('administracion:gestion_usuarios')
 
-    return render(request, 'administracion/asignar_roles_usuario.html', {'usuario': usuario, 'roles_disponibles': roles_disponibles})
+    return render(request, 'administracion/asignar_roles_usuario.html', {'usuario': usuario, 'roles_disponibles': roles_disponibles, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -219,17 +225,17 @@ def eliminar_roles_usuario(request, usuario_id):
 
     """
     usuario = get_object_or_404(Usuario, id=usuario_id)
-    
+    redirect_url = None
     if request.method == 'POST':
         roles_seleccionados = request.POST.getlist('roles')
         for rol_id in roles_seleccionados:
             rol = Rol.objects.get(id=rol_id)
             usuario.roles.remove(rol)
         messages.success(request, 'Roles eliminados correctamente.')
-        return redirect('administracion:gestion_usuarios')
+        redirect_url = reverse('administracion:gestion_usuarios')
 
     roles_asignados = usuario.roles.all()
-    return render(request, 'administracion/eliminar_roles_usuario.html', {'usuario': usuario, 'roles_asignados': roles_asignados})
+    return render(request, 'administracion/eliminar_roles_usuario.html', {'usuario': usuario, 'roles_asignados': roles_asignados, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -249,6 +255,7 @@ def agregar_permisos_roles_usuario(request, usuario_id):
                       después de agregar los permisos a los roles del usuario especificado.
 
     """    
+    redirect_url = None
     usuario = Usuario.objects.get(id=usuario_id)
     roles_asignados = usuario.roles.all()
 
@@ -269,12 +276,12 @@ def agregar_permisos_roles_usuario(request, usuario_id):
                     defaults={'name': f'Permiso {permiso_nombre}'}
                 )
                 rol.permisos.add(permiso)
-
-            return redirect('administracion:gestion_usuarios')
+            messages.success(request, 'Permisos agregados correctamente.')
+            redirect_url = reverse('administracion:gestion_usuarios')
     else:
         form = AsignarPermisosForm(roles_asignados=roles_asignados)
 
-    return render(request, 'administracion/agregar_permisos_roles_usuario.html', {'usuario': usuario, 'form': form})
+    return render(request, 'administracion/agregar_permisos_roles_usuario.html', {'usuario': usuario, 'form': form, 'redirect_url': redirect_url})
 
 @rol_requerido('administrador')
 @permiso_requerido
@@ -298,7 +305,7 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
     roles_usuario = usuario.roles.all()
     permisos_seleccionados = None
-
+    redirect_url = None
     if request.method == 'POST':
         form = EliminarPermisosForm(request.POST)
         if form.is_valid():
@@ -307,7 +314,8 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
             for rol in roles_usuario:
                 for permiso in permisos_seleccionados:
                     rol.permisos.remove(permiso)
-            return redirect('administracion:gestion_usuarios')
+            redirect_url = reverse('administracion:gestion_usuarios')
+            messages.success(request, 'Permisos eliminados correctamente.')
     else:
         form = EliminarPermisosForm()
 
@@ -316,6 +324,7 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
         'roles_usuario': roles_usuario,
         'permisos_seleccionados': permisos_seleccionados,
         'form': form,
+        'redirect_url': redirect_url
     })
 
 @rol_requerido('administrador')

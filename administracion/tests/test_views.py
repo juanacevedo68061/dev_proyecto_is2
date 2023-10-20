@@ -37,14 +37,14 @@ class AdministracionViewsTest(TestCase):
         self.client.login(username='@admin', password='password')
         data = {'nombre': 'Categoría Actualizada'}
         response = self.client.post(reverse('administracion:editar_categoria', args=[self.categoria.id]), data)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.categoria.refresh_from_db()
         self.assertEqual(self.categoria.nombre, 'Categoría Actualizada')
 
     def test_eliminar_categoria_view(self):
         self.client.login(username='@admin', password='password')
         response = self.client.post(reverse('administracion:eliminar_categoria', args=[self.categoria.id]))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(Categoria.objects.filter(nombre='Categoría de Prueba').exists())
 
     def test_gestion_usuarios_view(self):
@@ -57,7 +57,7 @@ class AdministracionViewsTest(TestCase):
         usuario_a_eliminar = Usuario.objects.create_user(username='@usuarioparaeliminar', password='password')
         self.client.login(username='@admin', password='password')
         response = self.client.post(reverse('administracion:eliminar_usuario', args=[usuario_a_eliminar.id]))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(Usuario.objects.filter(username='@usuarioparaeliminar').exists())
 
     def test_asignar_roles_usuario_view(self):
@@ -65,7 +65,7 @@ class AdministracionViewsTest(TestCase):
         self.client.login(username='@testuser', password='testpassword')
         data = {'roles': [rol_prueba.id]}
         response = self.client.post(reverse('administracion:asignar_roles_usuario', args=[self.usuario.id]), data)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.usuario.refresh_from_db()
         self.assertTrue(self.usuario.roles.filter(nombre='administrador').exists())
 
@@ -75,7 +75,7 @@ class AdministracionViewsTest(TestCase):
         self.client.login(username='@admin', password='password')
         data = {'roles': [self.rol_administrador.id]}
         response = self.client.post(reverse('administracion:eliminar_roles_usuario', args=[usuario_a_editar.id]), data)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         usuario_a_editar.refresh_from_db()
         self.assertFalse(usuario_a_editar.roles.filter(nombre='administrador').exists())
 

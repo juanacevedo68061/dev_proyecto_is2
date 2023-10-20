@@ -27,7 +27,9 @@ from canvan.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template import loader
+from roles.decorators import permiso_requerido
 
+@permiso_requerido
 @login_required
 def crear_publicacion(request):
     """
@@ -37,12 +39,12 @@ def crear_publicacion(request):
     :return: Objeto HttpResponse.
     """
     categorias = Categoria.objects.all()
-    form = PublicacionForm()
+    form = PublicacionForm(False)
     redirect_url = None  # Variable para almacenar la URL de redirección
     message = ''  # Variable para almacenar el mensaje personalizado
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, request.FILES)
+        form = PublicacionForm(False,request.POST, request.FILES)
         if 'accion' in request.POST:
 
             if request.POST['accion'] == 'crear':
@@ -90,7 +92,7 @@ def crear_publicacion(request):
 
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
 
-
+@permiso_requerido
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
     """
@@ -106,7 +108,7 @@ def editar_publicacion_autor(request, publicacion_id):
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']
@@ -157,7 +159,7 @@ def eliminar_publicacion_autor(request, publicacion_id):
 
     return render(request, 'publicaciones/eliminar_publicacion_autor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
-
+@permiso_requerido
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
 
@@ -174,7 +176,7 @@ def editar_publicacion_editor(request, publicacion_id):
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
@@ -202,6 +204,7 @@ def editar_publicacion_editor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
+@permiso_requerido
 @login_required
 def rechazar_editor(request, publicacion_id):
 
@@ -231,6 +234,7 @@ def rechazar_editor(request, publicacion_id):
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
+@permiso_requerido
 @login_required
 def rechazar_publicador(request, publicacion_id):
 
@@ -271,7 +275,7 @@ def rechazar_publicador(request, publicacion_id):
     }
     return render(request, 'publicaciones/rechazar.html', context)
 
-
+@permiso_requerido
 @login_required
 def mostar_para_publicador(request, publicacion_id):
 

@@ -174,6 +174,25 @@ def perfil_actualizar(request):
 
 @login_required
 def cargar_imagen(request):
+    """
+    Vista que permite a un usuario autenticado cargar una imagen de perfil.
+
+    El usuario envía la imagen mediante una petición POST. Si la carga es exitosa, 
+    la vista devuelve la URL de la imagen cargada. En caso contrario, devuelve un mensaje de error.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        JsonResponse: 
+            - Si la imagen se carga con éxito: {'url': <URL_de_la_imagen>}.
+            - Si hay un error o no se envió una imagen: {'error': 'No se pudo cargar la imagen'}.
+
+    Note:
+        Se espera que el modelo del usuario tenga un campo llamado 'imagen' donde se almacenará 
+        la imagen cargada. La vista requiere que el usuario esté autenticado para poder cargar una imagen.
+    """
+    
     usuario = request.user
 
     if request.method == 'POST' and 'imagen' in request.FILES:

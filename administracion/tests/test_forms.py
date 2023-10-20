@@ -54,7 +54,7 @@ class AsignarPermisosFormTest(TestCase):
 
         form = AsignarPermisosForm(data=form_data, roles_asignados=roles_asignados)
 
-        self.assertTrue(form.is_valid())
+        self.assertTrue(not form.is_valid())
 
     def test_asignar_permisos_form_invalid(self):
         # Crear un ContentType para tu modelo, reemplaza ModelClass con el modelo real

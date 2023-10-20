@@ -10,7 +10,20 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
-def principal(request):    
+def principal(request):
+
+    """
+    Vista principal que muestra las publicaciones. 
+    También permite realizar búsquedas dentro de las publicaciones.
+    
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones,
+        formulario de búsqueda avanzada, categorías y usuarios.
+    """
+    
     query = request.GET.get('q')
     publicaciones = obtener_publicaciones(request)
     avanzada_form = BusquedaAvanzadaForm()
@@ -42,6 +55,17 @@ def principal(request):
     return render(request, 'cms/principal.html', contexto)
 
 def obtener_publicaciones(request):
+
+    """
+    Obtiene las publicaciones basadas en criterios de filtrado como categorías, fecha de publicación y autor.
+    
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        QuerySet: Retorna un conjunto de publicaciones filtradas.
+    """
+
     categorias = request.GET.getlist('categorias')
     fecha_publicacion = request.GET.get('fecha_publicacion')
     autor = request.GET.get('autor')
@@ -66,6 +90,18 @@ def obtener_publicaciones(request):
     return publicaciones
 
 def publicaciones_categoria(request, categoria_id):
+
+    """
+    Muestra las publicaciones pertenecientes a una categoría específica.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+        categoria_id (int): ID de la categoría de la cual se quieren obtener las publicaciones.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones de la categoría especificada.
+    """
+    
     categoria = get_object_or_404(Categoria, id=categoria_id)
     publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
     categorias = Categoria.objects.all()
@@ -78,6 +114,16 @@ from django.core.files.storage import FileSystemStorage
 
 @csrf_exempt #solucion temporal
 def tinymce_upload(request):
+    """
+    Vista para manejar la carga de archivos a través de TinyMCE.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        JsonResponse: Devuelve la URL del archivo cargado o un error en caso de fallo.
+    """
+    
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
         fs = FileSystemStorage()

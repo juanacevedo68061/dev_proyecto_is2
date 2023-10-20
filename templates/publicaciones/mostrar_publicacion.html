@@ -30,7 +30,7 @@
 <div class="contenido">
     <div class="publicacion">
 
-        <a href="{% url 'publicaciones:vista_auxiliar_email' publicacion.id_publicacion %}" >email</a><br><br>
+        <!--<a href="{% url 'publicaciones:vista_auxiliar_email' publicacion.id_publicacion %}" >email</a><br><br>-->
         
         <!--Si quieres que el publicador pueda desactivar solo desde el canvan, quitale rol_-->
         {% if rol_publicador or user == publicacion.autor %}
@@ -43,7 +43,14 @@
             </a><br><br>                         
         {% endif %}
 
-        <h1 class="titulo">{{ publicacion.titulo }}</h1>
+        
+        {% if user == publicacion.autor %}
+            <h1 class="titulo" style="display: inline; margin-right: 10px;">{{ publicacion.titulo }}</h1>
+            <span style="color: green; display: inline;">version ({{publicacion.version}})</span>        
+            <br><br>
+        {% else %}
+            <h1 class="titulo">{{ publicacion.titulo }}</h1>
+        {% endif %}
         <div class="informacion">
             
             <div class="perfil-info">
@@ -58,7 +65,7 @@
                     <div class="linea-1">
                         <span class="nombre-autor">{{ publicacion.autor.username }}</span>
                         <!-- Botón para seguir -->
-                        <a href="#" class="seguir">Seguir</a>
+                       <!-- <a href="#" class="seguir">Seguir</a>-->
                     </div>
                     <div>
                         <p class="linea-2">Publicado en <span class="categoria-destacada">{{ publicacion.categoria }}</span><span class="linea-2"> . {{ publicacion.fecha_creacion|date:"d, M Y" }}</span></p>

@@ -26,7 +26,7 @@ class PublicacionForm(forms.ModelForm):
     programar_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
     suscriptores = forms.BooleanField(label='Suscriptores', required=False)  # Campo añadido
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, canvan=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update(
             {'class': 'form-control', 'id': 'id_titulo'})
@@ -41,7 +41,12 @@ class PublicacionForm(forms.ModelForm):
         self.fields['programar'].widget.attrs.update(
             {'class': 'form-check-input', 'id': 'id_programar'})
 
+        
         categorias = Categoria.objects.all()
+        if canvan:
+            categorias = Categoria.objects.filter(moderada=True)
+
+
         choices = [(categoria.pk, f"{categoria.nombre} ({'Moderada' if categoria.moderada else 'No moderada'})") for categoria in categorias]
         choices.insert(0, ('', '---------'))
         self.fields['categoria'].choices = choices

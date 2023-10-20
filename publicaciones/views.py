@@ -35,12 +35,12 @@ def crear_publicacion(request):
     :return: Objeto HttpResponse.
     """
     categorias = Categoria.objects.all()
-    form = PublicacionForm()
+    form = PublicacionForm(False)
     redirect_url = None  # Variable para almacenar la URL de redirección
     message = ''  # Variable para almacenar el mensaje personalizado
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, request.FILES)
+        form = PublicacionForm(False,request.POST, request.FILES)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'crear':
                 form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
@@ -93,7 +93,7 @@ def editar_publicacion_autor(request, publicacion_id):
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']
@@ -161,7 +161,7 @@ def editar_publicacion_editor(request, publicacion_id):
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']  # Solo el campo "titulo" requerido

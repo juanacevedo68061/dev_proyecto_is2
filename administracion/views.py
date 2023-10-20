@@ -322,6 +322,22 @@ def eliminar_permisos_roles_usuario(request, usuario_id):
 @permiso_requerido
 @login_required
 def crear_rol(request):
+    
+    """
+    Vista para permitir a los administradores crear un nuevo rol en el sistema.
+
+    El proceso de creación incluye la validación de un formulario. Si el formulario
+    es válido, se procesa la creación del rol. Si hay algún error, se muestra un 
+    mensaje indicando el problema.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'administracion/crear_rol.html' con el formulario 
+        para agregar un rol y, si corresponde, mensajes de éxito o error.
+    """
+    
     redirect_url = None
     if request.method == 'POST':
         form = AgregarRolForm(request.POST)

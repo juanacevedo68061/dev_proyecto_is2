@@ -10,6 +10,18 @@ from .models import Registro
 @login_required
 @rol_requerido('autor')
 def canvas_autor(request):
+    
+    """
+    Vista para el dashboard de autores. Muestra todas las publicaciones en progreso 
+    (borradores y rechazadas) del autor autenticado.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'canvas_autor.html' con las publicaciones en progreso y completadas del autor.
+    """
+    
     # Obtener todas las publicaciones activas del autor ordenadas por fecha de creación
     en_progreso = Publicacion_solo_text.objects.filter(
     Q(autor=request.user, estado='borrador', activo=True, categoria__moderada=True) |
@@ -22,6 +34,17 @@ def canvas_autor(request):
 @login_required
 @rol_requerido('editor')
 def canvas_editor(request):
+
+    """
+    Vista para el dashboard de editores. Muestra todas las publicaciones en progreso 
+    (en revisión y rechazadas) que requieren la atención de un editor.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'canvas_editor.html' con las publicaciones en progreso y completadas del editor, y todas las categorías.
+    """
     
     en_progreso = Publicacion_solo_text.objects.filter(
     Q(estado='revision', activo=True, categoria__moderada=True) |
@@ -36,6 +59,17 @@ def canvas_editor(request):
 @login_required
 @rol_requerido('publicador')
 def canvas_publicador(request):
+    
+    """
+    Vista para el dashboard de publicadores. Muestra todas las publicaciones listas para ser publicadas.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'canvas_publicador.html' con las publicaciones en progreso y completadas del publicador, y todas las categorías.
+    """
+    
     # Obtener todas las publicaciones activas del publicador ordenadas por fecha de creación
     en_progreso = Publicacion_solo_text.objects.filter(estado='publicar', activo=True, categoria__moderada=True)
     completadas = Registro.objects.filter(canvas='publicador', usuario=request.user).order_by('fecha_cambio')

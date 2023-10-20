@@ -8,11 +8,11 @@ services:
       dockerfile: Dockerfile
     command: >
       sh -c "./inicio.sh &&
-      python manage.py makemigrations login cms roles canvan publicaciones administracion &&
+      python manage.py makemigrations login cms roles canvan publicaciones administracion && 
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/app
+      - .:/app 
     ports:
       - "8000:8000"
       - "8080:8080"    

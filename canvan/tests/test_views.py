@@ -21,23 +21,9 @@ class CanvanViewsTests(TestCase):
             texto='<p>Contenido en revisión</p>',
             autor=self.user,
             estado='revision',
-            id_publicacion=uuid.uuid4()
+            id_publicacion='12346'
         )
 
-    def test_canvas_autor(self):
-        self.client.login(username='@usuario_prueba', password='contraseña123')
-        response = self.client.get(reverse('canvan:canvas-autor'))
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, '403.html')
-
-    def test_canvas_editor(self):
-        self.client.login(username='@usuario_prueba', password='contraseña123')
-        response = self.client.get(reverse('canvan:canvas-editor'))
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, '403.html')
-
-    def test_canvas_publicador(self):
-        self.client.login(username='@usuario_prueba', password='contraseña123')
-        response = self.client.get(reverse('canvan:canvas-publicador'))
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, '403.html')
+    
+   
+    

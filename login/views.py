@@ -174,7 +174,7 @@ def perfil_actualizar(request):
 
 @login_required
 def cargar_imagen(request):
-     """
+    """
     Vista que permite a un usuario autenticado cargar una imagen de perfil.
 
     El usuario envía la imagen mediante una petición POST. Si la carga es exitosa, 

@@ -23,14 +23,14 @@ class Usuario(AbstractUser):
     roles = models.ManyToManyField(Rol, related_name='usuarios')
     suscriptor = models.BooleanField(default=False)
     
-    def save(self, *args, **kwargs):
+    #def save(self, *args, **kwargs):
         # Eliminar todos los "@" de la cadena
-        self.username = self.username.replace('@', '')
+        #self.username = self.username.replace('@', '')
         
         # Agregar "@" al principio
-        self.username = f'@{self.username}'
+        #self.username = f'@{self.username}'
         
-        super(Usuario, self).save(*args, **kwargs)
+        #super(Usuario, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.username

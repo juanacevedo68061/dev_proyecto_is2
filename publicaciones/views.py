@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
 from .forms import PublicacionForm
-from .models import Categoria 
+from administracion.models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
 import uuid
@@ -26,7 +26,6 @@ from .utils import notificar, publicar_no_moderada
 from canvan.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
-from django.template import loader
 from roles.decorators import permiso_requerido
 
 @permiso_requerido
@@ -38,20 +37,20 @@ def crear_publicacion(request):
     :param request: Objeto HttpRequest.
     :return: Objeto HttpResponse.
     """
-    categorias = Categoria.objects.all()
-    form = PublicacionForm(False)
-    redirect_url = None  # Variable para almacenar la URL de redirección
-    message = ''  # Variable para almacenar el mensaje personalizado
-
+    tiene_permiso = publicar_no_moderada(request.user)
+    
+    form = PublicacionForm(False, tiene_permiso)
+    redirect_url = None
+    message = ''
+    
     if request.method == 'POST':
-        form = PublicacionForm(False,request.POST, request.FILES)
+        form = PublicacionForm(False, tiene_permiso, request.POST, request.FILES)
         if 'accion' in request.POST:
-
             if request.POST['accion'] == 'crear':
-                form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
+                form_fields_required = ['titulo', 'texto', 'palabras_clave']
                 message = 'Publicación creada con éxito.'
             elif request.POST['accion'] == 'guardar_borrador':
-                form_fields_required = ['titulo', 'categoria']  # Solo el campo "titulo" requerido
+                form_fields_required = ['titulo']
                 message = 'Borrador guardado con éxito.'
                 
             for field_name, field in form.fields.items():
@@ -60,37 +59,48 @@ def crear_publicacion(request):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
-                # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
                 publicacion.id_publicacion = uuid.uuid4()
-                # Genera la URL absoluta para la publicación
                 publicacion.url_publicacion = publicacion.get_absolute_url()
-                
-                if publicacion.categoria.moderada:
-                    publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                elif request.POST['accion'] == 'crear':
-                    if not publicar_no_moderada(request.user):
-                        mostrar="No cuentas con permisos para Categorias no moderada"
-                        template = loader.get_template('403.html')
-                        context = {'mostrar': mostrar}
-                        return HttpResponse(template.render(context, request), status=403)
-                    
-                    publicacion.estado = 'publicado'
-                    publicacion.calcular_vigencia()
-                    print(publicacion.vigencia_tiempo)
+
+                categoria_elegida = None
+                categoria_suscriptores = form.cleaned_data.get('categoria_suscriptores')
+                categoria_no_suscriptores = form.cleaned_data.get('categoria_no_suscriptores')
+
+                if categoria_suscriptores and not categoria_no_suscriptores:
+                    categoria_elegida = categoria_suscriptores
+                elif categoria_no_suscriptores and not categoria_suscriptores:
+                    categoria_elegida = categoria_no_suscriptores
+
+                publicacion.categoria = categoria_elegida
+                if publicacion.categoria:                     
+                    if publicacion.categoria.moderada:
+                        publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                        print(publicacion.categoria)
+                        publicacion.save()                
+                        notificar(publicacion,3)
+                        registrar(request, publicacion,'autor')
+                        messages.success(request, message)
+                        redirect_url = "/"                    
+                    else:                    
+                        if request.POST['accion'] == 'crear':
+                            publicacion.estado = 'publicado' 
+                            publicacion.calcular_vigencia()
+                            publicacion.save()                
+                            notificar(publicacion,3)
+                            registrar(request, publicacion,'autor')
+                            messages.success(request, message)
+                            redirect_url = "/"                                            
+                        else:
+                            message="No esta permitido crear Borradores con Categorias no moderada"
+                            messages.error(request, message)
                 else:
-                    message="No esta permitido crear Borradores con Categorias no moderada"
-                    redirect_url = request.path   
+                    if categoria_suscriptores and categoria_no_suscriptores:
+                        message = "Solo se permite seleccionar una categoría."
+                    else:
+                        message="A falta de Categorias no puedes crear una publicación"
                     messages.error(request, message)
-                    return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
-                
-                publicacion.save()                
-                notificar(publicacion,3)
-                registrar(request, publicacion,'autor')
 
-                messages.success(request, message)
-                redirect_url = "/"
-
-    return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
+    return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'redirect_url': redirect_url})
 
 @permiso_requerido
 @login_required
@@ -104,18 +114,18 @@ def editar_publicacion_autor(request, publicacion_id):
     """
 
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    message = ''  # Variable para almacenar el mensaje personalizado
-    redirect_url = None  # Variable para almacenar la URL de redirección
+    message = ''
+    redirect_url = None
 
     if request.method == 'POST':
-        form = PublicacionForm(True, request.POST, instance=publicacion)
+        form = PublicacionForm(True, False, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']
                 message = 'Cambios guardados con éxito.'
 
             elif request.POST['accion'] == 'completar_borrador':
-                form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']
+                form_fields_required = ['titulo', 'texto', 'palabras_clave']
                 message = 'Borrador completado con éxito.'
             
             for field_name, field in form.fields.items():
@@ -123,16 +133,30 @@ def editar_publicacion_autor(request, publicacion_id):
 
             if form.is_valid():
                 publicacion = form.save(commit=False)
-                publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+                
+                categoria_elegida = None
+                categoria_suscriptores = form.cleaned_data.get('categoria_suscriptores')
+                categoria_no_suscriptores = form.cleaned_data.get('categoria_no_suscriptores')
 
-                publicacion.save()
+                if categoria_suscriptores and not categoria_no_suscriptores:
+                    categoria_elegida = categoria_suscriptores
+                elif categoria_no_suscriptores and not categoria_suscriptores:
+                    categoria_elegida = categoria_no_suscriptores
 
-                notificar(publicacion,3)
-                registrar(request, publicacion, 'autor')
-
-                messages.success(request, message)
-                redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
-
+                publicacion.categoria = categoria_elegida
+                if publicacion.categoria:           
+                    publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+                    publicacion.save()
+                    notificar(publicacion,3)
+                    registrar(request, publicacion, 'autor')
+                    messages.success(request, message)
+                    redirect_url = reverse('canvan:canvas-autor')
+                else:
+                    if categoria_suscriptores and categoria_no_suscriptores:
+                        message = "Solo se permite seleccionar una categoría."
+                    elif not categoria_suscriptores and not categoria_no_suscriptores:
+                        message="A falta de Categorias no puedes crear una publicación"
+                    messages.error(request, message)
     else:
         form = PublicacionForm(instance=publicacion)
 
@@ -176,7 +200,7 @@ def editar_publicacion_editor(request, publicacion_id):
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(True, request.POST, instance=publicacion)
+        form = PublicacionForm(True, False, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
@@ -190,15 +214,30 @@ def editar_publicacion_editor(request, publicacion_id):
 
             if form.is_valid():
                 publicacion = form.save(commit=False)
-                publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
-
-                publicacion.save()
                 
-                notificar(publicacion,3)
-                registrar(request, publicacion, 'editor')
+                categoria_elegida = None
+                categoria_suscriptores = form.cleaned_data.get('categoria_suscriptores')
+                categoria_no_suscriptores = form.cleaned_data.get('categoria_no_suscriptores')
 
-                messages.success(request, message)
-                redirect_url = reverse('canvan:canvas-editor')  
+                if categoria_suscriptores and not categoria_no_suscriptores:
+                    categoria_elegida = categoria_suscriptores
+                elif categoria_no_suscriptores and not categoria_suscriptores:
+                    categoria_elegida = categoria_no_suscriptores
+
+                publicacion.categoria = categoria_elegida
+                if publicacion.categoria:           
+                    publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+                    publicacion.save()
+                    notificar(publicacion,3)
+                    registrar(request, publicacion, 'editor')
+                    messages.success(request, message)
+                    redirect_url = reverse('canvan:canvas-editor')  
+                else:
+                    if categoria_suscriptores and categoria_no_suscriptores:
+                        message = "Solo se permite seleccionar una categoría."
+                    elif not categoria_suscriptores and not categoria_no_suscriptores:
+                        message="A falta de Categorias no puedes crear una publicación"
+                    messages.error(request, message)
     else:
         form = PublicacionForm(instance=publicacion)
 

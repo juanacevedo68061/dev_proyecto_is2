@@ -15,8 +15,8 @@ class Categoria(models.Model):
     """
 
     nombre = models.CharField(max_length=30, unique=True)
-    moderada = models.BooleanField(default=True)
+    moderada = models.BooleanField(default=False)
     descripcion = models.TextField(blank=True, null=True)
-
+    suscriptores = models.BooleanField(default=False)
     def __str__(self):
         return self.nombre

@@ -27,7 +27,6 @@ class Publicacion_solo_text(models.Model):
 
     activo = models.BooleanField(default=True)
     titulo = models.CharField(max_length=200, blank=True, null=True)
-    #texto = models.TextField()
     texto = HTMLField()
     id_publicacion = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     url_publicacion = models.CharField(max_length=200, blank=True, null=True)
@@ -38,8 +37,6 @@ class Publicacion_solo_text(models.Model):
     para_editor = models.BooleanField(default=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateField(blank=True, null=True)
-    
-    suscriptores = models.BooleanField(default=False)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=True, null=True)
     palabras_clave = models.CharField(max_length=100, blank=True)
     likes = models.PositiveIntegerField(default=0)

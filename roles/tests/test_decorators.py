@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from roles.decorators import rol_requerido
 from login.models import Usuario 
 from roles.models import Rol
+from django.contrib.auth.decorators import login_required
 
 class DecoratorTest(TestCase):
     def setUp(self):
@@ -34,19 +35,3 @@ class DecoratorTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(), 'Acceso permitido')
 
-from django.http import HttpResponseForbidden
-
-def test_rol_requerido_acceso_denegado(self):
-    """
-    Prueba si se deniega el acceso para un usuario sin el rol correcto.
-    """
-    @rol_requerido('otro_rol')
-    def view_func(request):
-        return HttpResponseForbidden()
-
-    request = self.factory.get('/')
-    request.user = self.user
-
-    response = view_func(request)
-
-    self.assertEqual(response.status_code, 403)

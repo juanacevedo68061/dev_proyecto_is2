@@ -150,7 +150,7 @@ def editar_publicacion_autor(request, publicacion_id):
                     notificar(publicacion,3)
                     registrar(request, publicacion, 'autor')
                     messages.success(request, message)
-                    redirect_url = reverse('canvan:canvas-autor')
+                    redirect_url = reverse('kanban:kanban')
                 else:
                     if categoria_suscriptores and categoria_no_suscriptores:
                         message = "Solo se permite seleccionar una categoría."
@@ -161,27 +161,6 @@ def editar_publicacion_autor(request, publicacion_id):
         form = PublicacionForm(instance=publicacion)
 
     return render(request, 'publicaciones/editar_publicacion_autor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
-
-@login_required
-def eliminar_publicacion_autor(request, publicacion_id):
-    """
-    Elimina una publicación existente.
-
-    :param request: Objeto HttpRequest.
-    :param publicacion_id: ID de la publicación a eliminar.
-    :return: Objeto HttpResponse.
-    """
-
-    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
-
-    if request.method == 'POST':
-        # Verifica si se confirma la eliminación
-        if 'confirmar_eliminar' in request.POST:
-            publicacion.delete()
-            messages.success(request, 'La publicación ha sido eliminada con éxito.')
-
-    return render(request, 'publicaciones/eliminar_publicacion_autor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
 @permiso_requerido
 @login_required
@@ -231,7 +210,7 @@ def editar_publicacion_editor(request, publicacion_id):
                     notificar(publicacion,3)
                     registrar(request, publicacion, 'editor')
                     messages.success(request, message)
-                    redirect_url = reverse('canvan:canvas-editor')  
+                    redirect_url = reverse('kanban:kanban')  
                 else:
                     if categoria_suscriptores and categoria_no_suscriptores:
                         message = "Solo se permite seleccionar una categoría."
@@ -256,7 +235,7 @@ def rechazar_editor(request, publicacion_id):
     """
 
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
+    redirect_url = reverse('kanban:kanban') 
 
     if request.method == 'POST':
         if 'confirmar_rechazo' in request.POST:
@@ -286,7 +265,7 @@ def rechazar_publicador(request, publicacion_id):
     """
     
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
+    redirect_url = reverse('kanban:kanban')  # Define la URL de redirección
 
     if request.method == 'POST':
         if 'confirmar_rechazo' in request.POST:
@@ -343,7 +322,7 @@ def mostar_para_publicador(request, publicacion_id):
             registrar(request, publicacion, 'publicador')
 
             message = 'La publicación ha sido publicada con éxito.'
-            redirect_url = reverse('canvan:canvas-publicador')
+            redirect_url = reverse('kanban:kanban')
             messages.success(request, message)
 
     return render(

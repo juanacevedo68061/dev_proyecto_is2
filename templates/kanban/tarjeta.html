@@ -1,0 +1,57 @@
+<style>
+    .tarjeta-titulo {
+        font-weight: bold;
+        color: #0074b2;
+    }
+
+    .tarjeta-fecha {
+        font-size: 12px;
+        color: #888; /* Gris */
+    }
+
+    .tarjeta-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tarjeta-categoria {
+        padding: 0px 5px 3px; /* Ajustar el espacio vertical y horizontal */
+        color: #fff; /* Blanco */
+        border-radius: 5px;
+    }
+
+    .categoria-text {
+        font-size: 13px;
+    }
+
+    .tarjeta-autor img {
+        vertical-align: middle;
+    }
+
+    .tarjeta-autor-nombre {
+        font-weight: bold;
+        color: #000; /* Negro */
+        margin-left: 5px;
+    }
+</style>
+<div class="tarjeta-contenido">
+    <h6 class="tarjeta-titulo">{{ publicacion.titulo }}</h6>
+    <span class="tarjeta-fecha">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
+    <br> <!-- Línea vacía -->
+    <br> <!-- Línea vacía -->
+    <div class="tarjeta-info">
+        <div class="tarjeta-categoria" style = "background-color: {{publicacion.categoria.color}}">
+            <span class="categoria-text">{{ publicacion.categoria }}</span>
+        </div>
+        <div class="tarjeta-autor">
+            {% if publicacion.autor.imagen %}
+            <img src="{{ publicacion.autor.imagen.url }}" class="rounded-circle" width="30" height="30"
+                style="object-fit: cover;">
+            {% else %}
+            <i class="fas fa-user"></i>
+            {% endif %}
+            <span class="tarjeta-autor-nombre">{{ publicacion.autor.username }}</span>
+        </div>
+    </div>
+</div>

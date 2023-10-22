@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}kanban{% endblock %}
+{% block content %}
+<br>
+<h2>Tablero kanban</h2>
+<div class="kanban-columns">
+    <!-- Columna "Borrador" -->
+    <div class="kanban-column" id="borrador">
+        <h5 class="kanban-column-title">Borrador</h5>
+        <ul class="sortable-list">
+            {% for publicacion in publicaciones_borrador %}
+            <li class="sortable-item" id="{{ publicacion.id_publicacion }}">
+                <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Columna "Revisión" -->
+    <div class="kanban-column" id="revision">
+        <h5 class="kanban-column-title">Revisión</h5>
+        <ul class="sortable-list">
+            {% for publicacion in publicaciones_revision %}
+            <li class="sortable-item" id="{{ publicacion.id_publicacion }}">
+                <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Columna "Publicar" -->
+    <div class="kanban-column" id="publicar">
+        <h5 class="kanban-column-title">Publicar</h5>
+        <ul class="sortable-list">
+            {% for publicacion in publicaciones_publicar %}
+            <li class = "sortable-item" id="{{ publicacion.id_publicacion }}">
+                <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Columna "Publicado" -->
+    <div class="kanban-column" id="publicado">
+        <h5 class="kanban-column-title">Publicado</h5>
+        <ul class="sortable-list">
+            {% for publicacion in publicaciones_publicado %}
+            <li class = "sortable-item" id="{{ publicacion.id_publicacion }}">
+                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<style>
+    .kanban-columns {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    
+    .kanban-column {
+        background-color: #f2f2f2; /* Fondo un poco más alejado del blanco */
+        border: none; /* Sin borde */
+        flex: 1;
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    .kanban-column-title {
+        background-color: #f2f2f2; /* Mismo color de fondo de la columna */
+        padding: 8px;
+        margin: -10px -10px 10px -10px;
+        text-align: center;
+        font-weight: bold; /* Texto en negrita */
+        color: #0074b2; /* Color azul */
+        border-top: 5px solid #0074b2; /* Borde superior */
+    }
+    
+    .sortable-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .sortable-item {
+        background-color: #fff; /* Tarjetas de color blanco */
+        border: none; /* Sin borde */
+        border-radius: 5px;
+        padding: 10px;
+        margin: 5px 0;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto de flotación */
+    }
+    
+    .sortable-item a {
+        text-decoration: none;
+        color: #333;
+    }
+</style>    
+{% endblock %}

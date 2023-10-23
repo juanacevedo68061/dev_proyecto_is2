@@ -30,15 +30,16 @@ def actualizar(request):
         publicacion_id = request.POST.get('id_publicacion')
         nuevo_estado = request.POST.get('nuevo_estado')
         print(nuevo_estado)
-        try:
-            publicacion_id = UUID(publicacion_id)
-            publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-            
-            publicacion.estado = nuevo_estado
-            publicacion.save()
-            
-            return JsonResponse({'message': 'Estado actualizado correctamente'})
-        except (ValueError, Http404, Publicacion_solo_text.DoesNotExist) as e:
-            return JsonResponse({'error': 'No se encontró la publicación o el ID no es válido'}, status=400)
+        if nuevo_estado == "borrador" or nuevo_estado == "revision" or nuevo_estado == "publicar" or nuevo_estado == "publicado":
+            try:
+                publicacion_id = UUID(publicacion_id)
+                publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+                
+                publicacion.estado = nuevo_estado
+                publicacion.save()
+                
+                return JsonResponse({'message': 'Estado actualizado correctamente'})
+            except (ValueError, Http404, Publicacion_solo_text.DoesNotExist) as e:
+                return JsonResponse({'error': 'No se encontró la publicación o el ID no es válido'}, status=400)
     else:
         return JsonResponse({'message': 'Método no permitido'}, status=405)

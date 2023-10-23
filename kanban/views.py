@@ -3,9 +3,6 @@ from publicaciones.models import Publicacion_solo_text
 from administracion.models import Categoria
 
 def kanban(request):
-    for categoria in Categoria.objects.all():
-        print(categoria.nombre)
-        print(categoria.color)
 
     publicaciones_borrador = Publicacion_solo_text.objects.filter(estado='borrador', activo=True, categoria__moderada=True)
     publicaciones_revision = Publicacion_solo_text.objects.filter(estado='revision', activo=True, categoria__moderada=True)

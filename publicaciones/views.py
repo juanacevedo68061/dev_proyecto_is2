@@ -9,14 +9,12 @@ como generación de códigos QR y gestión de likes/dislikes.
 
 import qrcode
 from io import BytesIO
-from PIL import Image
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
 from .forms import PublicacionForm
-from administracion.models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
 import uuid
@@ -114,9 +112,12 @@ def editar_publicacion_autor(request, publicacion_id):
     """
 
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    if request.user != publicacion.autor:
+        messages.error(request, "No tienes acceso.")
+        return redirect(reverse('kanban:kanban'))    
+    
     message = ''
     redirect_url = None
-
     if request.method == 'POST':
         form = PublicacionForm(True, False, request.POST, instance=publicacion)
         if 'accion' in request.POST:

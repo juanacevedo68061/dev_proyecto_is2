@@ -13,3 +13,5 @@ beautifulsoup4
 autopep8
 django-tinymce
 bleach
+django-storages
+google-clod-storage

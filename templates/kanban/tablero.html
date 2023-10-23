@@ -2,6 +2,9 @@
 {% load static %}
 {% block title %}kanban{% endblock %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<link href="{% static 'css/tablero.css' %}" rel="stylesheet" />
+<script src="{% static 'js/tablero.js' %}"></script>
 <br>
 <h2>Tablero kanban</h2>
 <div class="kanban-columns">
@@ -18,7 +21,6 @@
             {% endfor %}
         </ul>
     </div>
-
     <!-- Columna "Revisión" -->
     <div class="kanban-column" id="revision">
         <h5 class="kanban-column-title">Revisión</h5>
@@ -32,7 +34,6 @@
             {% endfor %}
         </ul>
     </div>
-
     <!-- Columna "Publicar" -->
     <div class="kanban-column" id="publicar">
         <h5 class="kanban-column-title">Publicar</h5>
@@ -46,7 +47,6 @@
             {% endfor %}
         </ul>
     </div>
-
     <!-- Columna "Publicado" -->
     <div class="kanban-column" id="publicado">
         <h5 class="kanban-column-title">Publicado</h5>
@@ -59,48 +59,4 @@
         </ul>
     </div>
 </div>
-<style>
-    .kanban-columns {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-    }
-    
-    .kanban-column {
-        background-color: #f2f2f2; /* Fondo un poco más alejado del blanco */
-        border: none; /* Sin borde */
-        flex: 1;
-        padding: 10px;
-        margin: 10px;
-    }
-    
-    .kanban-column-title {
-        background-color: #f2f2f2; /* Mismo color de fondo de la columna */
-        padding: 8px;
-        margin: -10px -10px 10px -10px;
-        text-align: center;
-        font-weight: bold; /* Texto en negrita */
-        color: #0074b2; /* Color azul */
-        border-top: 5px solid #0074b2; /* Borde superior */
-    }
-    
-    .sortable-list {
-        list-style: none;
-        padding: 0;
-    }
-    
-    .sortable-item {
-        background-color: #fff; /* Tarjetas de color blanco */
-        border: none; /* Sin borde */
-        border-radius: 5px;
-        padding: 10px;
-        margin: 5px 0;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto de flotación */
-    }
-    
-    .sortable-item a {
-        text-decoration: none;
-        color: #333;
-    }
-</style>    
 {% endblock %}

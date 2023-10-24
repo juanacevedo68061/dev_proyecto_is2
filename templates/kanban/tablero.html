@@ -66,28 +66,26 @@
             {% endfor %}
         </ul>
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="motivoModal" tabindex="-1" role="dialog" aria-labelledby="motivoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="motivoModalLabel">Motivo del Rechazo</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-            <input type="text" id="motivoInput" class="form-control" placeholder="Ingrese el motivo del rechazo">
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="guardarMotivoBtn">Guardar Motivo</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="motivoModal" tabindex="-1" role="dialog" aria-labelledby="motivoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="motivoModalLabel">Motivo del Rechazo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
         </div>
+        <div class="modal-body">
+        <input type="text" id="motivoInput" class="form-control" placeholder="Ingrese el motivo del rechazo">
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="guardarMotivoBtn">Guardar Motivo</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
     </div>
-    
-
+    </div>
 </div>
+
 {% endblock %}

@@ -99,6 +99,6 @@ def motivo(request):
             return JsonResponse({'message': 'Motivo registrado correctamente'})
         else:
             print("VACIOOOOO")
-            return JsonResponse({'reason_required': False})
+            return JsonResponse({'vuelve': True})
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)

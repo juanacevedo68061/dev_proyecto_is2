@@ -12,20 +12,16 @@
     flex: 1;
     padding: 10px;
     margin: 10px;
+    border-top: 5px solid #0074b2;
 }
 
 .kanban-column-title {
-    background-color: #f2f2f2;
-    /* Mismo color de fondo de la columna */
     padding: 8px;
     margin: -10px -10px 10px -10px;
     text-align: center;
     font-weight: bold;
-    /* Texto en negrita */
+    font-size: 25px;
     color: #0074b2;
-    /* Color azul */
-    border-top: 5px solid #0074b2;
-    /* Borde superior */
 }
 
 .sortable-list {
@@ -40,7 +36,7 @@
     /* Sin borde */
     border-radius: 5px;
     padding: 10px;
-    margin: 5px 0;
+    margin: 20px 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     /* Sombra para efecto de flotación */
 }

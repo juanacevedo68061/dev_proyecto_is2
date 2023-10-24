@@ -86,12 +86,13 @@ def motivo(request):
         nuevo = request.POST.get('nuevo')
         if motivo:
             print(motivo)
-            publicacion.estado="rechazado"
+            
             if nuevo == "revision":
                 publicacion.para_editor = True
-            else:
+            elif nuevo == "borrador":
                 publicacion.para_editor = False
-
+                
+            publicacion.estado="rechazado"
             publicacion.save()            
             print(publicacion.estado)
             print(publicacion.para_editor)

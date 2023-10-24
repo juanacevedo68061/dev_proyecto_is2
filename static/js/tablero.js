@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     var isSubmitting = false;
+    var motivoSubmitted = false;  // Bandera para rastrear si se ha enviado el motivo
+    var reloadingColumns = false;  // Bandera para rastrear si las columnas se están recargando
+    var isUpdating = false;  // Bandera para rastrear si ya se está actualizando
 
     function reloadColumns() {
+        if (reloadingColumns) {
+            return;
+        }
+        reloadingColumns = true;
         $.ajax({
             url: '/kanban/',
             type: 'GET',
@@ -14,9 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     var newContent = $(response).find('#' + column.id).html();
                     $(column).html(newContent);
                 });
+                reloadingColumns = false;  // Restablecer la bandera
             },
             error: function (error) {
                 console.error('Error al cargar los datos:', error);
+                reloadingColumns = false;  // Restablecer la bandera en caso de error
             }
         });
     }
@@ -27,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
         new Sortable(columns[i], {
             group: 'kanban',
             onEnd: function (evt) {
-                if (isSubmitting) {
+                if (isSubmitting || isUpdating) {
                     return;
                 }
 
-                isSubmitting = true;
+                isUpdating = true;  // Marcar que se está actualizando
 
-                var publicacionId = evt.item.querySelector('.sortable-item').id;
+                var publicacionId = evt.item.id;
                 var columnaId = evt.to.id;
 
                 clearModal();
@@ -48,7 +57,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
+                        console.log('Respuesta de la solicitud de actualizar:', data);
+
+                        if (data.message) {
+                            console.log(data.message);
+                        }
 
                         if (data.reason_required) {
                             $('#motivoModal').modal('show');
@@ -57,41 +70,48 @@ document.addEventListener('DOMContentLoaded', function () {
                             guardarMotivoBtn.addEventListener('click', function () {
                                 var motivo = document.getElementById('motivoInput').value;
                                 var columnaId = evt.to.id;
+                                console.log('Columna destino:', columnaId);
                                 $('#motivoModal').modal('hide');
 
-                                fetch('/kanban/motivo/', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                        'X-CSRFToken': getCookie('csrftoken'),
-                                    },
-                                    body: 'id_publicacion=' + publicacionId + '&motivo=' + motivo + '&nuevo=' + columnaId,
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log(data);
+                                if (!motivoSubmitted) {
+                                    motivoSubmitted = true;
 
-                                        var motivoInput = document.getElementById('motivoInput');
-                                        motivoInput.value = '';
-
-                                        if (data.vuelve === true) {
-                                            reloadColumns();
-                                        }
-
-                                        isSubmitting = false;
+                                    fetch('/kanban/motivo/', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                            'X-CSRFToken': getCookie('csrftoken'),
+                                        },
+                                        body: 'id_publicacion=' + publicacionId + '&motivo=' + motivo + '&nuevo=' + columnaId,
                                     })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        isSubmitting = false;
-                                    });
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Respuesta de la solicitud de motivo:', data);
+
+                                            var motivoInput = document.getElementById('motivoInput');
+                                            motivoInput.value = '';
+
+                                            if (data.vuelve === true) {
+                                                reloadColumns();
+                                            }
+
+                                            isUpdating = false;  // Restablecer la bandera
+                                            motivoSubmitted = false;  // Restablecer la bandera
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            isUpdating = false;  // Restablecer la bandera
+                                            motivoSubmitted = false;  // Restablecer la bandera
+                                        });
+                                }
                             });
                         } else {
-                            isSubmitting = false;
+                            isUpdating = false;  // Restablecer la bandera
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        isSubmitting = false;
+                        isUpdating = false;  // Restablecer la bandera
                     });
             }
         });

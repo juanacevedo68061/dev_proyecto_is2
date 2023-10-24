@@ -10,81 +10,74 @@
 <div class="kanban-columns">
     <!-- Columna "Borrador" -->
     <div class="kanban-column" id="borrador">
-        <h5 class="kanban-column-title">Borrador</h5>
-        <ul class="sortable-list">
-            {% for publicacion in publicaciones_borrador %}
-            <div class="columna" id="borrador">
-                <li class="sortable-item" id="{{ publicacion.id_publicacion }}">
+        <h5 class="kanban-column-title">Borrador</h5><br>        
+        {% for publicacion in publicaciones_borrador %}
+            
+                <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
                     <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">
                         {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
                     </a>
-                </li>
-            </div>
-            {% endfor %}
-        </ul>
+                </li><br> 
+            
+        {% endfor %}
     </div>
     <!-- Columna "Revisión" -->
     <div class="kanban-column" id="revision">
-        <h5 class="kanban-column-title">Revisión</h5>
-        <ul class="sortable-list">
-            {% for publicacion in publicaciones_revision %}
-            <div class="columna" id="revision">
-                <li class="sortable-item" id="{{ publicacion.id_publicacion }}">
+        <h5 class="kanban-column-title">Revisión</h5><br>
+        {% for publicacion in publicaciones_revision %}
+            
+                <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
                     <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">
                         {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
                     </a>
-                </li>
-            </div>
-            {% endfor %}
-        </ul>
+                </li><br>
+            
+        {% endfor %}
     </div>
     <!-- Columna "Publicar" -->
     <div class="kanban-column" id="publicar">
-        <h5 class="kanban-column-title">Publicar</h5>
-        <ul class="sortable-list">
-            {% for publicacion in publicaciones_publicar %}
-            <div class="columna" id="publicar"> 
-                <li class = "sortable-item" id="{{ publicacion.id_publicacion }}">
+        <h5 class="kanban-column-title">Publicar</h5><br>
+        {% for publicacion in publicaciones_publicar %}
+            
+                <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
                     <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">
                         {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
                     </a>
-                </li>
-            </div>
-            {% endfor %}
-        </ul>
+                </li><br>
+            
+        {% endfor %}
     </div>
     <!-- Columna "Publicado" -->
     <div class="kanban-column" id="publicado">
-        <h5 class="kanban-column-title">Publicado</h5>
-        <ul class="sortable-list">
-            {% for publicacion in publicaciones_publicado %}
-            <div class="columna" id="publicado">
-                <li class = "sortable-item" id="{{ publicacion.id_publicacion }}">
+        <h5 class="kanban-column-title">Publicado</h5><br>
+        {% for publicacion in publicaciones_publicado %}
+            
+                <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
                     {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
-                </li>
-            </div>
-            {% endfor %}
-        </ul>
+                </li><br>
+            
+        {% endfor %}
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="motivoModal" tabindex="-1" role="dialog" aria-labelledby="motivoModalLabel" aria-hidden="true">
+<div class="modal fade" id="motivoModal" tabindex="-1" role="dialog" aria-labelledby="motivoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="motivoModalLabel">Motivo del Rechazo</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="motivoModalLabel">Motivo del Rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="motivoInput" class="form-control" placeholder="Ingrese el motivo del rechazo">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="guardarMotivoBtn">Guardar Motivo</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
-        <div class="modal-body">
-        <input type="text" id="motivoInput" class="form-control" placeholder="Ingrese el motivo del rechazo">
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="guardarMotivoBtn">Guardar Motivo</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        </div>
-    </div>
     </div>
 </div>
 

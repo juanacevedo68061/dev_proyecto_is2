@@ -29,9 +29,6 @@
 
 <div class="contenido">
     <div class="publicacion">
-
-        <!--<a href="{% url 'publicaciones:vista_auxiliar_email' publicacion.id_publicacion %}" >email</a><br><br>-->
-        
         <!--Si quieres que el publicador pueda desactivar solo desde el canvan, quitale rol_-->
         {% if rol_publicador or user == publicacion.autor %}
             <a class="btn-estado" data-publicacion-id="{{ publicacion.id_publicacion }}" data-activo="{{ publicacion.activo }}">
@@ -145,8 +142,7 @@
         {%if publicador %}
             <form method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary" name="publicar">Publicar</button>
-                <a href="{% url 'publicaciones:rechazar_publicador' publicacion.id_publicacion %}" class="btn btn-warning">Rechazar</a>
+                <button type="submit" class="btn btn-success" name="publicar">Habilitar</button>
                 <a href="{% url 'kanban:kanban' %}" class="btn btn-secondary">Cancelar</a>
             </form>
         {% endif %}

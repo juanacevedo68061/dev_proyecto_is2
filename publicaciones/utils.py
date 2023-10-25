@@ -2,6 +2,10 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 
+    #razon: 1 - es para inactivo
+    #razon: 2 - es para rechazo
+    #razon: 3 - es para otros estados
+
 #notificar(publicacion,3)
 #registrar(request, publicacion,'autor')
 #debes implementar que el registro ocurra aqui, y que no se notifique cuando pasa a borrador

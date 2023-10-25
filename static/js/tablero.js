@@ -58,7 +58,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => response.json())
                     .then(data => {
                         console.log('Respuesta de la solicitud de actualizar:', data);
-
+                        console.log(data);
+                        if (data.vuelve) {
+                            reloadColumns();
+                        }
                         if (data.message) {
                             console.log(data.message);
                         }

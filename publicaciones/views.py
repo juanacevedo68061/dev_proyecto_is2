@@ -72,11 +72,12 @@ def crear_publicacion(request):
                 publicacion.categoria = categoria_elegida
                 if publicacion.categoria:                     
                     if publicacion.categoria.moderada:
-                        publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                        print(publicacion.categoria)
+                        if request.POST['accion'] == 'crear':
+                            publicacion.semaforo = "verde" 
+                        else:
+                            publicacion.semaforo = "amarillo" 
+                        
                         publicacion.save()                
-                        notificar(publicacion,3)
-                        registrar(request, publicacion,'autor')
                         messages.success(request, message)
                         redirect_url = "/"                    
                     else:                    
@@ -84,8 +85,6 @@ def crear_publicacion(request):
                             publicacion.estado = 'publicado' 
                             publicacion.calcular_vigencia()
                             publicacion.save()                
-                            notificar(publicacion,3)
-                            registrar(request, publicacion,'autor')
                             messages.success(request, message)
                             redirect_url = "/"                                            
                         else:
@@ -145,11 +144,12 @@ def editar_publicacion_autor(request, publicacion_id):
                     categoria_elegida = categoria_no_suscriptores
 
                 publicacion.categoria = categoria_elegida
-                if publicacion.categoria:           
-                    publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+                if publicacion.categoria:
+                    if request.POST['accion'] == 'completar_borrador':
+                        publicacion.semaforo = "verde" 
+                    else:
+                        publicacion.semaforo = "amarillo"            
                     publicacion.save()
-                    notificar(publicacion,3)
-                    registrar(request, publicacion, 'autor')
                     messages.success(request, message)
                     redirect_url = reverse('kanban:kanban')
                 else:
@@ -205,11 +205,13 @@ def editar_publicacion_editor(request, publicacion_id):
                     categoria_elegida = categoria_no_suscriptores
 
                 publicacion.categoria = categoria_elegida
-                if publicacion.categoria:           
-                    publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+                if publicacion.categoria:
+                    if request.POST['accion'] == 'completar_edicion':
+                        publicacion.semaforo = "verde" 
+                    else:
+                        publicacion.semaforo = "amarillo"            
+                    
                     publicacion.save()
-                    notificar(publicacion,3)
-                    registrar(request, publicacion, 'editor')
                     messages.success(request, message)
                     redirect_url = reverse('kanban:kanban')  
                 else:
@@ -315,13 +317,10 @@ def mostar_para_publicador(request, publicacion_id):
     if request.method == 'POST':
         if 'publicar' in request.POST:
             # Cambiar el estado de la publicación a "publicado"
-            publicacion.estado = 'publicado'
+            publicacion.semaforo = "verde"
             publicacion.fecha_publicacion = timezone.now().date()
             publicacion.save()
             
-            notificar(publicacion,3)
-            registrar(request, publicacion, 'publicador')
-
             message = 'La publicación ha sido publicada con éxito.'
             redirect_url = reverse('kanban:kanban')
             messages.success(request, message)

@@ -2,6 +2,11 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 
+#notificar(publicacion,3)
+#registrar(request, publicacion,'autor')
+#debes implementar que el registro ocurra aqui, y que no se notifique cuando pasa a borrador
+#pero si se debe registrar incluso el borrador
+#en autor o editor o publicador es los roles y en la vista que depende de ellos ocurre el cambio
 def notificar(publicacion, cambio, razon=""):
     subject = 'Cambio en tu Publicación'
     recipient_list = [publicacion.autor.email]

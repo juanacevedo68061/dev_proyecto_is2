@@ -51,6 +51,8 @@ def actualizar(request):
                 anterior = publicacion.estado
                 nuevo = nuevo_estado
                 publicacion.estado = nuevo
+                publicacion.semaforo = "rojo"
+
                 if anterior == "rechazado" and publicacion.para_editor:
                     anterior="revision"
                 elif anterior == "rechazado" and not publicacion.para_editor:
@@ -66,9 +68,10 @@ def actualizar(request):
                     return JsonResponse({'reason_required': True})
                 print(publicacion.estado)
                 print(publicacion.para_editor)
+                print(publicacion.semaforo)
                 publicacion.save()
                 
-                return JsonResponse({'message': 'Estado actualizado correctamente'})
+                return JsonResponse({'vuelve': True})
             except (ValueError, Http404, Publicacion_solo_text.DoesNotExist) as e:
                 return JsonResponse({'error': 'No se encontró la publicación o el ID no es válido'}, status=400)
         else:
@@ -92,12 +95,13 @@ def motivo(request):
             elif nuevo == "borrador":
                 publicacion.para_editor = False
                 
-            publicacion.estado="rechazado"
+            publicacion.estado ="rechazado"
+            publicacion.semaforo = "rojo"
             publicacion.save()            
             print(publicacion.estado)
             print(publicacion.para_editor)
             
-            return JsonResponse({'message': 'Motivo registrado correctamente'})
+            return JsonResponse({'vuelve': True})
         else:
             print("VACIOOOOO")
             return JsonResponse({'vuelve': True})

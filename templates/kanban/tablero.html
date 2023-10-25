@@ -4,7 +4,6 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <link href="{% static 'css/tablero.css' %}" rel="stylesheet" />
-<script src="{% static 'js/tablero.js' %}"></script>
 <br>
 <h2>Tablero kanban</h2>
 <div class="kanban-columns">
@@ -14,6 +13,9 @@
         {% for publicacion in publicaciones_borrador %}
         <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
             <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">
+                {% if publicacion.semaforo == "verde" %}
+                    <script src="{% static 'js/tablero.js' %}"></script>
+                {% endif %}
                 {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
             </a>
         </li>
@@ -25,6 +27,9 @@
         {% for publicacion in publicaciones_revision %}
         <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
             <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">
+                {% if publicacion.semaforo == "verde" %}
+                    <script src="{% static 'js/tablero.js' %}"></script>
+                {% endif %}
                 {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
             </a>
         </li>
@@ -36,6 +41,9 @@
         {% for publicacion in publicaciones_publicar %}
         <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
             <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">
+                {% if publicacion.semaforo == "verde" %}
+                    <script src="{% static 'js/tablero.js' %}"></script>
+                {% endif %}
                 {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
             </a>
         </li>
@@ -46,6 +54,9 @@
         <span class="kanban-column-title">Publicado</span>
         {% for publicacion in publicaciones_publicado %}
         <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true">
+            {% if publicacion.semaforo == "verde" %}
+                <script src="{% static 'js/tablero.js' %}"></script>
+            {% endif %}
             {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
         </li>
         {% endfor %}

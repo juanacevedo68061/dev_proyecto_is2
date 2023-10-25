@@ -45,3 +45,7 @@
     text-decoration: none;
     color: #333;
 }
+
+.kanban-column:not(.is-allowed) {
+    cursor: not-allowed;
+}

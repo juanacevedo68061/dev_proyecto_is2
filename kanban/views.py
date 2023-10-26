@@ -10,6 +10,8 @@ from django.http import Http404
 from publicaciones.utils import tiene_rol
 from roles.decorators import permiso_requerido
 from django.contrib.auth.decorators import login_required
+from .models import Registro
+from administracion.models import Categoria
 
 @permiso_requerido
 @login_required
@@ -26,11 +28,13 @@ def kanban(request):
     publicaciones_publicar = Publicacion_solo_text.objects.filter(estado='publicar', activo=True, categoria__moderada=True)
     publicaciones_publicado = Publicacion_solo_text.objects.filter(estado='publicado', activo=True, categoria__moderada=True)
 
+    categorias = Categoria.objects.filter(moderada=True)
     context = {
         'publicaciones_borrador': publicaciones_borrador,
         'publicaciones_revision': publicaciones_revision,
         'publicaciones_publicar': publicaciones_publicar,
         'publicaciones_publicado': publicaciones_publicado,
+        'categorias': categorias
     }
 
     return render(request, 'kanban/tablero.html', context)
@@ -166,3 +170,10 @@ def motivo(request):
             return JsonResponse({'vuelve': True})
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
+    
+@login_required
+def historial(request):
+    registros = Registro.objects.all()
+    if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
+        registros = Registro.objects.filter(usuario=request.user)
+    return render(request, 'kanban/historial.html', {'registros': registros})

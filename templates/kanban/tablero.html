@@ -5,53 +5,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <link href="{% static 'css/tablero.css' %}" rel="stylesheet" />
 <script src="{% static 'js/tablero.js' %}"></script>
-
-<br>
-<h2>Tablero kanban</h2>
-<div class="kanban-columns">
-    <!-- Columna "Borrador" -->
-    <div class="kanban-column" id="borrador">
-        <span class="kanban-column-title">Borrador</span>
-        {% for publicacion in publicaciones_borrador %}
-        <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
-            <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">
-                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
-            </a>
-        </li>
-        {% endfor %}
-    </div>
-    <!-- Columna "Revisión" -->
-    <div class="kanban-column" id="revision">
-        <span class="kanban-column-title">Revisión</span>
-        {% for publicacion in publicaciones_revision %}
-        <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
-            <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">
-                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
-            </a>
-        </li>
-        {% endfor %}
-    </div>
-    <!-- Columna "Publicar" -->
-    <div class="kanban-column" id="publicar">
-        <span class="kanban-column-title">Publicar</span>
-        {% for publicacion in publicaciones_publicar %}
-        <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
-            <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">
-                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
-            </a>
-        </li>
-        {% endfor %}
-    </div>
-    <!-- Columna "Publicado" -->
-    <div class="kanban-column" id="publicado">
-        <span class="kanban-column-title">Publicado</span>
-        {% for publicacion in publicaciones_publicado %}
-        <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
-            <a href="#">
-                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
-            </a>
-        </li>
-        {% endfor %}
+<style>
+    .contenedor {
+        /*max-width: 1200px;*/
+        margin: 10px auto;
+        padding: 10px;
+    }
+</style>
+<div class="contenedor">
+    <h3 class="kanban-columns">Tablero kanban <a href="{% url 'kanban:historial' %}"><i class="fas fa-history"></i></a></h3>
+    <div class="kanban-columns">
+        <!-- Columna "Borrador" -->
+        <div class="kanban-column" id="borrador">
+            <span class="kanban-column-title">Borrador</span>
+            {% for publicacion in publicaciones_borrador %}
+            <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
+                <a href="{% url 'publicaciones:editar_publicacion_autor' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </div>
+        <!-- Columna "Revisión" -->
+        <div class="kanban-column" id="revision">
+            <span class="kanban-column-title">Revisión</span>
+            {% for publicacion in publicaciones_revision %}
+            <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
+                <a href="{% url 'publicaciones:editar_publicacion_editor' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </div>
+        <!-- Columna "Publicar" -->
+        <div class="kanban-column" id="publicar">
+            <span class="kanban-column-title">Publicar</span>
+            {% for publicacion in publicaciones_publicar %}
+            <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
+                <a href="{% url 'publicaciones:mostar_para_publicador' publicacion.id_publicacion %}">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </div>
+        <!-- Columna "Publicado" -->
+        <div class="kanban-column" id="publicado">
+            <span class="kanban-column-title">Publicado</span>
+            {% for publicacion in publicaciones_publicado %}
+            <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
+                <a href="#">
+                    {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+                </a>
+            </li>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% include 'kanban/motivo.html' %}

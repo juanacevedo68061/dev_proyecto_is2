@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.kanban, name='kanban'),
     path('actualizar/', views.actualizar, name='actualizar'),
     path('motivo/', views.motivo, name='motivo'),
+    path('historial/', views.historial, name='historial'),
 ]

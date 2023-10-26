@@ -2,6 +2,7 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    z-index: 2; /* Asegura que esté en el fondo */
 }
 
 .kanban-column {
@@ -13,6 +14,7 @@
     padding: 10px;
     margin: 10px;
     border-top: 5px solid #0074b2;
+    z-index: 2; /* Asegura que esté en el fondo */
 }
 
 .kanban-column-title {
@@ -22,6 +24,7 @@
     font-weight: bold;
     font-size: 25px;
     color: #0074b2;
+    z-index: 1; /* Asegura que esté en el fondo */
 }
 
 .sortable-list {

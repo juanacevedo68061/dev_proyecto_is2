@@ -3,7 +3,7 @@ from login.models import Usuario
 import uuid
 
 class Registro(models.Model):
-    CANVAS_CHOICES = [
+    KANBAN_CHOICES = [
         ('autor', 'Autor'),
         ('editor', 'Editor'),
         ('publicador', 'Publicador'),
@@ -13,7 +13,7 @@ class Registro(models.Model):
     publicacion_titulo = models.CharField(max_length=255)
     nuevo_estado = models.CharField(max_length=20)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    canvas = models.CharField(max_length=20, choices=CANVAS_CHOICES)
+    kanban = models.CharField(max_length=20, choices=KANBAN_CHOICES)
     fecha_cambio = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

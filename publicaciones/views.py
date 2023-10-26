@@ -21,7 +21,7 @@ import uuid
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .utils import notificar, publicar_no_moderada
-from canvan.models import Registro
+from kanban.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
 from roles.decorators import permiso_requerido, permiso_redireccion_requerido
@@ -443,12 +443,12 @@ def estado(request, publicacion_id):
     return JsonResponse({'activo': publicacion.activo})
 
 @login_required
-def registrar(request, publicacion, canvas):
+def registrar(request, publicacion, kanban):
     nuevo_registro = Registro.objects.create(
         usuario=request.user,
         publicacion_id=publicacion.id_publicacion,
         publicacion_titulo=publicacion.titulo,
         nuevo_estado=publicacion.estado,
-        canvas=canvas
+        kanban = kanban
     )
     nuevo_registro.save()

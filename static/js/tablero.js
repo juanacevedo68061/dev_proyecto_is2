@@ -60,10 +60,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            console.log('Respuesta de la solicitud de actualizar:', data);
+
+                            if (data.rol) {
+                                reloadColumns();
+                                var mensaje = `Es necesario tener el rol ${data.rol} para poder realizar esta acción.`;
+                                mostrarMensajeDeError(mensaje);
+                            }
+
+                            if (data.autor===true) {
+                                reloadColumns();
+                                var mensaje = `Solo el autor puede cambiar el estado su publicación del Borrador.`;
+                                mostrarMensajeDeError(mensaje);
+                            }
+
                             if (data.vuelve===true) {
                                 reloadColumns();
                             }
+
                             if (data.accion===false) {
                                 reloadColumns();
                                 var mensaje = 'Acción no permitida.';

@@ -7,8 +7,12 @@ from publicaciones.models import Publicacion_solo_text
 from django.db.models import Q
 from uuid import UUID
 from django.http import Http404
-from django.contrib import messages
+from publicaciones.utils import tiene_rol
+from roles.decorators import permiso_requerido
+from django.contrib.auth.decorators import login_required
 
+@permiso_requerido
+@login_required
 def kanban(request):
 
     publicaciones_borrador = Publicacion_solo_text.objects.filter(
@@ -31,6 +35,8 @@ def kanban(request):
 
     return render(request, 'kanban/tablero.html', context)
 
+@permiso_requerido
+@login_required
 @csrf_exempt
 def actualizar(request):
     if request.method == 'POST':
@@ -52,13 +58,27 @@ def actualizar(request):
                 anterior = publicacion.estado
                 nuevo = nuevo_estado
                 publicacion.estado = nuevo
-                publicacion.semaforo = "rojo"
                 
+                #asignacion temporal si estan rechazados
                 if anterior == "rechazado" and publicacion.para_editor:
                     anterior="revision"
                 elif anterior == "rechazado" and not publicacion.para_editor:
                     anterior = "borrador"
-
+                
+                #No se permiten recambios de estado en la misma columna
+                if anterior == "borrador" and nuevo == "borrador":
+                    return JsonResponse({'vuelve': True})
+                if anterior == "revision" and nuevo == "revision":
+                    return JsonResponse({'vuelve': True})
+                if anterior == "publicar" and nuevo == "publicar":
+                    return JsonResponse({'vuelve': True})
+                if anterior == "publicado" and nuevo == "publicado":
+                    return JsonResponse({'vuelve': True})
+                                                
+                #esta accion se restringe para el que no es el autor
+                if nuevo == "revision" and anterior == "borrador" and not request.user == publicacion.autor:
+                    return JsonResponse({'autor': True})
+                
                 #acciones no permitidas
                 #publicado a revision
                 #publicado a borrador
@@ -76,18 +96,33 @@ def actualizar(request):
                 if anterior == "revision" and nuevo == "publicado":
                     return JsonResponse({'accion': False})
 
-                if nuevo == "borrador" and anterior == "revision":
+                #Estas acciones corresponden a rechazos
+                if nuevo == "borrador" and anterior == "revision" and tiene_rol(request.user, "editor"):
                     return JsonResponse({'reason_required': True})
-                    
-                if nuevo == "revision" and anterior == "publicar":
+                elif nuevo == "borrador" and anterior == "revision" and not tiene_rol(request.user, "editor"):
+                    return JsonResponse({'rol': "editor"})
+                if nuevo == "revision" and anterior == "publicar" and tiene_rol(request.user, "publicador"):
                     return JsonResponse({'reason_required': True})
-                    
-                if nuevo == "borrador" and anterior == "publicar":
+                elif nuevo == "revision" and anterior == "publicar" and not tiene_rol(request.user, "publicador"):
+                    return JsonResponse({'rol': "publicador"})
+                if nuevo == "borrador" and anterior == "publicar" and tiene_rol(request.user, "publicador"):
                     return JsonResponse({'reason_required': True})
+                elif nuevo == "borrador" and anterior == "publicar" and not tiene_rol(request.user, "publicador"):
+                    return JsonResponse({'rol': "publicador"})
+                
+                #acciones que corresponden a ciertos roles
+                if nuevo == "publicar" and anterior == "revision" and not tiene_rol(request.user, "editor"):
+                    return JsonResponse({'rol': "editor"})
+                if nuevo == "publicado" and anterior == "publicar" and not tiene_rol(request.user, "publicador"):
+                    return JsonResponse({'rol': "publicador"})
+                if nuevo == "publicar" and anterior == "publicado" and not tiene_rol(request.user, "publicador"):
+                    return JsonResponse({'rol': "publicador"})
+                
                 print(publicacion.estado)
                 print(publicacion.para_editor)
                 print(publicacion.semaforo)
                 
+                publicacion.semaforo = "rojo"                
                 if publicacion.estado == "publicado":
                     publicacion.semaforo = "verde"
 
@@ -101,6 +136,8 @@ def actualizar(request):
     else:
         return JsonResponse({'message': 'Método no permitido'}, status=405)
 
+@permiso_requerido
+@login_required
 @csrf_exempt
 def motivo(request):
     if request.method == 'POST':

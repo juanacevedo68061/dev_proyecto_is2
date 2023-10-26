@@ -40,6 +40,10 @@
         border-radius: 50%;
         background-color: white;
         transition: box-shadow 0.3s ease-in-out;
+        position: relative; /* Agregamos posición relativa */
+        top: 1px;
+        margin-left: 3px;   
+        display: inline-block;
     }
 
     .red {
@@ -58,23 +62,21 @@
     }
 
     .title-lamp {
-        display: flex;
-        align-items: center;
+        flex-direction: column;
     }
 
     .title {
-        margin-right: 10px;
         font-weight: bold;
         color: #0074b2;
+        display: inline-block;
     }
 
     /* Resto de estilos como se definió previamente para .red, .yellow, .green, y .lamp */
 </style>
 <div class="tarjeta-contenido">
     <div class="title-lamp">
-        <span class="title">{{ publicacion.titulo }}</span>
-        <span
-            class="lamp {% if publicacion.semaforo == 'rojo' %}red{% elif publicacion.semaforo == 'amarillo' %}yellow{% elif publicacion.semaforo == 'verde' %}green{% endif %}"></span>
+        <span class="title">{{ publicacion.titulo }} <span class="lamp {% if publicacion.semaforo == 'rojo' %}red{% elif publicacion.semaforo == 'amarillo' %}yellow{% elif publicacion.semaforo == 'verde' %}green{% endif %}"></span></span>
+        
     </div>
 
     <span class="tarjeta-fecha">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>

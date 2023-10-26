@@ -10,7 +10,7 @@ como generación de códigos QR y gestión de likes/dislikes.
 import qrcode
 from io import BytesIO
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
@@ -24,7 +24,7 @@ from .utils import notificar, publicar_no_moderada
 from canvan.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
-from roles.decorators import permiso_requerido
+from roles.decorators import permiso_requerido, permiso_redireccion_requerido
 
 @permiso_requerido
 @login_required
@@ -49,7 +49,7 @@ def crear_publicacion(request):
                 message = 'Publicación creada con éxito.'
             elif request.POST['accion'] == 'guardar_borrador':
                 form_fields_required = ['titulo']
-                message = 'Borrador guardado con éxito.'
+                message = 'Borrador creado con éxito.'
                 
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
@@ -72,21 +72,17 @@ def crear_publicacion(request):
                 publicacion.categoria = categoria_elegida
                 if publicacion.categoria:                     
                     if publicacion.categoria.moderada:
-                        if request.POST['accion'] == 'crear':
-                            publicacion.semaforo = "verde" 
-                        else:
-                            publicacion.semaforo = "amarillo" 
-                        
+                        publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
                         publicacion.save()                
                         messages.success(request, message)
-                        redirect_url = "/"                    
+                        redirect_url = reverse('publicaciones:crear_publicacion')
                     else:                    
                         if request.POST['accion'] == 'crear':
                             publicacion.estado = 'publicado' 
                             publicacion.calcular_vigencia()
                             publicacion.save()                
                             messages.success(request, message)
-                            redirect_url = "/"                                            
+                            redirect_url = reverse('publicaciones:crear_publicacion')                                            
                         else:
                             message="No esta permitido crear Borradores con Categorias no moderada"
                             messages.error(request, message)
@@ -99,7 +95,7 @@ def crear_publicacion(request):
 
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'redirect_url': redirect_url})
 
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
     """
@@ -112,8 +108,8 @@ def editar_publicacion_autor(request, publicacion_id):
 
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     if request.user != publicacion.autor:
-        messages.error(request, "No tienes acceso.")
-        return redirect(reverse('kanban:kanban'))    
+        mostrar = "El acceso es permitido solo al autor de la publicación."
+        return render(request, '403.html', {'mostrar':mostrar,'redireccion_url':reverse('kanban:kanban')}, status=403)
     
     message = ''
     redirect_url = None
@@ -163,7 +159,7 @@ def editar_publicacion_autor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_autor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
 
@@ -225,7 +221,7 @@ def editar_publicacion_editor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def mostar_para_publicador(request, publicacion_id):
 

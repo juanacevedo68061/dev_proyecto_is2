@@ -34,10 +34,18 @@
                                         <br>
                                         <p class="lead">Acceso Denegado</p>
                                     {% endif %}
-                                    <a href="/">
-                                        <i class="fas fa-arrow-left me-1"></i>
-                                        Volver a Principal
-                                    </a>
+                                    
+                                    {% if redireccion_url %}
+                                        <a href="{{redireccion_url}}">
+                                            <i class="fas fa-arrow-left me-1"></i>
+                                                Volver
+                                        </a>
+                                    {% else %}
+                                        <a href="/">
+                                            <i class="fas fa-arrow-left me-1"></i>
+                                                Volver a Principal
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -39,3 +39,27 @@ def publicar_no_moderada(usuario):
         bool: True si el usuario tiene el permiso, False en caso contrario.
     """
     return usuario.roles.filter(permisos__codename='publicar_no_moderada').exists()
+
+def tiene_permiso(usuario, nombre):
+    """
+    Verifica si el usuario tiene el permiso con el nombre que trae 'nombre' en alguno de sus roles.
+
+    Parámetros:
+        usuario (Usuario): El usuario cuyos roles se verificarán.
+
+    Retorna:
+        bool: True si el usuario tiene el permiso, False en caso contrario.
+    """
+    return usuario.roles.filter(permisos__codename=nombre).exists()
+
+def tiene_rol(usuario, nombre):
+    """
+    Verifica si el usuario tiene el rol con el nombre que trae 'nombre' en alguno de sus roles.
+
+    Parámetros:
+        usuario (Usuario): El usuario cuyos roles se verificarán.
+
+    Retorna:
+        bool: True si el usuario tiene el permiso, False en caso contrario.
+    """
+    return usuario.roles.filter(nombre=nombre).exists()

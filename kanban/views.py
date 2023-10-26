@@ -12,6 +12,8 @@ from roles.decorators import permiso_requerido
 from django.contrib.auth.decorators import login_required
 from .models import Registro
 from administracion.models import Categoria
+from publicaciones.utils import notificar
+from login.models import Usuario
 
 @permiso_requerido
 @login_required
@@ -131,6 +133,10 @@ def actualizar(request):
                     publicacion.semaforo = "verde"
 
                 publicacion.save()
+                if not publicacion.estado == "borrador":
+                    notificar(publicacion,3)
+
+                registrar(request, publicacion, anterior)
                 
                 return JsonResponse({'vuelve': True})
             except (ValueError, Http404, Publicacion_solo_text.DoesNotExist) as e:
@@ -155,12 +161,15 @@ def motivo(request):
             
             if nuevo == "revision":
                 publicacion.para_editor = True
+                motivo = motivo + ", su publicación se pasó al Editor."
             elif nuevo == "borrador":
                 publicacion.para_editor = False
-                
+            anterior = publicacion.estado
             publicacion.estado ="rechazado"
             publicacion.semaforo = "rojo"
-            publicacion.save()            
+            publicacion.save()          
+            notificar(publicacion,2, motivo) 
+            registrar(request, publicacion, anterior) 
             print(publicacion.estado)
             print(publicacion.para_editor)
             
@@ -175,5 +184,20 @@ def motivo(request):
 def historial(request):
     registros = Registro.objects.all()
     if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
-        registros = Registro.objects.filter(usuario=request.user)
+        registros = Registro.objects.filter(responsable=request.user)
     return render(request, 'kanban/historial.html', {'registros': registros})
+
+@login_required
+def registrar(request, publicacion, anterior):
+    usuario = request.user
+    roles = usuario.roles.all()
+    nuevo_registro = Registro.objects.create(
+        responsable=usuario,
+        publicacion_id=publicacion.id_publicacion,
+        publicacion_titulo=publicacion.titulo,
+        anterior = anterior,
+        nuevo=publicacion.estado,
+    )
+    nuevo_registro.roles.set(roles)
+    nuevo_registro.save()
+    print("Registroooooooooooooooooooooooooo")

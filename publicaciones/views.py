@@ -442,13 +442,4 @@ def estado(request, publicacion_id):
         registros_a_eliminar.delete()
     return JsonResponse({'activo': publicacion.activo})
 
-@login_required
-def registrar(request, publicacion, kanban):
-    nuevo_registro = Registro.objects.create(
-        usuario=request.user,
-        publicacion_id=publicacion.id_publicacion,
-        publicacion_titulo=publicacion.titulo,
-        nuevo_estado=publicacion.estado,
-        kanban = kanban
-    )
-    nuevo_registro.save()
+

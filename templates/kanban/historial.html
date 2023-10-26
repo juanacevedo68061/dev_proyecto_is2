@@ -14,26 +14,34 @@
     <h1>Historial</h1>
     <br>
     {% if registros %}    
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Título de la Publicación</th>
-                    <th>Nuevo Estado</th>
-                    <th>Canvas</th>
-                    <th>Fecha de Cambio</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for registro in registros %}
-                <tr>
-                    <td>{{ registro.publicacion_titulo }}</td>
-                    <td>{{ registro.nuevo_estado }}</td>
-                    <td>{{ registro.get_canvas_display }}</td>
-                    <td>{{ registro.fecha_cambio }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Título de la Publicación</th>
+                <th>Anterior Estado</th>
+                <th>Nuevo Estado</th>
+                <th>Responsable</th>
+                <th>Roles</th>
+                <th>Fecha de Cambio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in registros %}
+            <tr>
+                <td>{{ registro.publicacion_titulo }}</td>
+                <td>{{ registro.anterior }}</td>
+                <td>{{ registro.nuevo }}</td>
+                <td>{{ registro.responsable }}</td>
+                <td>
+                    {% for rol in registro.roles.all %}
+                        {{ rol }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ registro.fecha_cambio }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% else %}
         <p style="color: gray; margin-left: 5px;">No tienes registros</p>
     {% endif %}

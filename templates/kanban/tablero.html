@@ -47,7 +47,9 @@
         <span class="kanban-column-title">Publicado</span>
         {% for publicacion in publicaciones_publicado %}
         <li class="sortable-item sortable-list" id="{{ publicacion.id_publicacion }}" data-draggable="true" color = "{{publicacion.semaforo}}">
-            {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+            <a href="#">
+                {% include 'kanban/tarjeta.html' with publicacion=publicacion %}
+            </a>
         </li>
         {% endfor %}
     </div>

@@ -7,6 +7,7 @@ from publicaciones.models import Publicacion_solo_text
 from django.db.models import Q
 from uuid import UUID
 from django.http import Http404
+from django.contrib import messages
 
 def kanban(request):
 
@@ -33,9 +34,9 @@ def kanban(request):
 @csrf_exempt
 def actualizar(request):
     if request.method == 'POST':
-        publicacion_id = request.POST.get('id_publicacion')
+        publicacion_id = request.POST.get('id_publicacion')        
         nuevo_estado = request.POST.get('nuevo_estado')
-        
+
         estado_valor = {
             "rechazado": 0,
             "borrador": 1,
@@ -52,11 +53,28 @@ def actualizar(request):
                 nuevo = nuevo_estado
                 publicacion.estado = nuevo
                 publicacion.semaforo = "rojo"
-
+                
                 if anterior == "rechazado" and publicacion.para_editor:
                     anterior="revision"
                 elif anterior == "rechazado" and not publicacion.para_editor:
                     anterior = "borrador"
+
+                #acciones no permitidas
+                #publicado a revision
+                #publicado a borrador
+                #borrador a publicar
+                #borrador a publicado
+                #revision a publicado
+                if anterior == "publicado" and nuevo == "revision":
+                    return JsonResponse({'accion': False})
+                if anterior == "publicado" and nuevo == "borrador":
+                    return JsonResponse({'accion': False})
+                if anterior == "borrador" and nuevo == "publicar":
+                    return JsonResponse({'accion': False})
+                if anterior == "borrador" and nuevo == "publicado":
+                    return JsonResponse({'accion': False})
+                if anterior == "revision" and nuevo == "publicado":
+                    return JsonResponse({'accion': False})
 
                 if nuevo == "borrador" and anterior == "revision":
                     return JsonResponse({'reason_required': True})
@@ -69,6 +87,10 @@ def actualizar(request):
                 print(publicacion.estado)
                 print(publicacion.para_editor)
                 print(publicacion.semaforo)
+                
+                if publicacion.estado == "publicado":
+                    publicacion.semaforo = "verde"
+
                 publicacion.save()
                 
                 return JsonResponse({'vuelve': True})

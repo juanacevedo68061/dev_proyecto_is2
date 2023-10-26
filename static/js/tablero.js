@@ -64,6 +64,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (data.vuelve===true) {
                                 reloadColumns();
                             }
+                            if (data.accion===false) {
+                                reloadColumns();
+                                var mensaje = 'Acción no permitida.';
+                                mostrarMensajeDeError(mensaje);
+                            }
                             if (data.message) {
                                 console.log(data.message);
                             }
@@ -121,6 +126,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     console.log("No está en color verde: queda todo desabilitado");
                     reloadColumns();
+                    var mensaje = 'Es necesario habilitar la publicación para cambiar su estado.'
+                    mostrarMensajeDeError(mensaje);                    
                 }
             }
         });
@@ -136,4 +143,17 @@ function getCookie(name) {
 function clearModal() {
     var motivoInput = document.getElementById('motivoInput');
     motivoInput.value = '';
+}
+
+function mostrarMensajeDeError(mensaje) {
+    Swal.fire({
+        allowOutsideClick: false,
+        html: mensaje,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: 'Aceptar',
+        customClass: {
+            confirmButton: 'custom-confirm-button btn btn-primary',
+        }
+    });
 }

@@ -34,20 +34,25 @@ class Rol(models.Model):
 
     PERMISOS = {
         'autor': [
+            'kanban',
+            'actualizar',
             'crear_publicacion',
             'editar_publicacion_autor',
-            # Agrega aquí los permisos correspondientes al rol "autor"
         ],
         'editor': [
+            'kanban',
+            'actualizar',
+            'motivo',
             'editar_publicacion_editor',
             'rechazar_editor',
-            # Agrega aquí los permisos correspondientes al rol "editor"
         ],
         'publicador': [
+            'kanban',
+            'actualizar',
+            'motivo',
             'publicar_no_moderada',
             'rechazar_publicador',
             'mostar_para_publicador',
-            # Agrega aquí los permisos correspondientes al rol "publicador"
         ],
         'administrador': nombres_de_vistas,
     }

@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     "PIL",
     "tinymce",    
     "cms",
-    #"kanban",
-    'canvan',
+    "kanban",
 ]
 
 MIDDLEWARE = [

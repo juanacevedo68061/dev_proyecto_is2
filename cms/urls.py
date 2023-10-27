@@ -10,7 +10,7 @@ urlpatterns = [
     path('login/', include('login.urls', namespace='login')),
     path('administracion/', include('administracion.urls', namespace='administracion')),
     path('publicaciones/', include('publicaciones.urls', namespace='publicaciones')),
-    path('canvan/', include('canvan.urls', namespace='canvan')),
+    path('kanban/', include('kanban.urls', namespace='kanban')),
     path('categoria/<int:categoria_id>/', views.publicaciones_categoria, name='publicaciones_categoria'),
 ]
 

@@ -21,7 +21,7 @@ class Usuario(AbstractUser):
     )
     imagen = models.ImageField(upload_to='profile_images', blank=True, null=True)
     roles = models.ManyToManyField(Rol, related_name='usuarios')
-    suscriptor = models.BooleanField(default=False)
+    suscriptor = models.BooleanField(default=True)
     
     #def save(self, *args, **kwargs):
         # Eliminar todos los "@" de la cadena

@@ -161,7 +161,7 @@ def motivo(request):
             
             if nuevo == "revision":
                 publicacion.para_editor = True
-                motivo = motivo + ", su publicación se pasó al Editor."
+                motivo = motivo + ", su publicación se pasó al Editor"
             elif nuevo == "borrador":
                 publicacion.para_editor = False
             anterior = publicacion.estado
@@ -200,4 +200,3 @@ def registrar(request, publicacion, anterior):
     )
     nuevo_registro.roles.set(roles)
     nuevo_registro.save()
-    print("Registroooooooooooooooooooooooooo")

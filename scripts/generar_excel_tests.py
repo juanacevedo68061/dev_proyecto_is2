@@ -36,7 +36,7 @@ def recopilar_datos_tests(ruta_script):
         return []
 
 # Lista de módulos
-modulos = ['login', 'administracion', 'roles', 'canvan', 'publicaciones']
+modulos = ['login', 'administracion', 'roles', 'kanban', 'publicaciones']
 
 archivos_tests = []
 

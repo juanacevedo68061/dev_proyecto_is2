@@ -19,7 +19,7 @@ def recopilar_datos_documentos():
     data = []
 
     # Lista todos los módulos
-    modulos = ['administracion', 'roles', 'publicaciones', 'login', 'canvan']
+    modulos = ['administracion', 'roles', 'publicaciones', 'login', 'kanban']
     
     for modulo in modulos:
         ruta_modulo = os.path.join(DOCS_PATH, modulo)

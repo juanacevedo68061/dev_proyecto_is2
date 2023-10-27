@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     "administracion",
     "roles",
     "publicaciones",
-    "canvan",
     "PIL",
     "tinymce",    
     "cms",
+    "kanban",
 ]
 
 MIDDLEWARE = [

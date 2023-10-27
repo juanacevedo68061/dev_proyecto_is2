@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from .models import Categoria
 from .forms import CategoriaForm, AsignarPermisosForm, EliminarPermisosForm
 from django.contrib.auth.decorators import login_required

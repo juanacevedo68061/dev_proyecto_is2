@@ -9,24 +9,22 @@ como generación de códigos QR y gestión de likes/dislikes.
 
 import qrcode
 from io import BytesIO
-from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
 from .forms import PublicacionForm
-from administracion.models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
 import uuid
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .utils import notificar, publicar_no_moderada
-from canvan.models import Registro
+from kanban.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
-from roles.decorators import permiso_requerido
+from roles.decorators import permiso_requerido, permiso_redireccion_requerido
 
 @permiso_requerido
 @login_required
@@ -51,7 +49,7 @@ def crear_publicacion(request):
                 message = 'Publicación creada con éxito.'
             elif request.POST['accion'] == 'guardar_borrador':
                 form_fields_required = ['titulo']
-                message = 'Borrador guardado con éxito.'
+                message = 'Borrador creado con éxito.'
                 
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
@@ -75,21 +73,16 @@ def crear_publicacion(request):
                 if publicacion.categoria:                     
                     if publicacion.categoria.moderada:
                         publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                        print(publicacion.categoria)
                         publicacion.save()                
-                        notificar(publicacion,3)
-                        registrar(request, publicacion,'autor')
                         messages.success(request, message)
-                        redirect_url = "/"                    
+                        redirect_url = reverse('publicaciones:crear_publicacion')
                     else:                    
                         if request.POST['accion'] == 'crear':
                             publicacion.estado = 'publicado' 
                             publicacion.calcular_vigencia()
                             publicacion.save()                
-                            notificar(publicacion,3)
-                            registrar(request, publicacion,'autor')
                             messages.success(request, message)
-                            redirect_url = "/"                                            
+                            redirect_url = reverse('publicaciones:crear_publicacion')                                            
                         else:
                             message="No esta permitido crear Borradores con Categorias no moderada"
                             messages.error(request, message)
@@ -102,7 +95,7 @@ def crear_publicacion(request):
 
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'redirect_url': redirect_url})
 
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
     """
@@ -114,9 +107,12 @@ def editar_publicacion_autor(request, publicacion_id):
     """
 
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    if request.user != publicacion.autor:
+        mostrar = "El acceso es permitido solo al autor de la publicación."
+        return render(request, '403.html', {'mostrar':mostrar,'redireccion_url':reverse('kanban:kanban')}, status=403)
+    
     message = ''
     redirect_url = None
-
     if request.method == 'POST':
         form = PublicacionForm(True, False, request.POST, instance=publicacion)
         if 'accion' in request.POST:
@@ -126,7 +122,7 @@ def editar_publicacion_autor(request, publicacion_id):
 
             elif request.POST['accion'] == 'completar_borrador':
                 form_fields_required = ['titulo', 'texto', 'palabras_clave']
-                message = 'Borrador completado con éxito.'
+                message = 'La publicación ha sido habilitada con éxito.'
             
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
@@ -144,13 +140,14 @@ def editar_publicacion_autor(request, publicacion_id):
                     categoria_elegida = categoria_no_suscriptores
 
                 publicacion.categoria = categoria_elegida
-                if publicacion.categoria:           
-                    publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+                if publicacion.categoria:
+                    if request.POST['accion'] == 'completar_borrador':
+                        publicacion.semaforo = "verde" 
+                    else:
+                        publicacion.semaforo = "amarillo"            
                     publicacion.save()
-                    notificar(publicacion,3)
-                    registrar(request, publicacion, 'autor')
                     messages.success(request, message)
-                    redirect_url = reverse('canvan:canvas-autor')
+                    redirect_url = reverse('kanban:kanban')
                 else:
                     if categoria_suscriptores and categoria_no_suscriptores:
                         message = "Solo se permite seleccionar una categoría."
@@ -162,28 +159,7 @@ def editar_publicacion_autor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_autor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@login_required
-def eliminar_publicacion_autor(request, publicacion_id):
-    """
-    Elimina una publicación existente.
-
-    :param request: Objeto HttpRequest.
-    :param publicacion_id: ID de la publicación a eliminar.
-    :return: Objeto HttpResponse.
-    """
-
-    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
-
-    if request.method == 'POST':
-        # Verifica si se confirma la eliminación
-        if 'confirmar_eliminar' in request.POST:
-            publicacion.delete()
-            messages.success(request, 'La publicación ha sido eliminada con éxito.')
-
-    return render(request, 'publicaciones/eliminar_publicacion_autor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
-
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
 
@@ -207,7 +183,7 @@ def editar_publicacion_editor(request, publicacion_id):
                 message = 'Cambios guardados con éxito.'
             elif request.POST['accion'] == 'completar_edicion':
                 form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
-                message = 'Edición completada con éxito.'
+                message = 'La publicación ha sido habilitada con éxito.'
             
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
@@ -225,13 +201,15 @@ def editar_publicacion_editor(request, publicacion_id):
                     categoria_elegida = categoria_no_suscriptores
 
                 publicacion.categoria = categoria_elegida
-                if publicacion.categoria:           
-                    publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+                if publicacion.categoria:
+                    if request.POST['accion'] == 'completar_edicion':
+                        publicacion.semaforo = "verde" 
+                    else:
+                        publicacion.semaforo = "amarillo"            
+                    
                     publicacion.save()
-                    notificar(publicacion,3)
-                    registrar(request, publicacion, 'editor')
                     messages.success(request, message)
-                    redirect_url = reverse('canvan:canvas-editor')  
+                    redirect_url = reverse('kanban:kanban')  
                 else:
                     if categoria_suscriptores and categoria_no_suscriptores:
                         message = "Solo se permite seleccionar una categoría."
@@ -243,78 +221,7 @@ def editar_publicacion_editor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
-@permiso_requerido
-@login_required
-def rechazar_editor(request, publicacion_id):
-
-    """
-    Rechaza una publicación por parte del editor.
-
-    :param request: Objeto HttpRequest.
-    :param publicacion_id: ID de la publicación a rechazar.
-    :return: Objeto HttpResponse.
-    """
-
-    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
-
-    if request.method == 'POST':
-        if 'confirmar_rechazo' in request.POST:
-            razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
-            publicacion.estado = 'rechazado'  # Cambiar el estado a "borrador"
-            publicacion.para_editor = False
-
-            publicacion.save()
-
-            notificar(publicacion,2,razon)
-            registrar(request, publicacion, 'editor')
-
-            messages.success(request, 'La publicación ha sido rechazada con éxito.')
-
-    return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
-
-@permiso_requerido
-@login_required
-def rechazar_publicador(request, publicacion_id):
-
-    """
-    Rechaza una publicación por parte del publicador.
-
-    :param request: Objeto HttpRequest.
-    :param publicacion_id: ID de la publicación a rechazar.
-    :return: Objeto HttpResponse.
-    """
-    
-    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
-
-    if request.method == 'POST':
-        if 'confirmar_rechazo' in request.POST:
-            razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
-            print(razon)
-            publicacion.estado = 'rechazado'  # Cambiar el estado a "rechazado"
-
-            destinatario = request.POST.get('destinatario')  # Obtener el valor del campo "destinatario" del formulario
-            if destinatario == '1':
-                publicacion.para_editor = True  # Para Editor
-                razon += ", tu publicación fue enviada al Editor"
-            else:
-                publicacion.para_editor = False  # Para Autor
-            
-            publicacion.save()
-
-            notificar(publicacion,2,razon)
-            registrar(request, publicacion, 'publicador')
-
-            messages.success(request, 'La publicación ha sido rechazada con éxito.')
-    context = {
-        'publicacion': publicacion,
-        'redirect_url': redirect_url,
-        'canvan_publicador': True,
-    }
-    return render(request, 'publicaciones/rechazar.html', context)
-
-@permiso_requerido
+@permiso_redireccion_requerido('kanban:kanban')
 @login_required
 def mostar_para_publicador(request, publicacion_id):
 
@@ -335,15 +242,12 @@ def mostar_para_publicador(request, publicacion_id):
     if request.method == 'POST':
         if 'publicar' in request.POST:
             # Cambiar el estado de la publicación a "publicado"
-            publicacion.estado = 'publicado'
+            publicacion.semaforo = "verde"
             publicacion.fecha_publicacion = timezone.now().date()
             publicacion.save()
             
-            notificar(publicacion,3)
-            registrar(request, publicacion, 'publicador')
-
-            message = 'La publicación ha sido publicada con éxito.'
-            redirect_url = reverse('canvan:canvas-publicador')
+            message = 'La publicación ha sido habilitada con éxito.'
+            redirect_url = reverse('kanban:kanban')
             messages.success(request, message)
 
     return render(
@@ -538,29 +442,4 @@ def estado(request, publicacion_id):
         registros_a_eliminar.delete()
     return JsonResponse({'activo': publicacion.activo})
 
-@login_required
-def registrar(request, publicacion, canvas):
-    nuevo_registro = Registro.objects.create(
-        usuario=request.user,
-        publicacion_id=publicacion.id_publicacion,
-        publicacion_titulo=publicacion.titulo,
-        nuevo_estado=publicacion.estado,
-        canvas=canvas
-    )
-    nuevo_registro.save()
 
-from django.conf import settings
-def vista_auxiliar_email(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
-    from_email=settings.EMAIL_HOST_USER
-    #razon: 1 - es para inactivo
-    #razon: 2 - es para rechazo
-    #razon: 3 - es para otros estados
-    context = {
-        'publicacion': publicacion,
-        'cambio': 3,
-        'razon': 'No cumple con nuestras normas de seguridad', 
-        'from_email':from_email
-    }
-    
-    return render(request, 'publicaciones/email.html', context)

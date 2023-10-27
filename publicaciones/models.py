@@ -24,6 +24,11 @@ class Publicacion_solo_text(models.Model):
         ('m', 'Minutos'),
     )
 
+    COLORES = [
+        ('rojo', 'Rojo'),
+        ('amarillo', 'Amarillo'),
+        ('verde', 'Verde'),
+    ]
 
     activo = models.BooleanField(default=True)
     titulo = models.CharField(max_length=200, blank=True, null=True)
@@ -46,6 +51,7 @@ class Publicacion_solo_text(models.Model):
     views = models.PositiveIntegerField(default=0)
     comments = models.PositiveIntegerField(default=0)
     shared = models.PositiveIntegerField(default=0)
+    semaforo = models.CharField(max_length=9, choices=COLORES, default='rojo')
 
     vigencia = models.BooleanField(default=False)
     vigencia_tiempo = models.DateTimeField(null=True, blank=True)

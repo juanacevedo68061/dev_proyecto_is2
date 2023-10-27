@@ -1,6 +1,5 @@
 asgiref
 Django>=4.0
-django-ckeditor
 django-js-asset
 Pillow
 sqlparse
@@ -10,3 +9,4 @@ psycopg2-binary
 gunicorn
 qrcode
 django-tinymce
+bleach

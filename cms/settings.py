@@ -3,6 +3,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 
 # Quick-start development settings - unsuitable for production
@@ -14,7 +15,19 @@ SECRET_KEY = "django-insecure-l+h5q-)9z0-gsak2r@@er_3ck3-=v8+-j@wtuu$(91&g*t-02b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Application definition
+SITE_DOMAIN = '127.0.0.1'
+SITE_PORT = '8000'
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0']
+HTTP403_PAGE = '403.html'
+SITE_ID = 1
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'cms.team.is2@gmail.com'  # Tu dirección de correo de Gmail
+EMAIL_HOST_PASSWORD = 'vseb krgh vskk zdch'  # Tu contraseña de correo de Gmail (o usa variables de entorno)
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -23,13 +36,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "login",
     "administracion",
     "roles",
     "publicaciones",
-    "canvan",
     "PIL",
     "tinymce",    
+    "cms",
+    #"kanban",
+    'canvan',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +130,7 @@ LOGIN_REDIRECT_URL = 'login:perfil'  # Configura la URL de redirección después
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
-    "width": "960px",
+    "width": "780px",
     "menubar": "file edit view insert format tools table help",
     "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
     "fullscreen insertdatetime media table paste code help wordcount spellchecker",
@@ -123,6 +139,8 @@ TINYMCE_DEFAULT_CONFIG = {
     "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
+    "images_upload_url": '/tinymce/upload/',
+    "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",
     "content_css": [
@@ -163,6 +181,7 @@ TINYMCE_SPELLCHECKER = True
 
 ALLOWED_HOSTS = ["localhost","127.0.0.1"] # Solo para desarrollo, cambia a tus necesidades de producción
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -173,6 +192,15 @@ DATABASES = {
         'PORT': '5432',  # Puerto por defecto de PostgreSQL
     }
 }
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
 "http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]
+

@@ -7,16 +7,16 @@
 </head>
 <div class="container">
   <h1>Editar Publicación (Canvas Autor)</h1>
-  <a href="{% url 'publicaciones:eliminar-publicacion-autor' publicacion.id %}" class="btn btn-danger">Eliminar Publicación</a>
+  <a href="{% url 'publicaciones:eliminar-publicacion-autor' publicacion.id_publicacion %}" class="btn btn-danger">Eliminar Publicación</a>
   <br><br>  
   
   <form method="post" novalidate>
     {% csrf_token %}
     {{ form.as_p }}
 
-    <button type="submit" class="btn btn-primary" name="accion" value="completar_borrador">Completar Borrador</button>
-    <button type="submit" class="btn btn-warning" name="accion" value="guardar">Guardar Cambios</button>
-    <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-danger">Cancelar</a>
+    <button type="submit" class="btn btn-warning" name="accion" value="completar_borrador">Completar</button>
+    <button type="submit" class="btn btn-primary" name="accion" value="guardar">Guardar Cambios</button>
+    <a href="{% url 'canvan:canvas-autor' %}" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
 {% endblock %}

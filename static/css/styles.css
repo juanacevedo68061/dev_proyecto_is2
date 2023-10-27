@@ -2881,7 +2881,7 @@ textarea.form-control-lg {
   border-top: 0.5px solid rgba(0, 0, 0, 0.125);
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.125);
   border-right: 0.5px solid rgba(0, 0, 0, 0.125);
-  border-left: 0.5px solid white;
+  border-left: 0.5px solid rgba(0, 0, 0, 0.125);
 }
 
 .btn-secondary {
@@ -7577,6 +7577,7 @@ textarea.form-control-lg {
 .mx-auto {
   margin-right: auto !important;
   margin-left: auto !important;
+  width: 30%;
 }
 
 .my-0 {
@@ -10969,7 +10970,6 @@ body {
   z-index: 1039;
 }
 .sb-topnav .navbar-brand {
-  width: 225px;
   margin: 0;
 }
 .sb-topnav.navbar-dark #sidebarToggle {

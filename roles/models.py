@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-
-from django.db import models
-
+from cms.models import Vistas
+from django.db import models, connection
 class Rol(models.Model):
     """
     Modelo que representa los roles en el sistema.
@@ -17,35 +16,42 @@ class Rol(models.Model):
         save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
 
     """
-    ROLES = (
+    table_exists = 'cms_vistas' in connection.introspection.table_names()
+    nombres_de_vistas=''
+    if table_exists:
+        nombres_de_vistas = Vistas.obtener('administracion')
+
+    ROLES = [
         ('autor', 'Autor'),
         ('editor', 'Editor'),
         ('publicador', 'Publicador'),
         ('administrador', 'Administrador'),
-    )
+    ]
+
+    @classmethod
+    def agregar_rol(cls, nombre, display):
+        cls.ROLES.append((nombre, display))
 
     PERMISOS = {
         'autor': [
-            'permiso1',
-            'permiso2',
+            'crear_publicacion',
+            'editar_publicacion_autor',
             # Agrega aquí los permisos correspondientes al rol "autor"
         ],
         'editor': [
-            'permiso3',
-            'permiso4',
+            'editar_publicacion_editor',
+            'rechazar_editor',
             # Agrega aquí los permisos correspondientes al rol "editor"
         ],
         'publicador': [
-            'permiso5',
-            'permiso6',
+            'publicar_no_moderada',
+            'rechazar_publicador',
+            'mostar_para_publicador',
             # Agrega aquí los permisos correspondientes al rol "publicador"
         ],
-        'administrador': [
-            'permiso7',
-            'permiso8',
-            # Agrega aquí los permisos correspondientes al rol "administrador"
-        ],
+        'administrador': nombres_de_vistas,
     }
+    #print(PERMISOS['administrador'])
 
     nombre = models.CharField(max_length=20, choices=ROLES)
     permisos = models.ManyToManyField('auth.Permission', blank=True)

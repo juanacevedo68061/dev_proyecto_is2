@@ -1,16 +1,32 @@
 # En forms.py
 from .models import Categoria  # Importa el modelo de categoría
-from administracion.models import Categoria  # Importa el modelo de categoría
+from administracion.models import Categoria
 from django import forms
 from .models import Publicacion_solo_text
-
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
         model = Publicacion_solo_text
-        fields = ['titulo', 'texto', 'categoria', 'palabras_clave']
+        fields = [
+            'titulo', 'texto', 'categoria', 'palabras_clave',
+            'vigencia', 'vigencia_unidad', 'vigencia_cantidad',
+            'programar', 'programar_unidad', 'programar_cantidad',
+            'suscriptores'
+        ]
 
-    def __init__(self, *args, **kwargs):
+    UNIDADES_TIEMPO = (
+        ('d', 'Días'),
+        ('h', 'Horas'),
+        ('m', 'Minutos'),
+    )
+
+    vigencia_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
+    programar_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
+    vigencia_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
+    programar_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
+    suscriptores = forms.BooleanField(label='Suscriptores', required=False)  # Campo añadido
+
+    def __init__(self, canvan=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update(
             {'class': 'form-control', 'id': 'id_titulo'})
@@ -20,13 +36,47 @@ class PublicacionForm(forms.ModelForm):
             {'class': 'form-control', 'id': 'id_categoria'})
         self.fields['palabras_clave'].widget.attrs.update(
             {'class': 'form-control', 'id': 'id_palabras_clave'})
-        self.fields['titulo'].label = 'Título'
-        self.fields['texto'].label = 'Texto'
-        self.fields['categoria'].label = 'Categoría'
-        self.fields['palabras_clave'].label = 'Palabras Clave'
+        self.fields['vigencia'].widget.attrs.update(
+            {'class': 'form-check-input', 'id': 'id_vigencia'})
+        self.fields['programar'].widget.attrs.update(
+            {'class': 'form-check-input', 'id': 'id_programar'})
+
+        
+        categorias = Categoria.objects.all()
+        if canvan:
+            categorias = Categoria.objects.filter(moderada=True)
+
+
+        choices = [(categoria.pk, f"{categoria.nombre} ({'Moderada' if categoria.moderada else 'No moderada'})") for categoria in categorias]
+        choices.insert(0, ('', '---------'))
+        self.fields['categoria'].choices = choices
+
+    def clean(self):
+        cleaned_data = super().clean()
+        vigencia = cleaned_data.get('vigencia')
+        programar = cleaned_data.get('programar')
+
+        if vigencia:
+            vigencia_unidad = cleaned_data.get('vigencia_unidad')
+            vigencia_cantidad = cleaned_data.get('vigencia_cantidad')
+            if not vigencia_unidad or not vigencia_cantidad:
+                self.add_error('vigencia_unidad', 'Este campo es requerido si selecciona vigencia.')
+                self.add_error('vigencia_cantidad', 'Este campo es requerido si selecciona vigencia.')
+
+        if programar:
+            programar_unidad = cleaned_data.get('programar_unidad')
+            programar_cantidad = cleaned_data.get('programar_cantidad')
+            if not programar_unidad or not programar_cantidad:
+                self.add_error('programar_unidad', 'Este campo es requerido si selecciona programar.')
+                self.add_error('programar_cantidad', 'Este campo es requerido si selecciona programar.')
 
 
 class BusquedaAvanzadaForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(attrs={'id': 'id_q'}),
+    )
+
     categorias = forms.MultipleChoiceField(
         required=False,
         widget=forms.CheckboxSelectMultiple,
@@ -50,6 +100,7 @@ class BusquedaAvanzadaForm(forms.Form):
             (c.id, c.nombre) for c in categorias_disponibles]
 
         # Puedes personalizar las etiquetas de campo y otros atributos si es necesario
+        self.fields['q'].label = 'Buscar'
         self.fields['categorias'].label = 'Categorías'
         self.fields['fecha_publicacion'].label = 'Fecha de Publicación'
         self.fields['autor'].label = 'Autor'

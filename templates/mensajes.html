@@ -19,8 +19,20 @@
                     buttonsStyling: false,
                     
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "{{ redirect_url }}"
+                    //if (result.isConfirmed) {
+                    //    window.location.href = "{{ redirect_url }}"
+                    //}
+                    
+                    //if (redirectUrl !== null && result.isConfirmed) {
+                    //   window.location.href = redirectUrl;
+                    //}
+
+                    //if (redirectUrl && redirectUrl !== "None" && result.isConfirmed) {
+                    //    window.location.href = redirectUrl;
+                    //}
+                    var redirectUrl = "{{ redirect_url }}";
+                    if (redirectUrl && result.isConfirmed) {
+                        window.location.href = redirectUrl;
                     }
                 });
             });

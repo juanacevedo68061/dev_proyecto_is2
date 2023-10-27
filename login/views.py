@@ -3,10 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import FormularioRegistro, FormularioActualizarPerfil, FormularioActivarRol, CargarImagenForm 
-from roles.models import Rol
+from .forms import FormularioRegistro, FormularioActualizarPerfil
 from publicaciones.models import Publicacion_solo_text
 from django.urls import reverse
+from django.http import JsonResponse
 
 def inicio_sesion(request):
     """
@@ -96,37 +96,8 @@ def cerrar_sesion(request):
         Redirecciona a la página de inicio de sesión.
 
     """
-    usuario = request.user
-    usuario.rol_activo = None #vacia el rol_activo para que al iniciar sesion tenga que activarlo de vuelta.
-    usuario.save()
-
     logout(request)
     return redirect('/')
-
-@login_required
-def activar_rol(request):
-    """
-    Vista para activar un rol para el usuario actual.
-
-    Esta vista permite al usuario activar un rol específico, que será almacenado
-    en el campo 'rol_activo' de su perfil de usuario.
-
-    Parámetros:
-        request: La solicitud HTTP entrante.
-
-    Retorna:
-        Redirecciona al perfil del usuario después de activar el rol.
-    """
-    if request.method == 'POST':
-        rol_activo_id = request.POST['rol_activado']
-        rol_activo = Rol.objects.get(pk=rol_activo_id)
-        
-        usuario = request.user
-        usuario.rol_activo = rol_activo
-        usuario.save()
-        messages.success(request, 'Rol activado exitosamente.')
-    
-    return redirect('login:perfil')
 
 @login_required
 def perfil_usuario(request):
@@ -149,20 +120,10 @@ def perfil_usuario(request):
     if roles:
         mensaje_roles = None
 
-    # Si el usuario activó un rol, actualizar el objeto usuario
-    rol_activado = request.GET.get('rol_activado')
-    if rol_activado:
-        rol_activado_obj = Rol.objects.get(pk=rol_activado)
-        usuario.rol_activado = rol_activado_obj
-        usuario.save()
-
-    # Obtener formulario de activar rol
-    formulario_roles = FormularioActivarRol(instance=usuario)
     
     publicaciones = Publicacion_solo_text.objects.filter(autor=usuario)
     
     contexto = {
-        'formulario_roles': formulario_roles,
         'usuario': usuario,
         'roles': roles,
         'mensaje_roles': mensaje_roles,
@@ -185,13 +146,14 @@ def perfil_actualizar(request):
         Redirecciona a la vista 'perfil_usuario' después de actualizar el perfil.
     """
     usuario = request.user
-
+    redirect_url = None
     if request.method == 'POST':
         formulario = FormularioActualizarPerfil(request.POST, instance=usuario)
         if formulario.is_valid():
             contraseña_actual = formulario.cleaned_data.get('contraseña_actual')
             if contraseña_actual and not usuario.check_password(contraseña_actual):
                 messages.error(request, 'La contraseña actual no es correcta.')
+                redirect_url=request.path
             else:
                 nueva_contraseña1 = formulario.cleaned_data.get('nueva_contraseña1')
                 nueva_contraseña2 = formulario.cleaned_data.get('nueva_contraseña2')
@@ -199,43 +161,43 @@ def perfil_actualizar(request):
                     usuario.set_password(nueva_contraseña1)
                 formulario.save()
                 messages.success(request, 'Perfil actualizado exitosamente.')
-                return redirect('login:perfil')
+                redirect_url = reverse('login:perfil')
     else:
         formulario = FormularioActualizarPerfil(instance=usuario)
-
     contexto = {
-        'formulario': formulario,
+        'form': formulario,
         'usuario': usuario,
+        'redirect_url': redirect_url
     }
 
     return render(request, 'login/perfil_actualizar.html', contexto)
 
-
 @login_required
 def cargar_imagen(request):
     """
-    Vista para cargar una nueva imagen de perfil para el usuario.
+    Vista que permite a un usuario autenticado cargar una imagen de perfil.
 
-    Esta vista permite a los usuarios cargar una nueva imagen de perfil.
-    Si ya tenían una imagen de perfil, la reemplazará por la nueva.
+    El usuario envía la imagen mediante una petición POST. Si la carga es exitosa, 
+    la vista devuelve la URL de la imagen cargada. En caso contrario, devuelve un mensaje de error.
 
-    Parámetros:
-        request: La solicitud HTTP entrante.
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
 
-    Retorna:
-        Redirige al perfil del usuario después de cargar la imagen.
+    Returns:
+        JsonResponse: 
+            - Si la imagen se carga con éxito: {'url': <URL_de_la_imagen>}.
+            - Si hay un error o no se envió una imagen: {'error': 'No se pudo cargar la imagen'}.
+
+    Note:
+        Se espera que el modelo del usuario tenga un campo llamado 'imagen' donde se almacenará 
+        la imagen cargada. La vista requiere que el usuario esté autenticado para poder cargar una imagen.
     """
+    
     usuario = request.user
 
-    if request.method == 'POST':
-        formulario = CargarImagenForm(request.POST, request.FILES, instance=usuario)
-        if formulario.is_valid():
-            formulario.save()
-            return redirect('login:perfil')
+    if request.method == 'POST' and 'imagen' in request.FILES:
+        usuario.imagen = request.FILES['imagen']
+        usuario.save()
+        return JsonResponse({'url': usuario.imagen.url})
 
-    else:
-        formulario = CargarImagenForm(instance=usuario)
-
-    contexto = {'formulario': formulario}
-    
-    return render(request, 'login/cargar_imagen.html', contexto)
+    return JsonResponse({'error': 'No se pudo cargar la imagen'})

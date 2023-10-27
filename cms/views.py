@@ -1,30 +1,52 @@
 from django.shortcuts import render
 from publicaciones.forms import BusquedaAvanzadaForm
 from publicaciones.models import Publicacion_solo_text
-from django.db.models import Q
 from administracion.models import Categoria
 from login.models import Usuario
 from django.shortcuts import render
+import re
+import bleach
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 def principal(request):
-    # Inicializa las publicaciones con la lista completa de publicaciones moderadas
-    publicaciones = Publicacion_solo_text.objects.filter(
-        categoria__moderada=False).order_by('-fecha_creacion')
 
-    # Verificar si se ha enviado un formulario de búsqueda
-    if 'q' in request.GET:
-        # Si se hizo una búsqueda, llama a la función busqueda
-        publicaciones, busqueda_avanzada_form = busqueda(request, publicaciones)
-    else:
-        busqueda_avanzada_form = BusquedaAvanzadaForm()
+    """
+    Vista principal que muestra las publicaciones. 
+    También permite realizar búsquedas dentro de las publicaciones.
+    
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
 
-    # Obtener todas las categorías y usuarios del sistema
+    Returns:
+        HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones,
+        formulario de búsqueda avanzada, categorías y usuarios.
+    """
+    
+    query = request.GET.get('q')
+    publicaciones = obtener_publicaciones(request)
+    avanzada_form = BusquedaAvanzadaForm()
     categorias = Categoria.objects.all()
     usuarios = Usuario.objects.all()
 
+    if query:
+        # Utilizamos expresiones regulares para buscar la consulta en el campo "texto"
+        query = re.escape(query)  # Escapamos caracteres especiales en la consulta
+        titulo = [publicacion for publicacion in publicaciones if re.search(query, publicacion.titulo, re.IGNORECASE)]
+        texto = [publicacion for publicacion in publicaciones if re.search(query, bleach.clean(publicacion.texto, strip=True), re.IGNORECASE)]
+        claves = [publicacion for publicacion in publicaciones if re.search(query, publicacion.palabras_clave, re.IGNORECASE)]
+        
+        # Concatenar las listas y eliminar duplicados
+        resultados = titulo + texto + claves
+        resultados = list(set(resultados))
+
+        # Crear un QuerySet con los resultados
+        publicaciones = Publicacion_solo_text.objects.filter(pk__in=[pub.pk for pub in resultados])
+        
     contexto = {
         'publicaciones': publicaciones,
-        'busqueda_avanzada_form': busqueda_avanzada_form,
+        'avanzada_form': avanzada_form,
         'categorias': categorias,
         'usuarios': usuarios,
         'principal': True,
@@ -32,43 +54,80 @@ def principal(request):
 
     return render(request, 'cms/principal.html', contexto)
 
-def busqueda(request, publicaciones):
-    # Verificar si se ha enviado un formulario de búsqueda avanzada
-    busqueda_avanzada_form = BusquedaAvanzadaForm(request.GET)
+def obtener_publicaciones(request):
 
-    # Si el formulario de búsqueda avanzada se ha enviado con datos, llama a busqueda_avanzada
-    if busqueda_avanzada_form.is_valid() and busqueda_avanzada_form.has_changed():
-        publicaciones = busqueda_avanzada(
-            request, publicaciones, busqueda_avanzada_form)
+    """
+    Obtiene las publicaciones basadas en criterios de filtrado como categorías, fecha de publicación y autor.
+    
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
 
-    # Realiza el procesamiento adicional de las publicaciones (como hacer match) aquí
-    query = request.GET.get('q')
+    Returns:
+        QuerySet: Retorna un conjunto de publicaciones filtradas.
+    """
 
-    if query:
-        # Hacer match con lo que ingresó el usuario en título, texto, palabras clave, etc.
-        publicaciones = publicaciones.filter(
-            Q(titulo__icontains=query) | Q(texto__icontains=query) | Q(palabras_clave__icontains=query))
+    categorias = request.GET.getlist('categorias')
+    fecha_publicacion = request.GET.get('fecha_publicacion')
+    autor = request.GET.get('autor')
 
-    return publicaciones, busqueda_avanzada_form
+    publicaciones = Publicacion_solo_text.objects.filter(
+        estado='publicado',
+        activo=True
+    ).order_by('-fecha_creacion')
 
-def busqueda_avanzada(publicaciones, formulario):
-    print("ENTRO A BUSQUEDA AVANZAAAAAAAAAAAAAAAAADA")
-    # Procesa el formulario de búsqueda avanzada y realiza la búsqueda avanzada
+    # Verificamos si los campos están vacíos o no
+    if not (not any(categorias) and not fecha_publicacion and not autor):
+        
+        if categorias:
+            publicaciones = publicaciones.filter(categoria__in=categorias)
 
-    # Verificar los datos del formulario y filtrar las publicaciones según sea necesario
-    categorias = formulario.cleaned_data.get('categorias')
-    fecha_publicacion = formulario.cleaned_data.get('fecha_publicacion')
-    autor = formulario.cleaned_data.get('autor')
+        if fecha_publicacion:
+            publicaciones = publicaciones.filter(fecha_publicacion=fecha_publicacion)
 
-    # Realizar búsqueda avanzada
-    if categorias:
-        publicaciones = publicaciones.filter(categoria__nombre__in=categorias)
-
-    if fecha_publicacion:
-        publicaciones = publicaciones.filter(
-            fecha_creacion__date=fecha_publicacion)
-
-    if autor:
-        publicaciones = publicaciones.filter(autor__username=autor)
+        if autor:
+            publicaciones = [publicacion for publicacion in publicaciones if re.search(re.escape(autor), publicacion.autor.username, re.IGNORECASE)]
 
     return publicaciones
+
+def publicaciones_categoria(request, categoria_id):
+
+    """
+    Muestra las publicaciones pertenecientes a una categoría específica.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+        categoria_id (int): ID de la categoría de la cual se quieren obtener las publicaciones.
+
+    Returns:
+        HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones de la categoría especificada.
+    """
+    
+    categoria = get_object_or_404(Categoria, id=categoria_id)
+    publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
+    categorias = Categoria.objects.all()
+    redirect_url = None
+    
+    
+    return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+
+@csrf_exempt #solucion temporal
+def tinymce_upload(request):
+    """
+    Vista para manejar la carga de archivos a través de TinyMCE.
+
+    Args:
+        request (HttpRequest): Objeto de solicitud HTTP.
+
+    Returns:
+        JsonResponse: Devuelve la URL del archivo cargado o un error en caso de fallo.
+    """
+    
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(file.name, file)
+        file_url = fs.url(filename)
+        return JsonResponse({'location': file_url})
+    return JsonResponse({'error': 'Failed to upload image.'})

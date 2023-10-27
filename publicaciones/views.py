@@ -1,8 +1,17 @@
+"""
+Módulo views.py para gestionar las publicaciones
+=============================================
+Este módulo contiene las vistas relacionadas con la gestión de publicaciones, 
+incluyendo la creación, edición, eliminación, visualización y funcionalidades adicionales 
+como generación de códigos QR y gestión de likes/dislikes.
+"""
+
+
 import qrcode
 from io import BytesIO
 from PIL import Image
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Publicacion_solo_text
@@ -10,46 +19,96 @@ from .forms import PublicacionForm
 from .models import Categoria 
 from django.contrib import messages
 from django.urls import reverse
+import uuid
+from django.http import HttpResponse
+from django.http import JsonResponse
+from .utils import notificar, publicar_no_moderada
+from canvan.models import Registro
+from django.utils import timezone
+from django.http import HttpResponse
+from django.template import loader
+from roles.decorators import permiso_requerido
 
+@permiso_requerido
 @login_required
 def crear_publicacion(request):
+    """
+    Crea una nueva publicación.
+
+    :param request: Objeto HttpRequest.
+    :return: Objeto HttpResponse.
+    """
     categorias = Categoria.objects.all()
-    form = PublicacionForm()
+    form = PublicacionForm(False)
     redirect_url = None  # Variable para almacenar la URL de redirección
     message = ''  # Variable para almacenar el mensaje personalizado
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, request.FILES)
+        form = PublicacionForm(False,request.POST, request.FILES)
         if 'accion' in request.POST:
+
             if request.POST['accion'] == 'crear':
                 form_fields_required = ['titulo', 'texto', 'categoria', 'palabras_clave']  # Todos los campos requeridos
                 message = 'Publicación creada con éxito.'
             elif request.POST['accion'] == 'guardar_borrador':
-                form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
+                form_fields_required = ['titulo', 'categoria']  # Solo el campo "titulo" requerido
                 message = 'Borrador guardado con éxito.'
-
+                
             for field_name, field in form.fields.items():
                 field.required = field_name in form_fields_required
 
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.autor = request.user
-                publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
-                publicacion.save()
+                # Genera un UUID para la publicación y lo asigna al campo 'id_publicacion'
+                publicacion.id_publicacion = uuid.uuid4()
+                # Genera la URL absoluta para la publicación
+                publicacion.url_publicacion = publicacion.get_absolute_url()
+                
+                if publicacion.categoria.moderada:
+                    publicacion.estado = 'revision' if request.POST['accion'] == 'crear' else 'borrador'
+                elif request.POST['accion'] == 'crear':
+                    if not publicar_no_moderada(request.user):
+                        mostrar="No cuentas con permisos para Categorias no moderada"
+                        template = loader.get_template('403.html')
+                        context = {'mostrar': mostrar}
+                        return HttpResponse(template.render(context, request), status=403)
+                    
+                    publicacion.estado = 'publicado'
+                    publicacion.calcular_vigencia()
+                    print(publicacion.vigencia_tiempo)
+                else:
+                    message="No esta permitido crear Borradores con Categorias no moderada"
+                    redirect_url = request.path   
+                    messages.error(request, message)
+                    return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
+                
+                publicacion.save()                
+                notificar(publicacion,3)
+                registrar(request, publicacion,'autor')
+
                 messages.success(request, message)
-                redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
+                redirect_url = "/"
 
     return render(request, 'publicaciones/crear_publicacion.html', {'form': form, 'categorias': categorias, 'redirect_url': redirect_url})
 
-
+@permiso_requerido
 @login_required
 def editar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    """
+    Edita una publicación existente por parte del autor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a editar.
+    :return: Objeto HttpResponse.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']
@@ -65,7 +124,12 @@ def editar_publicacion_autor(request, publicacion_id):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.estado = 'revision' if request.POST['accion'] == 'completar_borrador' else 'borrador'
+
                 publicacion.save()
+
+                notificar(publicacion,3)
+                registrar(request, publicacion, 'autor')
+
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
@@ -76,7 +140,15 @@ def editar_publicacion_autor(request, publicacion_id):
 
 @login_required
 def eliminar_publicacion_autor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+    """
+    Elimina una publicación existente.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a eliminar.
+    :return: Objeto HttpResponse.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-autor')  # Define la URL de redirección
 
     if request.method == 'POST':
@@ -87,15 +159,24 @@ def eliminar_publicacion_autor(request, publicacion_id):
 
     return render(request, 'publicaciones/eliminar_publicacion_autor.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
-
+@permiso_requerido
 @login_required
 def editar_publicacion_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+
+    """
+    Edita una publicación existente por parte del editor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a editar.
+    :return: Objeto HttpResponse.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, instance=publicacion)
+        form = PublicacionForm(True, request.POST, instance=publicacion)
         if 'accion' in request.POST:
             if request.POST['accion'] == 'guardar':
                 form_fields_required = ['titulo']  # Solo el campo "titulo" requerido
@@ -110,7 +191,12 @@ def editar_publicacion_editor(request, publicacion_id):
             if form.is_valid():
                 publicacion = form.save(commit=False)
                 publicacion.estado = 'publicar' if request.POST['accion'] == 'completar_edicion' else 'revision'
+
                 publicacion.save()
+                
+                notificar(publicacion,3)
+                registrar(request, publicacion, 'editor')
+
                 messages.success(request, message)
                 redirect_url = reverse('canvan:canvas-editor')  
     else:
@@ -118,22 +204,90 @@ def editar_publicacion_editor(request, publicacion_id):
 
     return render(request, 'publicaciones/editar_publicacion_editor.html', {'form': form, 'publicacion': publicacion, 'redirect_url': redirect_url})
 
+@permiso_requerido
 @login_required
 def rechazar_editor(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+
+    """
+    Rechaza una publicación por parte del editor.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a rechazar.
+    :return: Objeto HttpResponse.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     redirect_url = reverse('canvan:canvas-editor')  # Define la URL de redirección
 
     if request.method == 'POST':
         if 'confirmar_rechazo' in request.POST:
-            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
+            razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
+            publicacion.estado = 'rechazado'  # Cambiar el estado a "borrador"
+            publicacion.para_editor = False
+
             publicacion.save()
+
+            notificar(publicacion,2,razon)
+            registrar(request, publicacion, 'editor')
+
             messages.success(request, 'La publicación ha sido rechazada con éxito.')
 
     return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
 
+@permiso_requerido
+@login_required
+def rechazar_publicador(request, publicacion_id):
+
+    """
+    Rechaza una publicación por parte del publicador.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a rechazar.
+    :return: Objeto HttpResponse.
+    """
+    
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
+
+    if request.method == 'POST':
+        if 'confirmar_rechazo' in request.POST:
+            razon = request.POST.get('razon')  # Obtener el valor del campo "razon" del formulario
+            print(razon)
+            publicacion.estado = 'rechazado'  # Cambiar el estado a "rechazado"
+
+            destinatario = request.POST.get('destinatario')  # Obtener el valor del campo "destinatario" del formulario
+            if destinatario == '1':
+                publicacion.para_editor = True  # Para Editor
+                razon += ", tu publicación fue enviada al Editor"
+            else:
+                publicacion.para_editor = False  # Para Autor
+            
+            publicacion.save()
+
+            notificar(publicacion,2,razon)
+            registrar(request, publicacion, 'publicador')
+
+            messages.success(request, 'La publicación ha sido rechazada con éxito.')
+    context = {
+        'publicacion': publicacion,
+        'redirect_url': redirect_url,
+        'canvan_publicador': True,
+    }
+    return render(request, 'publicaciones/rechazar.html', context)
+
+@permiso_requerido
 @login_required
 def mostar_para_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
+
+    """
+    Muestra una publicación para el publicador.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a mostrar.
+    :return: Objeto HttpResponse.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     message = ''  # Variable para almacenar el mensaje personalizado
     redirect_url = None  # Variable para almacenar la URL de redirección
 
@@ -143,7 +297,12 @@ def mostar_para_publicador(request, publicacion_id):
         if 'publicar' in request.POST:
             # Cambiar el estado de la publicación a "publicado"
             publicacion.estado = 'publicado'
+            publicacion.fecha_publicacion = timezone.now().date()
             publicacion.save()
+            
+            notificar(publicacion,3)
+            registrar(request, publicacion, 'publicador')
+
             message = 'La publicación ha sido publicada con éxito.'
             redirect_url = reverse('canvan:canvas-publicador')
             messages.success(request, message)
@@ -154,49 +313,215 @@ def mostar_para_publicador(request, publicacion_id):
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 
-
-@login_required
 def mostrar_publicacion(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
 
-    return render(request, 'publicaciones/mostrar_publicacion.html', {'publicacion': publicacion})
+    """
+    Muestra una publicación al usuario.
 
-@login_required
-def rechazar_publicador(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion_solo_text, id=publicacion_id)
-    redirect_url = reverse('canvan:canvas-publicador')  # Define la URL de redirección
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación a mostrar.
+    :return: Objeto HttpResponse.
+    """
 
-    if request.method == 'POST':
-        if 'confirmar_rechazo' in request.POST:
-            publicacion.estado = 'borrador'  # Cambiar el estado a "borrador"
-            publicacion.save()
-            messages.success(request, 'La publicación ha sido rechazada con éxito.')
-
-    return render(request, 'publicaciones/rechazar.html', {'publicacion': publicacion, 'redirect_url': redirect_url})
-
-@login_required
-def like_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.likes.all():
-        publicacion.likes.add(request.user)
-    return JsonResponse({'likes': publicacion.likes.count()})
-
-@login_required
-def dislike_publicacion(request, pk):
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.dislikes.all():
-        publicacion.dislikes.add(request.user)
-    return JsonResponse({'dislikes': publicacion.dislikes.count()})
-
-@login_required
-def compartir_publicacion(request, pk):
-    # Generar código QR
-    #qr_img = qrcode.make(publicacion.id_publicacion)
-    #qr_io = BytesIO()
-    #qr_img.save(qr_io, 'JPEG')
-    #publicacion.codigo_qr.save('codigo_qr.jpg', ContentFile(qr_io.getvalue()))
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    ha_dado_like = publicacion.like_usuario.filter(id=request.user.id).exists()
+    ha_dado_dislike = publicacion.dislike_usuario.filter(id=request.user.id).exists()
     
-    publicacion = get_object_or_404(Publicacion_solo_text, pk=pk)
-    if request.user not in publicacion.share.all():
-        publicacion.share.add(request.user)
-    return JsonResponse({'compartir': publicacion.share.count()})
+    rol_publicador = None
+    if request.user.is_authenticated:
+        if request.user.roles.filter(nombre="publicador").exists():
+            rol_publicador = True
+    context = {
+        'publicacion': publicacion,
+        'ha_dado_like': ha_dado_like,
+        'ha_dado_dislike': ha_dado_dislike,
+        'rol_publicador': rol_publicador
+    }
+
+    return render(request, 'publicaciones/mostrar_publicacion.html', context)
+
+def generar_qr(request, publicacion_id):
+
+    """
+    Genera un código QR que redirige a una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación para la que se genera el QR.
+    :return: Objeto HttpResponse con la imagen del código QR.
+    """
+
+    # Obtén la publicación con el ID proporcionado
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+
+    # Crea el código QR con la URL de la publicación
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(publicacion.get_absolute_url())  # Utiliza la URL absoluta de la publicación
+    qr.make(fit=True)
+
+    # Crea una imagen PIL a partir del código QR
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Guarda la imagen en un objeto BytesIO
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    img_data = buffer.getvalue()
+
+    # Devuelve la imagen del código QR como una respuesta HTTP
+    response = HttpResponse(content_type="image/png")
+    response.write(img_data)
+    return response
+
+def compartidas(request, publicacion_id):
+
+    """
+    Gestiona el contador de veces que una publicación ha sido compartida.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación compartida.
+    :return: Objeto JsonResponse con la cantidad de veces compartida.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    # Incrementa el contador de compartidas
+    publicacion.shared += 1
+    publicacion.save()
+    # Lógica para obtener la cantidad de compartidas para la publicación con publicacion_id
+    cantidad_compartidas = publicacion.shared
+    # Devuelve la cantidad de compartidas en formato JSON
+    data = {'shared_count': cantidad_compartidas}
+    return JsonResponse(data)
+
+@login_required
+def like(request, publicacion_id):
+
+    """
+    Gestiona los likes de una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación que recibe el like.
+    :return: Objeto JsonResponse con la cantidad de likes y el estado del like del usuario.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    tiene_dislike = False
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        tiene_dislike = True
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+        ha_dado_like = False
+    else:
+        # Si el usuario no le ha dado "Me gusta", agrégale "Me gusta" y aumenta el contador de likes
+        publicacion.like_usuario.add(usuario)
+        publicacion.likes += 1
+        ha_dado_like = True
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    # Devuelve una respuesta JSON con la nueva cantidad de likes y si el usuario dio "Me gusta"
+    response_data = {
+        'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
+        'ha_dado_like': ha_dado_like,
+        'tiene_dislike': tiene_dislike,
+    }
+
+    return JsonResponse(response_data)
+
+@login_required
+def dislike(request, publicacion_id):
+
+    """
+    Gestiona los dislikes de una publicación.
+
+    :param request: Objeto HttpRequest.
+    :param publicacion_id: ID de la publicación que recibe el dislike.
+    :return: Objeto JsonResponse con la cantidad de dislikes y el estado del dislike del usuario.
+    """
+
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    tiene_like = False
+
+    if usuario in publicacion.like_usuario.all():
+        # Si el usuario ya le dio "Me gusta", quita el "Me gusta" y decrementa el contador de likes
+        publicacion.like_usuario.remove(usuario)
+        publicacion.likes -= 1
+        tiene_like = True
+
+    if usuario in publicacion.dislike_usuario.all():
+        # Si el usuario ya le dio "No me gusta", quita el "No me gusta" y decrementa el contador de dislikes
+        publicacion.dislike_usuario.remove(usuario)
+        publicacion.dislikes -= 1
+        ha_dado_dislike = False
+    else:
+        # Si el usuario no le ha dado "No me gusta", agrégale "No me gusta" y aumenta el contador de dislikes
+        publicacion.dislike_usuario.add(usuario)
+        publicacion.dislikes += 1
+        ha_dado_dislike = True
+
+    publicacion.save()  # Guarda la publicación actualizada
+
+    # Devuelve una respuesta JSON con la nueva cantidad de likes, dislikes y las respectivas banderas
+    response_data = {
+        'likes': publicacion.likes,
+        'dislikes': publicacion.dislikes,
+        'ha_dado_dislike': ha_dado_dislike,
+        'tiene_like': tiene_like,
+    }
+
+    return JsonResponse(response_data)
+
+def track_view(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.views += 1
+    publicacion.save()
+    return JsonResponse({'status': 'success', 'views': publicacion.views})
+
+@login_required
+def estado(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.activo = not publicacion.activo
+    publicacion.save()
+    if(not publicacion.activo):
+        notificar(publicacion,1)
+        registros_a_eliminar = Registro.objects.filter(usuario=request.user, publicacion_id=publicacion_id)
+        registros_a_eliminar.delete()
+    return JsonResponse({'activo': publicacion.activo})
+
+@login_required
+def registrar(request, publicacion, canvas):
+    nuevo_registro = Registro.objects.create(
+        usuario=request.user,
+        publicacion_id=publicacion.id_publicacion,
+        publicacion_titulo=publicacion.titulo,
+        nuevo_estado=publicacion.estado,
+        canvas=canvas
+    )
+    nuevo_registro.save()
+
+from django.conf import settings
+def vista_auxiliar_email(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    from_email=settings.EMAIL_HOST_USER
+    #razon: 1 - es para inactivo
+    #razon: 2 - es para rechazo
+    #razon: 3 - es para otros estados
+    context = {
+        'publicacion': publicacion,
+        'cambio': 3,
+        'razon': 'No cumple con nuestras normas de seguridad', 
+        'from_email':from_email
+    }
+    
+    return render(request, 'publicaciones/email.html', context)

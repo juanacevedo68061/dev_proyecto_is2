@@ -25,7 +25,7 @@ def notificar(publicacion, cambio, razon=""):
     if email_content:
         email = EmailMessage(subject, email_content, from_email, recipient_list)
         email.content_subtype = "html"
-        email.send()
+        #email.send()
         print("Notificación enviada")
 
 def publicar_no_moderada(usuario):

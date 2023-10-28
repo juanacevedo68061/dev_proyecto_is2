@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from cms.settings import GS_BUCKET_NAME
 from publicaciones.forms import BusquedaAvanzadaForm
 from publicaciones.models import Publicacion_solo_text
 from administracion.models import Categoria
@@ -9,6 +10,8 @@ import bleach
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+
+
 
 def principal(request):
 
@@ -109,25 +112,56 @@ def publicaciones_categoria(request, categoria_id):
     
     
     return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })
+
 from django.http import JsonResponse
-from django.core.files.storage import FileSystemStorage
+# from google.cloud import storage
+# from my_storages.tinymce_storage import TinyMCELocalFileStorage
+# import os
 
-@csrf_exempt #solucion temporal
-def tinymce_upload(request):
-    """
-    Vista para manejar la carga de archivos a través de TinyMCE.
+# def upload_to_gcloud(local_path, bucket_name, dest_path):
+#     """Sube un archivo al bucket especificado en Google Cloud Storage."""
+#     client = storage.Client()
+#     bucket = client.get_bucket(bucket_name)
+#     blob = bucket.blob(dest_path)
+#     blob.upload_from_filename(local_path)
+#     return blob.public_url
 
-    Args:
-        request (HttpRequest): Objeto de solicitud HTTP.
+# @csrf_exempt
+# def tinymce_upload(request):
+#     if request.method == 'POST' and request.FILES['file']:
+#         file = request.FILES['file']
+        
+#         # Guardar localmente
+#         fs = TinyMCELocalFileStorage()
+#         filename = fs.save(file.name, file)
+#         local_file_url = fs.path(filename)
 
-    Returns:
-        JsonResponse: Devuelve la URL del archivo cargado o un error en caso de fallo.
-    """
+#         try:
+#             # Subir a Google Cloud Storage
+#             cloud_path = "publicados/" + file.name
+#             cloud_url = upload_to_gcloud(local_file_url, GS_BUCKET_NAME, cloud_path)
+            
+#             # Opcional: Eliminar el archivo local después de subirlo a la nube
+#             os.remove(local_file_url)
+            
+#             return JsonResponse({'location': cloud_url})
+#         except Exception as e:
+#             # En caso de error, es una buena práctica manejar la excepción y enviar una respuesta adecuada
+#             return JsonResponse({'error': f'Failed to upload image to cloud. Error: {str(e)}'})
     
+#     return JsonResponse({'error': 'Failed to upload image.'})
+from django.core.files.storage import default_storage
+
+@csrf_exempt
+def tinymce_upload(request):
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
-        fs = FileSystemStorage()
-        filename = fs.save(file.name, file)
-        file_url = fs.url(filename)
+        
+        # Guarda el archivo usando el sistema de almacenamiento predeterminado 
+        filename = default_storage.save(file.name, file)
+        
+        # Obtiene la URL del archivo en GCS
+        file_url = default_storage.url(filename)
+        
         return JsonResponse({'location': file_url})
     return JsonResponse({'error': 'Failed to upload image.'})

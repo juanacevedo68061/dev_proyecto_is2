@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "PIL",
     "tinymce",    
     "cms",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -121,9 +122,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Configuración de Google Cloud Storage
+#for media storage in the bucket
+##getting credential
+from google.oauth2 import service_account
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR,'credencial.json'))
+
+## configuracion para archivos multimedia
+ ###configuration for media file storing and reriving media file from gcloud 
+DEFAULT_FILE_STORAGE='cms.gcloud.GoogleCloudMediaFileStorage'
+GS_PROJECT_ID = 'proyectois2-402511'
+GS_BUCKET_NAME = 'proyecto_is2_bucket'
+MEDIA_ROOT = "media/"
+UPLOAD_ROOT = 'media/uploads/'
+MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

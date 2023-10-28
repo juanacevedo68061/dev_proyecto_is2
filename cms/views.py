@@ -114,42 +114,6 @@ def publicaciones_categoria(request, categoria_id):
     return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })
 
 from django.http import JsonResponse
-# from google.cloud import storage
-# from my_storages.tinymce_storage import TinyMCELocalFileStorage
-# import os
-
-# def upload_to_gcloud(local_path, bucket_name, dest_path):
-#     """Sube un archivo al bucket especificado en Google Cloud Storage."""
-#     client = storage.Client()
-#     bucket = client.get_bucket(bucket_name)
-#     blob = bucket.blob(dest_path)
-#     blob.upload_from_filename(local_path)
-#     return blob.public_url
-
-# @csrf_exempt
-# def tinymce_upload(request):
-#     if request.method == 'POST' and request.FILES['file']:
-#         file = request.FILES['file']
-        
-#         # Guardar localmente
-#         fs = TinyMCELocalFileStorage()
-#         filename = fs.save(file.name, file)
-#         local_file_url = fs.path(filename)
-
-#         try:
-#             # Subir a Google Cloud Storage
-#             cloud_path = "publicados/" + file.name
-#             cloud_url = upload_to_gcloud(local_file_url, GS_BUCKET_NAME, cloud_path)
-            
-#             # Opcional: Eliminar el archivo local después de subirlo a la nube
-#             os.remove(local_file_url)
-            
-#             return JsonResponse({'location': cloud_url})
-#         except Exception as e:
-#             # En caso de error, es una buena práctica manejar la excepción y enviar una respuesta adecuada
-#             return JsonResponse({'error': f'Failed to upload image to cloud. Error: {str(e)}'})
-    
-#     return JsonResponse({'error': 'Failed to upload image.'})
 from django.core.files.storage import default_storage
 
 @csrf_exempt

@@ -19,6 +19,7 @@
     {% if user.is_authenticated %}
         <script src="{% static 'js/like.js' %}"></script>
         <script src="{% static 'js/dislike.js' %}"></script>
+        <script src="{% static 'js/calificacion.js' %}"></script>
     {% endif %}
 {% endif %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,7 +70,22 @@
                     </div>
                 </div>
             </div>
-                        
+            
+            <div class="calificacion-estrellas"><br>
+                <div class="rating">
+                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="1" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="2" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="3" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="4" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="5" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                    <span style="font-size: 20px; margin-left: 5px">
+                        <span id="calificacion-cantidad" style="color: gray;">{{ publicacion.calificaciones_cantidad }}</span>
+                    </span>
+                </div><br>
+                <span style="font-size: 20px;" id="calificacion-mensaje" data-id="{{ publicacion.id_publicacion }}">
+                    <span id="mensaje-color"></span>
+                </span>                                
+            </div><br>
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
                 {%if not publicador %}    
@@ -131,11 +147,7 @@
                         </div>
                     </div>
                 {% endif %}
-                
-                
-            </div>
-            
-    
+            </div>    
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
         

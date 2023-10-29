@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Publicacion_solo_text
+from .models import Publicacion_solo_text, Calificacion
 from .forms import PublicacionForm
 from django.contrib import messages
 from django.urls import reverse
@@ -25,6 +25,10 @@ from kanban.models import Registro
 from django.utils import timezone
 from django.http import HttpResponse
 from roles.decorators import permiso_requerido, permiso_redireccion_requerido
+import json
+from django.http import HttpResponseBadRequest
+from django.views.decorators.http import require_http_methods
+
 
 @permiso_requerido
 @login_required
@@ -442,4 +446,46 @@ def estado(request, publicacion_id):
         registros_a_eliminar.delete()
     return JsonResponse({'activo': publicacion.activo})
 
+@login_required
+@require_http_methods(["GET", "POST"])
+def calificar(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    usuario = request.user
+    if request.method == "POST":
+        data = json.loads(request.body)
+        rating = data.get('rating')
+        publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
 
+        try:
+            calificacion = publicacion.calificaciones.get(usuario=usuario)
+            if rating == calificacion.rating:
+                publicacion.calificaciones.remove(calificacion)
+                calificacion.delete()
+                publicacion.calificaciones_cantidad -= 1
+                publicacion.save()
+                rating = 0
+            else:
+                calificacion.rating = rating
+                calificacion.save()
+        except Calificacion.DoesNotExist:
+            calificacion = Calificacion(usuario=usuario, rating=rating)
+            calificacion.save()
+            publicacion.calificaciones.add(calificacion)
+            publicacion.calificaciones_cantidad += 1
+            publicacion.save()
+
+        cantidad = publicacion.calificaciones_cantidad
+        return JsonResponse({'rating': rating, 'calificaciones': cantidad})
+
+    if request.method == "GET":
+        try:
+            calificacion = publicacion.calificaciones.get(usuario=usuario)
+            rating = calificacion.rating
+        except Calificacion.DoesNotExist:
+            rating = 0
+
+        cantidad = publicacion.calificaciones_cantidad
+
+        return JsonResponse({'rating': rating, 'calificaciones': cantidad})
+
+    return HttpResponseBadRequest('Método no permitido')

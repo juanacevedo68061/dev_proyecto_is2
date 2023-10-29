@@ -7,7 +7,10 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 import datetime
-from .utils import notificar
+
+class Calificacion(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE,blank=True, null=True)
+    rating = models.PositiveIntegerField(default=0)
 
 class Publicacion_solo_text(models.Model):
     ESTADOS_CONTENIDO = [
@@ -52,6 +55,8 @@ class Publicacion_solo_text(models.Model):
     comments = models.PositiveIntegerField(default=0)
     shared = models.PositiveIntegerField(default=0)
     semaforo = models.CharField(max_length=9, choices=COLORES, default='rojo')
+    calificaciones = models.ManyToManyField(Calificacion, blank=True, related_name='publicaciones_calificaciones')
+    calificaciones_cantidad = models.PositiveIntegerField(default=0)
 
     vigencia = models.BooleanField(default=False)
     vigencia_tiempo = models.DateTimeField(null=True, blank=True)
@@ -119,5 +124,3 @@ class Publicacion_solo_text(models.Model):
     def __str__(self):
         return self.titulo
     
-
-

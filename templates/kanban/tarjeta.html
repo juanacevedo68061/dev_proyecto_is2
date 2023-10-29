@@ -76,10 +76,8 @@
 <div class="tarjeta-contenido">
     <div class="title-lamp">
         <span class="title">{{ publicacion.titulo }} <span class="lamp {% if publicacion.semaforo == 'rojo' %}red{% elif publicacion.semaforo == 'amarillo' %}yellow{% elif publicacion.semaforo == 'verde' %}green{% endif %}"></span></span>
-        
     </div>
-
-    <span class="tarjeta-fecha">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
+    <span class="tarjeta-fecha">{{ publicacion.fecha_creacion|date:"d, M Y" }} <span style="margin-left: 3px;"><a href="{% url 'kanban:historial' publicacion.id_publicacion %}"><i class="fas fa-history"></i></a></span></span>
     <br> <!-- Línea vacía -->
     <br> <!-- Línea vacía -->
     <div class="tarjeta-info">

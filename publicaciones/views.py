@@ -442,7 +442,7 @@ def estado(request, publicacion_id):
     publicacion.save()
     if(not publicacion.activo):
         notificar(publicacion,1)
-        registros_a_eliminar = Registro.objects.filter(usuario=request.user, publicacion_id=publicacion_id)
+        registros_a_eliminar = Registro.objects.filter(responsable=request.user, publicacion_id=publicacion_id)
         registros_a_eliminar.delete()
     return JsonResponse({'activo': publicacion.activo})
 

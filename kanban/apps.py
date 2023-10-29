@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CanvanConfig(AppConfig):
+class KanbanConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "canvan"
+    name = "kanban"

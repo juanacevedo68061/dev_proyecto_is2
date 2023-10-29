@@ -3,13 +3,16 @@ from cms.settings import GS_BUCKET_NAME
 from publicaciones.forms import BusquedaAvanzadaForm
 from publicaciones.models import Publicacion_solo_text
 from administracion.models import Categoria
-from login.models import Usuario
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render
 import re
 import bleach
 from django.shortcuts import get_object_or_404
-from django.contrib import messages
+from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.core.files.storage import default_storage
 
 
 
@@ -26,12 +29,15 @@ def principal(request):
         HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones,
         formulario de búsqueda avanzada, categorías y usuarios.
     """
-    
+    anonimo = isinstance(request.user, AnonymousUser)
     query = request.GET.get('q')
-    publicaciones = obtener_publicaciones(request)
-    avanzada_form = BusquedaAvanzadaForm()
-    categorias = Categoria.objects.all()
-    usuarios = Usuario.objects.all()
+    publicaciones = obtener_publicaciones(request, anonimo)
+    avanzada_form = BusquedaAvanzadaForm(anonimo)
+
+    if not anonimo:
+        categorias = Categoria.objects.all()
+    else:
+        categorias = Categoria.objects.filter(suscriptores=False)
 
     if query:
         # Utilizamos expresiones regulares para buscar la consulta en el campo "texto"
@@ -40,24 +46,21 @@ def principal(request):
         texto = [publicacion for publicacion in publicaciones if re.search(query, bleach.clean(publicacion.texto, strip=True), re.IGNORECASE)]
         claves = [publicacion for publicacion in publicaciones if re.search(query, publicacion.palabras_clave, re.IGNORECASE)]
         
-        # Concatenar las listas y eliminar duplicados
         resultados = titulo + texto + claves
         resultados = list(set(resultados))
 
-        # Crear un QuerySet con los resultados
         publicaciones = Publicacion_solo_text.objects.filter(pk__in=[pub.pk for pub in resultados])
         
     contexto = {
         'publicaciones': publicaciones,
         'avanzada_form': avanzada_form,
         'categorias': categorias,
-        'usuarios': usuarios,
         'principal': True,
     }
 
     return render(request, 'cms/principal.html', contexto)
 
-def obtener_publicaciones(request):
+def obtener_publicaciones(request, anonimo):
 
     """
     Obtiene las publicaciones basadas en criterios de filtrado como categorías, fecha de publicación y autor.
@@ -73,12 +76,18 @@ def obtener_publicaciones(request):
     fecha_publicacion = request.GET.get('fecha_publicacion')
     autor = request.GET.get('autor')
 
-    publicaciones = Publicacion_solo_text.objects.filter(
-        estado='publicado',
-        activo=True
-    ).order_by('-fecha_creacion')
-
-    # Verificamos si los campos están vacíos o no
+    if not anonimo:
+        publicaciones = Publicacion_solo_text.objects.filter(
+            estado='publicado',
+            activo=True
+        ).order_by('-fecha_creacion')
+    else:
+        publicaciones = Publicacion_solo_text.objects.filter(
+            estado='publicado',
+            activo=True,
+            categoria__suscriptores=False
+        ).order_by('-fecha_creacion')
+    
     if not (not any(categorias) and not fecha_publicacion and not autor):
         
         if categorias:
@@ -104,17 +113,17 @@ def publicaciones_categoria(request, categoria_id):
     Returns:
         HttpResponse: Renderiza la plantilla 'cms/principal.html' con las publicaciones de la categoría especificada.
     """
-    
-    categoria = get_object_or_404(Categoria, id=categoria_id)
-    publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
-    categorias = Categoria.objects.all()
-    redirect_url = None
-    
-    
-    return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True, 'redirect_url': redirect_url })
 
-from django.http import JsonResponse
-from django.core.files.storage import default_storage
+    categoria = get_object_or_404(Categoria, id=categoria_id)
+
+    if not isinstance(request.user, AnonymousUser):
+        categorias = Categoria.objects.all()
+    else:
+        categorias = Categoria.objects.filter(suscriptores=False)
+        
+    publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
+        
+    return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True})
 
 @csrf_exempt
 def tinymce_upload(request):

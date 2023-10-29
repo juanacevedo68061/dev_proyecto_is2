@@ -1,5 +1,3 @@
-# En forms.py
-from .models import Categoria  # Importa el modelo de categoría
 from administracion.models import Categoria
 from django import forms
 from .models import Publicacion_solo_text
@@ -8,51 +6,69 @@ class PublicacionForm(forms.ModelForm):
     class Meta:
         model = Publicacion_solo_text
         fields = [
-            'titulo', 'texto', 'categoria', 'palabras_clave',
+            'titulo', 'texto', 'palabras_clave',
+            'categoria_suscriptores',
+            'categoria_no_suscriptores',
             'vigencia', 'vigencia_unidad', 'vigencia_cantidad',
             'programar', 'programar_unidad', 'programar_cantidad',
-            'suscriptores'
+            
         ]
 
-    UNIDADES_TIEMPO = (
+    UNIDADES_TIEMPO = [
         ('d', 'Días'),
         ('h', 'Horas'),
         ('m', 'Minutos'),
-    )
+    ]
 
     vigencia_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     programar_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     vigencia_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
     programar_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
-    suscriptores = forms.BooleanField(label='Suscriptores', required=False)  # Campo añadido
 
-    def __init__(self, canvan=True, *args, **kwargs):
+    # Campos de selección de categorías
+    categoria_suscriptores = forms.ModelChoiceField(
+        queryset=Categoria.objects.filter(suscriptores=True),
+        label='Categoría para Suscriptores',
+        required=False,
+    )
+
+    categoria_no_suscriptores = forms.ModelChoiceField(
+        queryset=Categoria.objects.filter(suscriptores=False),
+        label='Categoría para No Suscriptores',
+        required=False,
+    )
+
+    def __init__(self, canvan=True, tiene=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['titulo'].widget.attrs.update(
-            {'class': 'form-control', 'id': 'id_titulo'})
-        self.fields['texto'].widget.attrs.update(
-            {'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
-        self.fields['categoria'].widget.attrs.update(
-            {'class': 'form-control', 'id': 'id_categoria'})
-        self.fields['palabras_clave'].widget.attrs.update(
-            {'class': 'form-control', 'id': 'id_palabras_clave'})
-        self.fields['vigencia'].widget.attrs.update(
-            {'class': 'form-check-input', 'id': 'id_vigencia'})
-        self.fields['programar'].widget.attrs.update(
-            {'class': 'form-check-input', 'id': 'id_programar'})
-
-        
-        categorias = Categoria.objects.all()
+        self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'id': 'id_titulo'})
+        self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
+        self.fields['palabras_clave'].widget.attrs.update({'class': 'form-control', 'id': 'id_palabras_clave'})
+        self.fields['vigencia'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_vigencia'})
+        self.fields['programar'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_programar'})
+        self.fields['categoria_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_suscriptores'})
+        self.fields['categoria_no_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_no_suscriptores'})
+        self.fields['categoria_suscriptores'].choices = self.get_categoria_choices(True, canvan, tiene)
+        self.fields['categoria_no_suscriptores'].choices = self.get_categoria_choices(False, canvan, tiene)
+        if self.instance and self.instance.categoria:
+            if self.instance.categoria.suscriptores:
+                self.fields['categoria_suscriptores'].initial = self.instance.categoria
+            else:
+                self.fields['categoria_no_suscriptores'].initial = self.instance.categoria        
+    def get_categoria_choices(self, suscriptores, canvan, tiene):
         if canvan:
-            categorias = Categoria.objects.filter(moderada=True)
-
-
-        choices = [(categoria.pk, f"{categoria.nombre} ({'Moderada' if categoria.moderada else 'No moderada'})") for categoria in categorias]
+            categorias = Categoria.objects.filter(suscriptores=suscriptores, moderada=True)
+        else:
+            if tiene:
+                categorias = Categoria.objects.filter(suscriptores=suscriptores)
+            else:
+                categorias = Categoria.objects.filter(suscriptores=suscriptores, moderada=True)
+        choices = [(categoria.pk, f"{categoria.nombre} ({'Moderada' if categoria.moderada else 'No Moderada'})") for categoria in categorias]
         choices.insert(0, ('', '---------'))
-        self.fields['categoria'].choices = choices
+        return choices
 
     def clean(self):
         cleaned_data = super().clean()
+        
         vigencia = cleaned_data.get('vigencia')
         programar = cleaned_data.get('programar')
 
@@ -69,7 +85,6 @@ class PublicacionForm(forms.ModelForm):
             if not programar_unidad or not programar_cantidad:
                 self.add_error('programar_unidad', 'Este campo es requerido si selecciona programar.')
                 self.add_error('programar_cantidad', 'Este campo es requerido si selecciona programar.')
-
 
 class BusquedaAvanzadaForm(forms.Form):
     q = forms.CharField(
@@ -91,16 +106,21 @@ class BusquedaAvanzadaForm(forms.Form):
         max_length=100,  # Ajusta la longitud máxima según tus necesidades
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, anonimo, *args, **kwargs):
         super(BusquedaAvanzadaForm, self).__init__(*args, **kwargs)
 
-        # Cargar las opciones de categorías dinámicamente desde la base de datos
-        categorias_disponibles = Categoria.objects.all()
+        if not anonimo:
+            categorias_disponibles = Categoria.objects.all()
+        else:
+            categorias_disponibles = Categoria.objects.filter(suscriptores = False)
+
         self.fields['categorias'].choices = [
             (c.id, c.nombre) for c in categorias_disponibles]
 
-        # Puedes personalizar las etiquetas de campo y otros atributos si es necesario
         self.fields['q'].label = 'Buscar'
-        self.fields['categorias'].label = 'Categorías'
+        if categorias_disponibles:
+            self.fields['categorias'].label = 'Categorías'
+        else:
+            del self.fields['categorias']
         self.fields['fecha_publicacion'].label = 'Fecha de Publicación'
         self.fields['autor'].label = 'Autor'

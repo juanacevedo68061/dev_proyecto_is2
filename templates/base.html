@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -108,33 +108,17 @@
                                         {% endif %}
                                     </nav>
                                 </div>
-                        
-                        {% if user.roles.all %}
-                            <div class="sb-sidenav-menu-heading">Acceso</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
-                                data-bs-target="#collapseLayoutsKanban" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                kanban
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayoutsKanban" aria-labelledby="headingOne"
-                                data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    {% if user.roles.all %}
-                                        {% for rol in user.roles.all %}
-                                            {% if rol.nombre == 'autor' %}
-                                                <a class="nav-link" href="{% url 'canvan:canvas-autor' %}">Canvas Autor</a>
-                                            {% elif rol.nombre == 'editor' %}
-                                                <a class="nav-link" href="{% url 'canvan:canvas-editor' %}">Canvas Editor</a>
-                                            {% elif rol.nombre == 'publicador' %}
-                                                <a class="nav-link" href="{% url 'canvan:canvas-publicador' %}">Canvas Publicador</a>
-                                            {% endif %}
-                                        {% endfor %}                                        
-                                    {% endif %}
-                                </nav>
-                            </div>
+                        {% if user.is_authenticated %}                                            
+                            {% if user|has_role:"autor,editor,publicador" %}
+                                <div class="sb-sidenav-menu-heading">Kanban</div>
+                                <a class="nav-link" href="{% url 'kanban:kanban' %}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                    Tablero
+                                </a>
+                            {% endif %}
                         {% endif %}
                         
+
                         {% for rol in user.roles.all %}
                             {% if rol.nombre == 'administrador' %}
                                 <div class="sb-sidenav-menu-heading">Panel</div>

@@ -6,18 +6,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
   <div class="container">
-    <h1>Editar Publicación (Canvas Editor)</h1><br>
-    <a href="{% url 'publicaciones:rechazar_editor' publicacion.id_publicacion %}" class="btn btn-danger">Rechazar</a><br>
-
-
-
+    <h1>Editar Publicación (Kanban Editor)</h1><br>
+    
     <form method="post" novalidate>
       {% csrf_token %}
       {{ form.as_p }}
 
-      <button type="submit" class="btn btn-warning" name="accion" value="completar_edicion">Completar</button>
-      <button type="submit" class="btn btn-primary" name="accion" value="guardar">Guardar Cambios</button>
-      <a href="{% url 'canvan:canvas-editor' %}" class="btn btn-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-success" name="accion" value="completar_edicion">Habilitar</button>
+      <button type="submit" class="btn btn-warning" name="accion" value="guardar">Guardar Cambios</button>
+      <a href="{% url 'kanban:kanban' %}" class="btn btn-secondary">Cancelar</a>
     </form>
   </div>
 {% endblock %}

@@ -3,8 +3,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -180,7 +178,7 @@ TINYMCE_SPELLCHECKER = True
 
 ALLOWED_HOSTS = ["localhost","127.0.0.1"] # Solo para desarrollo, cambia a tus necesidades de producción
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -199,7 +197,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-'''
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
 "http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]
 

@@ -138,3 +138,33 @@ def tinymce_upload(request):
         
         return JsonResponse({'location': file_url})
     return JsonResponse({'error': 'Failed to upload image.'})
+
+
+ALLOWED_EXTENSIONS = {
+    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg',  # Imágenes
+    'mp3', 'wav', 'ogg', 'm4a',                 # Audio
+    'mp4', 'mov', 'avi', 'mkv', 'flv',          # Video
+    'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'  # Documentos
+}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@csrf_exempt
+def tinymce_upload_media(request):
+    if request.method == 'POST' and request.FILES['media']:
+        media = request.FILES['media']
+        
+        # Aquí puedes agregar una validación para el tipo de archivo si lo deseas
+        # Por ejemplo, si solo quieres permitir ciertos tipos de archivos de video o audio.
+        if not allowed_file(media.name):
+            return JsonResponse({'error': 'File type not allowed.'})
+        # Guarda el archivo usando el sistema de almacenamiento predeterminado
+        filename = default_storage.save(media.name, media)
+        
+        # Obtiene la URL del archivo en GCS
+        media_url = default_storage.url(filename)
+        
+        return JsonResponse({'location': media_url})
+    return JsonResponse({'error': 'Failed to upload media.'})

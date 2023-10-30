@@ -16,8 +16,3 @@ class Vistas(models.Model):
             return nombres_vistas
         except cls.DoesNotExist:
             return []
-        
-
-
-class Media(models.Model):
-    file = models.FileField(upload_to='media/')

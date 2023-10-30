@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "cms",
     "kanban",
     "storages",
+    "media_manager",
 ]
 
 MIDDLEWARE = [

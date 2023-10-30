@@ -181,10 +181,10 @@ def motivo(request):
         return JsonResponse({'error': 'Método no permitido'}, status=405)
     
 @login_required
-def historial(request):
-    registros = Registro.objects.all()
+def historial(request, publicacion_id):
+    registros = Registro.objects.filter(publicacion_id=publicacion_id)
     if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
-        registros = Registro.objects.filter(responsable=request.user)
+        registros = Registro.objects.filter(publicacion_id=publicacion_id, responsable=request.user)
     return render(request, 'kanban/historial.html', {'registros': registros})
 
 @login_required

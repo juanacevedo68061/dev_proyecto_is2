@@ -156,8 +156,6 @@ def tinymce_upload_media(request):
     if request.method == 'POST' and request.FILES['media']:
         media = request.FILES['media']
         
-        # Aquí puedes agregar una validación para el tipo de archivo si lo deseas
-        # Por ejemplo, si solo quieres permitir ciertos tipos de archivos de video o audio.
         if not allowed_file(media.name):
             return JsonResponse({'error': 'File type not allowed.'})
         # Guarda el archivo usando el sistema de almacenamiento predeterminado

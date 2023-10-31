@@ -57,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = "cms.urls"
 
@@ -162,6 +163,28 @@ TINYMCE_DEFAULT_CONFIG = {
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
     "images_upload_url": '/tinymce/upload/',
+    "file_picker_callback": """function(callback, value, meta) {
+        if (meta.filetype == 'file') {
+          callback('mypage.html', {text: 'My text'});
+        }
+        if (meta.filetype == 'image') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload/',
+              title: 'Insertar/Editar Imagen'  
+          });
+        }
+        if (meta.filetype == 'media') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload_media/',
+              title: 'Insertar/Editar Media'  
+          });
+        }
+    }""",
+    "media_poster": True,  # Para permitir imágenes de vista previa para videos
+    "media_alt_source": True,  # Para permitir fuentes alternativas
+    "media_dimensions": True,  # Para permitir dimensiones personalizadas
+    "media_live_embeds": True,  # Para permitir incrustaciones en vivo
+    "media_url": "tinymce/upload_media/",
     "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",

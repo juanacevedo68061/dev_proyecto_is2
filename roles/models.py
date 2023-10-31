@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from cms.models import Vistas
 from django.db import models, connection
 class Rol(models.Model):
     """
@@ -16,11 +15,6 @@ class Rol(models.Model):
         save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
 
     """
-    table_exists = 'cms_vistas' in connection.introspection.table_names()
-    nombres_de_vistas=''
-    if table_exists:
-        nombres_de_vistas = Vistas.obtener('administracion')
-
     ROLES = [
         ('autor', 'Autor'),
         ('editor', 'Editor'),
@@ -54,7 +48,20 @@ class Rol(models.Model):
             'rechazar_publicador',
             'mostar_para_publicador',
         ],
-        'administrador': nombres_de_vistas,
+        'administrador': [
+            'panel',
+            'gestion_categorias',
+            'crear_categoria',
+            'editar_categoria',
+            'eliminar_categoria',
+            'gestion_usuarios',
+            'eliminar_usuario',
+            'asignar_roles_usuario',
+            'eliminar_roles_usuario',
+            'agregar_permisos_roles_usuario',
+            'eliminar_permisos_roles_usuario',
+            'crear_rol',   
+        ]
     }
     #print(PERMISOS['administrador'])
 

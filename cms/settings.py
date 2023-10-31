@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "publicaciones",
     "PIL",
     "tinymce",    
-    "cms",
     "kanban",
 ]
 

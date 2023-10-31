@@ -15,6 +15,7 @@ class Rol(models.Model):
         save(): Método personalizado para guardar el rol y asignar permisos correspondientes.
 
     """
+
     ROLES = [
         ('autor', 'Autor'),
         ('editor', 'Editor'),
@@ -60,7 +61,7 @@ class Rol(models.Model):
             'eliminar_roles_usuario',
             'agregar_permisos_roles_usuario',
             'eliminar_permisos_roles_usuario',
-            'crear_rol',   
+            'crear_rol',
         ]
     }
     #print(PERMISOS['administrador'])

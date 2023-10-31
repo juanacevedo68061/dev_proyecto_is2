@@ -150,19 +150,37 @@ ALLOWED_EXTENSIONS = {
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def is_valid_url(url):
+    import re
+    pattern = re.compile(
+        r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+    )
+    return bool(pattern.match(url))
 
 @csrf_exempt
 def tinymce_upload_media(request):
-    if request.method == 'POST' and request.FILES['media']:
-        media = request.FILES['media']
+    if request.method == 'POST':
+        # Verifica si se envió un archivo
+        if 'media' in request.FILES:
+            media = request.FILES['media']
+            
+            if not allowed_file(media.name):
+                return JsonResponse({'error': 'File type not allowed.'})
+
+            # Guarda el archivo usando el sistema de almacenamiento predeterminado
+            filename = default_storage.save(media.name, media)
+            
+            # Obtiene la URL del archivo en GCS
+            media_url = default_storage.url(filename)
+            
+            return JsonResponse({'location': media_url})
         
-        if not allowed_file(media.name):
-            return JsonResponse({'error': 'File type not allowed.'})
-        # Guarda el archivo usando el sistema de almacenamiento predeterminado
-        filename = default_storage.save(media.name, media)
+        # Verifica si se envió una URL
+        elif 'url' in request.POST and is_valid_url(request.POST['url']):
+            
+            return JsonResponse({'location': request.POST['url']})
         
-        # Obtiene la URL del archivo en GCS
-        media_url = default_storage.url(filename)
-        
-        return JsonResponse({'location': media_url})
+        else:
+            return JsonResponse({'error': 'Invalid data. Either a file or a valid URL is expected.'})
+
     return JsonResponse({'error': 'Failed to upload media.'})

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Registro
+from kanban.models import Registro
 from login.models import Usuario
 from roles.models import Rol
 

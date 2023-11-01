@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "PIL",
     "tinymce",    
     "kanban",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = "cms.urls"
 
@@ -120,9 +122,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Configuración de Google Cloud Storage
+#for media storage in the bucket
+##getting credential
+from google.oauth2 import service_account
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR,'credencial.json'))
+
+## configuracion para archivos multimedia
+ ###configuration for media file storing and reriving media file from gcloud 
+DEFAULT_FILE_STORAGE='cms.gcloud.GoogleCloudMediaFileStorage'
+GS_PROJECT_ID = 'proyectois2-402511'
+GS_BUCKET_NAME = 'proyecto_is2_bucket'
+MEDIA_ROOT = "media/"
+UPLOAD_ROOT = 'media/uploads/'
+MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -144,6 +162,28 @@ TINYMCE_DEFAULT_CONFIG = {
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
     "images_upload_url": '/tinymce/upload/',
+    "file_picker_callback": """function(callback, value, meta) {
+        if (meta.filetype == 'file') {
+          callback('mypage.html', {text: 'My text'});
+        }
+        if (meta.filetype == 'image') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload/',
+              title: 'Insertar/Editar Imagen'  
+          });
+        }
+        if (meta.filetype == 'media') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload_media/',
+              title: 'Insertar/Editar Media'  
+          });
+        }
+    }""",
+    "media_poster": True,  # Para permitir imágenes de vista previa para videos
+    "media_alt_source": True,  # Para permitir fuentes alternativas
+    "media_dimensions": True,  # Para permitir dimensiones personalizadas
+    "media_live_embeds": True,  # Para permitir incrustaciones en vivo
+    "media_url": "tinymce/upload_media/",
     "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",

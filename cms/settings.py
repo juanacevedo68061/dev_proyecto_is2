@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "tinymce",    
     "kanban",
     "storages",
+    'django_comments',
+    'django_comments_xtd',
 ]
 
 MIDDLEWARE = [

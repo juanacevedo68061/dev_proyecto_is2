@@ -77,6 +77,37 @@ def kanban(request):
 @login_required
 @csrf_exempt
 def actualizar(request):
+    """
+    Actualiza el estado de una publicación basándose en el nuevo estado proporcionado en la solicitud POST.
+    
+    La función primero verifica si el método de solicitud es POST. A continuación, extrae el `id_publicacion` 
+    y `nuevo_estado` de la solicitud. Luego, hay varias comprobaciones y condiciones para determinar la validez
+    del cambio de estado y para realizar actualizaciones apropiadas. Si se cumple una condición inválida, 
+    la función devuelve un objeto JsonResponse con un mensaje de error adecuado.
+    
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP del cliente. Espera que el método de la solicitud sea POST y que contenga
+        `id_publicacion` y `nuevo_estado` en el cuerpo de la solicitud.
+
+    Returns:
+    --------
+    JsonResponse
+        Una respuesta JSON que puede contener varios estados:
+        - `vuelve`: Indica si la publicación debe regresar a su estado anterior.
+        - `autor`: Indica si hay un error relacionado con el autor de la publicación.
+        - `accion`: Indica si una cierta transición de estado no es permitida.
+        - `reason_required`: Indica si se necesita una razón para una transición de estado.
+        - `rol`: Indica si hay un error relacionado con el rol del usuario que realiza la solicitud.
+        - `error`: Mensajes de error generales, como "No se encontró la publicación" o "ID no es válido".
+        - `message`: Mensajes adicionales como "Método no permitido" para solicitudes que no son POST.
+
+    Raises:
+    -------
+    ValueError, Http404, Publicacion_solo_text.DoesNotExist
+        Estas excepciones se manejan internamente y se devuelven como respuestas JSON con mensajes de error adecuados.
+    """
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')        
         nuevo_estado = request.POST.get('nuevo_estado')

@@ -178,6 +178,38 @@
             {% endif %}
         </div>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let formulario = document.querySelector('.agregar-comentario form');
+                
+                if (formulario) {
+                    formulario.addEventListener('submit', function(event) {
+                        event.preventDefault();  // Evita el comportamiento predeterminado del formulario
+            
+                        let datosFormulario = new FormData(formulario);
+            
+                        fetch(formulario.action, {
+                            method: 'POST',
+                            body: datosFormulario
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Comentario enviado con éxito!');
+                                location.reload();
+                            } else {
+                                alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
+                            }
+                        })
+                        .catch(error => {
+                            alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
+                        });
+                    });
+                }
+            });
+            </script>
+            
+            
+
         {%if publicador %}
             <form method="post">
                 {% csrf_token %}

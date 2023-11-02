@@ -34,7 +34,7 @@ def commit_changes(commit_message):
     os.system("git add .")
     os.system(f'git commit -m "{commit_message}"')
 
-def change_branch(branch_name):
+def change_branch(branch_name, current_branch_name):
     if has_uncommitted_changes():
         if test_project():
             commit_message = input("Por favor, ingresa un mensaje de commit para tus cambios: ")
@@ -47,6 +47,12 @@ def change_branch(branch_name):
                 try:
                     os.system(f"git checkout {branch_name}")
                     print(f"Cambiado a la rama {branch_name}")
+                    
+                    # Realiza un merge de la rama actual en la rama de destino con mensaje personalizado
+                    merge_message = f"Merge de {branch_name}"
+                    os.system(f"git merge {current_branch_name} -m '{merge_message}'")
+                    
+                    print(f"Merge de {current_branch_name} a {branch_name} completado.")
                 except Exception as e:
                     print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                     sys.exit(1)
@@ -68,4 +74,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
     branch_name = sys.argv[1]
-    change_branch(branch_name)
+    
+    # Obtiene el nombre de la rama actual
+    current_branch_name = os.popen('git branch --show-current').read().strip()
+    
+    change_branch(branch_name, current_branch_name)

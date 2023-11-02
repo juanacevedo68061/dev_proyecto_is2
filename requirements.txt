@@ -16,3 +16,4 @@ bleach
 django-storages
 google-cloud-storage
 google-auth
+django-comments-xtd

@@ -1,7 +1,9 @@
 import os
 import django
 import json
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms.settings')
 django.setup()
 
@@ -11,7 +13,7 @@ from login.models import Usuario
 
 def cargar_publicaciones():
     try:
-        ruta_json = 'data/publicaciones.json'
+        ruta_json = 'poblacion/publicaciones.json'
 
         with open(ruta_json, 'r', encoding='utf-8') as json_file:
             publicaciones_data = json.load(json_file)

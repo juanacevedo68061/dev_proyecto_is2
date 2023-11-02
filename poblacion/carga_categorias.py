@@ -1,7 +1,9 @@
 import os
 import django
 import json
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms.settings')
 django.setup()
 
@@ -9,7 +11,7 @@ from administracion.models import Categoria
 
 def cargar_categorias():
     try:
-        ruta_json = 'data/categorias.json'
+        ruta_json = 'poblacion/categorias.json'
 
         with open(ruta_json, 'r', encoding='utf-8') as json_file:
             categorias_data = json.load(json_file)

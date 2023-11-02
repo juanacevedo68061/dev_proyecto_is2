@@ -1,7 +1,9 @@
 import os
 import django
 import json
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms.settings')
 django.setup()
 
@@ -19,7 +21,7 @@ def cargar_usuarios():
         int: El número de usuarios registrados con éxito.
     """
     try:
-        ruta_json = 'data/usuarios.json'
+        ruta_json = 'poblacion/usuarios.json'
 
         with open(ruta_json, 'r', encoding='utf-8') as json_file:
             usuarios_data = json.load(json_file)

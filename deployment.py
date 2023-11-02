@@ -1,9 +1,7 @@
 import os
 
-# Ejecutar los scripts de carga en orden
-os.system("python carga_usuarios.py")
-os.system("python carga_categorias.py")
-os.system("python carga_publicaciones.py")
+# Poblar la base de datos
+os.system("python poblacion/poblar.py")
 
 # Iniciar el servidor de desarrollo de Django
 os.system("python manage.py runserver")

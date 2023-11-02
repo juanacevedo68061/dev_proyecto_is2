@@ -109,8 +109,8 @@
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
 
                                 <!-- Botón de Comentar con ícono personalizado -->
-                                <a href="#" onclick="toggleComentarios()">
-                                    <i class="fas fa-comment icon-comment"></i>
+                                <a href="#comentariosSection" onclick="toggleComentarios()">
+                                    <i class="fas fa-comment icon-comment {% if user.is_authenticated %}active{% endif %}"></i>
                                 </a>
                                 <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
                             </div>

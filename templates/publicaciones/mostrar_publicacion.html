@@ -109,7 +109,7 @@
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
 
                                 <!-- Botón de Comentar con ícono personalizado -->
-                                <a href="#">
+                                <a href="#" onclick="toggleComentarios()">
                                     <i class="fas fa-comment icon-comment"></i>
                                 </a>
                                 <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
@@ -154,13 +154,13 @@
             </div>    
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
-        
+
         <div class="comentarios">
             <h3>Comentarios</h3>
             {% get_comment_list for publicacion as comentarios %}
             {% for comentario in comentarios %}
+            <strong>{{ comentario.user.username }}</strong><br>
                 <div class="comentario">
-                    <strong>{{ comentario.user.username }}</strong><br>
                     {{ comentario.comment }}
                     <hr>
                 </div>
@@ -169,15 +169,14 @@
             {% endfor %}
         </div>
         
-        {% if user.is_authenticated %}
-            <div class="agregar-comentario">
-                <h4>Agregar comentario</h4>
-                {% render_comment_form for publicacion %}
-            </div>
-        {% else %}
-            <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para comentar.</p>
-        {% endif %}
-        
+        <div id="comentariosSection" style="display: none;">    
+            {% if user.is_authenticated %}
+                <div class="agregar-comentario">
+                    <h4>Agregar comentario</h4>
+                    {% render_comment_form for publicacion %}
+                </div>
+            {% endif %}
+        </div>
 
         {%if publicador %}
             <form method="post">
@@ -188,5 +187,15 @@
         {% endif %}
     </div>
 </div>
+<script>
+    function toggleComentarios() {
+        var section = document.getElementById("comentariosSection");
+        if (section.style.display === "none") {
+            section.style.display = "block";
+        } else {
+            section.style.display = "none";
+        }
+    }
+</script>
 
 {% endblock %}

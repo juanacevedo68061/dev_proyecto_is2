@@ -214,32 +214,6 @@ def actualizar(request):
 @login_required
 @csrf_exempt
 def motivo(request):
-    """
-    Procesa el motivo del rechazo de una publicación y actualiza su estado a "rechazado".
-    
-    Esta función maneja las solicitudes POST para procesar el motivo del rechazo de una publicación.
-    Si el motivo se proporciona en la solicitud, la función actualiza el estado de la publicación a 
-    "rechazado", ajusta el campo `para_editor` en función del nuevo estado proporcionado y guarda 
-    la publicación. Luego, se envía una notificación y se registra la acción.
-    
-    Parameters:
-    -----------
-    request : HttpRequest
-        La solicitud HTTP del cliente. Espera que el método de la solicitud sea POST y que contenga
-        `id_publicacion`, `motivo`, y `nuevo` en el cuerpo de la solicitud.
-
-    Returns:
-    --------
-    JsonResponse
-        Una respuesta JSON que puede contener:
-        - `vuelve`: Indica si la publicación debe regresar a su estado anterior.
-        - `error`: Mensajes de error, como "Método no permitido" para solicitudes que no son POST.
-
-    Raises:
-    -------
-    ValueError, Http404, Publicacion_solo_text.DoesNotExist
-        Estas excepciones se manejan internamente y se devuelven como respuestas JSON con mensajes de error adecuados.
-    """
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')
         publicacion_id = UUID(publicacion_id)

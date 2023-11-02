@@ -5,8 +5,6 @@ import json
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cms.settings')
 django.setup()
 
-from django.contrib.auth import login
-from login.forms import FormularioRegistro
 from login.models import Usuario
 
 def cargar_usuarios():
@@ -32,9 +30,14 @@ def cargar_usuarios():
             username = usuario_data['username']
             email = usuario_data['email']
             password = usuario_data['password1']
-
             usuario, creado = Usuario.objects.get_or_create(username=username, email=email)
             usuario.set_password(password)
+            
+            if 'roles' in usuario_data:
+                roles_nombres = usuario_data['roles']
+                for rol_nombre in roles_nombres:
+                    usuario.roles.get_or_create(nombre=rol_nombre)
+
             usuario.save()
 
             usuarios_registrados += 1

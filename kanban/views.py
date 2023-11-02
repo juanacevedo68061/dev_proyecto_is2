@@ -19,6 +19,40 @@ from login.models import Usuario
 @login_required
 def kanban(request):
 
+        """
+    Renderiza el tablero Kanban con las publicaciones filtradas por sus estados.
+
+    Esta función obtiene y clasifica las publicaciones basadas en sus estados ('borrador', 'rechazado', 'revision', 'publicar', 'publicado'). 
+    Solo se consideran las publicaciones que están activas y pertenecen a categorías moderadas.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        Objeto de solicitud HTTP.
+
+    Returns:
+    --------
+    HttpResponse
+        Respuesta HTTP con el tablero Kanban renderizado.
+
+    Context Variables:
+    ------------------
+    - `publicaciones_borrador` : QuerySet
+        Publicaciones con estado 'borrador' o 'rechazado' que no están destinadas al editor.
+    - `publicaciones_revision` : QuerySet
+        Publicaciones con estado 'revision' o 'rechazado' destinadas al editor.
+    - `publicaciones_publicar` : QuerySet
+        Publicaciones con estado 'publicar'.
+    - `publicaciones_publicado` : QuerySet
+        Publicaciones con estado 'publicado'.
+    - `categorias` : QuerySet
+        Categorías que están moderadas.
+
+    Template:
+    ---------
+    - 'kanban/tablero.html'
+    """
+
     publicaciones_borrador = Publicacion_solo_text.objects.filter(
     Q(estado='borrador', activo=True, categoria__moderada=True) |
     Q(estado='rechazado', para_editor=False, activo=True, categoria__moderada=True)

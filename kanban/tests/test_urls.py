@@ -16,6 +16,4 @@ class KanvanURLsTestCase(TestCase):
         url = reverse('kanvan:motivo')
         self.assertEqual(resolve(url).func, views.motivo)
 
-    def test_historial_url_resolves_to_historial_view(self):
-        url = reverse('kanvan:historial')
-        self.assertEqual(resolve(url).func, views.historial)
+

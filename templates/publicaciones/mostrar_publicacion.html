@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 {% load comments %}
+{% load comments_xtd %}
+
+{% block content %}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
@@ -152,6 +155,30 @@
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
         
+        <div class="comentarios">
+            <h3>Comentarios</h3>
+            {% get_comment_list for publicacion as comentarios %}
+            {% for comentario in comentarios %}
+                <div class="comentario">
+                    <strong>{{ comentario.user.username }}</strong><br>
+                    {{ comentario.comment }}
+                    <hr>
+                </div>
+            {% empty %}
+                <p>No hay comentarios para esta publicación.</p>
+            {% endfor %}
+        </div>
+        
+        {% if user.is_authenticated %}
+            <div class="agregar-comentario">
+                <h4>Agregar comentario</h4>
+                {% render_comment_form for publicacion %}
+            </div>
+        {% else %}
+            <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para comentar.</p>
+        {% endif %}
+        
+
         {%if publicador %}
             <form method="post">
                 {% csrf_token %}
@@ -162,6 +189,4 @@
     </div>
 </div>
 
-{% render_comment_list for publicacion %}
-{% render_comment_form for publicacion %}
 {% endblock %}

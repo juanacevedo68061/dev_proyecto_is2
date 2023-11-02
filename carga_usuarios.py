@@ -19,9 +19,9 @@ def cargar_usuarios():
         int: El número de usuarios registrados con éxito.
     """
     try:
-        ruta_json = 'login/data/usuarios.json'
+        ruta_json = 'data/usuarios.json'
 
-        with open(ruta_json, 'r') as json_file:
+        with open(ruta_json, 'r', encoding='utf-8') as json_file:
             usuarios_data = json.load(json_file)
 
         usuarios_registrados = 0

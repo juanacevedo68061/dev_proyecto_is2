@@ -271,6 +271,27 @@ def motivo(request):
     
 @login_required
 def historial(request, publicacion_id):
+    """
+    Devuelve el historial de registros de una publicación.
+    
+    Esta función recupera y muestra el historial de registros relacionados con una publicación
+    específica. Si el usuario que realiza la solicitud no tiene un rol de "editor" o "publicador", 
+    sólo se muestran los registros en los que dicho usuario es el responsable.
+    
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP del cliente.
+    publicacion_id : str
+        El identificador único de la publicación para la cual se solicita el historial.
+
+    Returns:
+    --------
+    HttpResponse
+        Una respuesta HTTP que contiene el renderizado de la página 'kanban/historial.html' 
+        con los registros asociados a la publicación.
+
+    """
     registros = Registro.objects.filter(publicacion_id=publicacion_id)
     if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
         registros = Registro.objects.filter(publicacion_id=publicacion_id, responsable=request.user)

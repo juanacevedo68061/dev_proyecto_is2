@@ -13,7 +13,7 @@ Equipo 6 - Ingenieria de Software II
    login
    publicaciones
    roles
-   canvan
+   kanban
    administracion
 
 Indices y tablas

@@ -38,7 +38,7 @@ class PublicacionForm(forms.ModelForm):
         required=False,
     )
 
-    def __init__(self, canvan=True, tiene=False, *args, **kwargs):
+    def __init__(self, kanban=True, tiene=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'id': 'id_titulo'})
         self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
@@ -47,15 +47,15 @@ class PublicacionForm(forms.ModelForm):
         self.fields['programar'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_programar'})
         self.fields['categoria_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_suscriptores'})
         self.fields['categoria_no_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_no_suscriptores'})
-        self.fields['categoria_suscriptores'].choices = self.get_categoria_choices(True, canvan, tiene)
-        self.fields['categoria_no_suscriptores'].choices = self.get_categoria_choices(False, canvan, tiene)
+        self.fields['categoria_suscriptores'].choices = self.get_categoria_choices(True, kanban, tiene)
+        self.fields['categoria_no_suscriptores'].choices = self.get_categoria_choices(False, kanban, tiene)
         if self.instance and self.instance.categoria:
             if self.instance.categoria.suscriptores:
                 self.fields['categoria_suscriptores'].initial = self.instance.categoria
             else:
                 self.fields['categoria_no_suscriptores'].initial = self.instance.categoria        
-    def get_categoria_choices(self, suscriptores, canvan, tiene):
-        if canvan:
+    def get_categoria_choices(self, suscriptores, kanban, tiene):
+        if kanban:
             categorias = Categoria.objects.filter(suscriptores=suscriptores, moderada=True)
         else:
             if tiene:

@@ -19,7 +19,7 @@ from login.models import Usuario
 @login_required
 def kanban(request):
     """
-    Renderiza el tablero Kanban con las publicaciones filtradas por sus estados.
+    Vista para el panel de kanban.
 
     Esta función obtiene y clasifica las publicaciones basadas en sus estados ('borrador', 'rechazado', 'revision', 'publicar', 'publicado'). 
     Solo se consideran las publicaciones que están activas y pertenecen a categorías moderadas.
@@ -88,26 +88,27 @@ def actualizar(request):
     Parameters:
     -----------
     request : HttpRequest
-        La solicitud HTTP del cliente. Espera que el método de la solicitud sea POST y que contenga
-        `id_publicacion` y `nuevo_estado` en el cuerpo de la solicitud.
+    La solicitud HTTP del cliente. Espera que el método de la solicitud sea POST y que contenga
+    `id_publicacion` y `nuevo_estado` en el cuerpo de la solicitud.
 
     Returns:
     --------
     JsonResponse
-        Una respuesta JSON que puede contener varios estados:
-        - `vuelve`: Indica si la publicación debe regresar a su estado anterior.
-        - `autor`: Indica si hay un error relacionado con el autor de la publicación.
-        - `accion`: Indica si una cierta transición de estado no es permitida.
-        - `reason_required`: Indica si se necesita una razón para una transición de estado.
-        - `rol`: Indica si hay un error relacionado con el rol del usuario que realiza la solicitud.
-        - `error`: Mensajes de error generales, como "No se encontró la publicación" o "ID no es válido".
-        - `message`: Mensajes adicionales como "Método no permitido" para solicitudes que no son POST.
+    Una respuesta JSON que puede contener varios estados:
+    - `vuelve`: Indica si la publicación debe regresar a su estado anterior.
+    - `autor`: Indica si hay un error relacionado con el autor de la publicación.
+    - `accion`: Indica si una cierta transición de estado no es permitida.
+    - `reason_required`: Indica si se necesita una razón para una transición de estado.
+    - `rol`: Indica si hay un error relacionado con el rol del usuario que realiza la solicitud.
+    - `error`: Mensajes de error generales, como "No se encontró la publicación" o "ID no es válido".
+    - `message`: Mensajes adicionales como "Método no permitido" para solicitudes que no son POST.
 
-    Raises:
+    Raises: 
     -------
     ValueError, Http404, Publicacion_solo_text.DoesNotExist
         Estas excepciones se manejan internamente y se devuelven como respuestas JSON con mensajes de error adecuados.
     """
+
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')        
         nuevo_estado = request.POST.get('nuevo_estado')
@@ -299,6 +300,34 @@ def historial(request, publicacion_id):
 
 @login_required
 def registrar(request, publicacion, anterior):
+
+    """
+    Registra un cambio de estado en una publicación.
+
+    Esta función crea un nuevo registro en el modelo `Registro` que documenta
+    el cambio de estado de una publicación. Guarda información sobre el usuario 
+    responsable, la publicación afectada, el estado anterior y el nuevo estado. 
+    Además, asocia los roles del usuario al registro.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        El objeto de solicitud HTTP.
+    publicacion : Publicacion_solo_text
+        El objeto de la publicación cuyo estado ha cambiado.
+    anterior : str
+        El estado anterior de la publicación.
+
+    Returns:
+    --------
+    None
+        La función no devuelve ningún valor, pero crea un nuevo registro en la base de datos.
+
+    Note:
+    -----
+    Se espera que esta función se llame después de cualquier cambio en el estado 
+    de una publicación para mantener un historial de dichos cambios.
+    """
     usuario = request.user
     roles = usuario.roles.all()
     nuevo_registro = Registro.objects.create(

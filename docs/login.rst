@@ -12,8 +12,8 @@ Models
 Vistas
 ------
 
-.. automodule:: login.views
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. ..   automodule:: login.views
+      :members:
+      :undoc-members:
+      :show-inheritance:
 

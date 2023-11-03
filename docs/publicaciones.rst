@@ -12,9 +12,9 @@ Modelos
 Vistas
 -----
 
-.. automodule:: publicaciones.views
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: publicaciones.views
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
 

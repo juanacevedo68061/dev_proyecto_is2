@@ -13,7 +13,7 @@ Vistas
 ------
 
 .. automodule:: kanban.views
-   :members: kanban
+   :members:
    :undoc-members:
    :show-inheritance:
 

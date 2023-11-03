@@ -18,7 +18,7 @@ def test_project():
 
         test_thread = threading.Thread(target=test_server)
         test_thread.start()
-        test_thread.join(timeout=10) 
+        test_thread.join(timeout=10)
 
         if test_thread.is_alive():
             test_thread.join()
@@ -44,7 +44,16 @@ def merge_development(branch_name):
         print(f"Error al hacer el merge de development en {branch_name}: {str(e)}")
         sys.exit(1)
 
-def change_branch(branch_name):
+def change_branch(reference):
+    if reference not in ['development', 'production']:
+        print("Error: Solo se permiten las referencias 'development' y 'production'. Proceso de deployment.py finalizado.")
+        sys.exit(1)
+
+    if reference == 'production':
+        branch_name = 'prueba'
+    else:
+        branch_name = 'development'
+
     if has_uncommitted_changes():
         if branch_name == 'development':
             print("Error: No puedes cambiar a la rama 'development' si hay cambios sin commitear. Proceso de deployment.py finalizado.")
@@ -70,6 +79,7 @@ def change_branch(branch_name):
                     except Exception as e:
                         print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                         sys.exit(1)
+                    os.system("python manage.py runserver")
                 else:
                     print("No se ha cambiado de rama. Proceso de deployment.py finalizado.")
                     sys.exit(1)
@@ -84,15 +94,16 @@ def change_branch(branch_name):
                 merge_development(branch_name)
                 print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
                 sys.exit(1)
+            os.system("python manage.py runserver")
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
             sys.exit(1)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Uso: python deployment.py <branch_name>")
+        print("Uso: python deployment.py <referencia>")
         sys.exit(1)
 
-    branch_name = sys.argv[1]
+    reference = sys.argv[1]
     
-    change_branch(branch_name)
+    change_branch(reference)

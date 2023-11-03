@@ -93,6 +93,7 @@ def change_branch(reference):
         try:
             os.system(f"git checkout {branch_name}")
             print(f"Cambiado a la rama {branch_name}")
+            print(hizo_commit)
             if hizo_commit and branch_name != 'development':
                 merge_development(branch_name)
             os.system("python manage.py runserver")

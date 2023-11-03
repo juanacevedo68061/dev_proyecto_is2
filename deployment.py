@@ -3,6 +3,14 @@ import sys
 import subprocess
 import threading
 
+def get_current_branch():
+    try:
+        result = os.popen('git symbolic-ref --short HEAD').read().strip()
+        return result
+    except Exception as e:
+        print(f"Error al obtener la rama actual: {str(e)}")
+        sys.exit(1)
+
 def has_uncommitted_changes():
     try:
         result = os.system("git diff-index --quiet HEAD --")
@@ -55,10 +63,10 @@ def change_branch(reference):
         branch_name = 'development'
     
     hizo_commit = False
-
+    current_branch = get_current_branch()
     if has_uncommitted_changes():
-        if branch_name == 'development':
-            print("Error: No puedes cambiar a la rama 'development' si hay cambios sin commitear. Proceso de deployment.py finalizado.")
+        if current_branch != 'development':
+            print("Error: En 'producción' hay cambios sin commitear. Proceso de deployment.py finalizado.")
             sys.exit(1)
         else:
             if test_project():

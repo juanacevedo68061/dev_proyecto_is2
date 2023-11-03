@@ -38,7 +38,7 @@ def commit_changes(commit_message):
 def merge_development(branch_name):
     try:
         os.system("git config --global merge.ours.driver true")
-        os.system(f"git merge -X theirs development -m 'Merge de development'")
+        os.system(f"git merge -X theirs origin/development -m 'Merge de development'")
         print(f"Merge de development a {branch_name} completado.")
     except Exception as e:
         print(f"Error al hacer el merge de development en {branch_name}: {str(e)}")

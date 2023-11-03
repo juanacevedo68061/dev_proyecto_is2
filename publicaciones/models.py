@@ -7,6 +7,8 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 import datetime
+from django_comments_xtd.moderation import moderator, XtdCommentModerator
+
 
 class Calificacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE,blank=True, null=True)
@@ -124,3 +126,7 @@ class Publicacion_solo_text(models.Model):
     def __str__(self):
         return self.titulo
     
+class PublicacionCommentModerator(XtdCommentModerator):
+    email_notification = True  # Si quieres notificaciones por correo electrónico
+
+moderator.register(Publicacion_solo_text, PublicacionCommentModerator)

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "tinymce",    
     "kanban",
     "storages",
+    'django_comments',
+    'django_comments_xtd',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,7 @@ WSGI_APPLICATION = "cms.wsgi.application"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -149,6 +152,49 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'login.Usuario'
 LOGIN_URL = 'login:inicio_sesion'  # Configura la URL de inicio de sesión
 LOGIN_REDIRECT_URL = 'login:perfil'  # Configura la URL de redirección después del inicio de sesión
+
+## CONFIGURACION PARA COMMENTS
+SITE_ID = 1
+COMMENTS_APP = 'django_comments_xtd'
+
+
+# Set the COMMENTS_XTD_MAX_THREAD_LEVEL to N, being N the maximum 
+# level of threading up to which comments will be nested in your project.
+# 0: No nested comments:
+#  Comment (level 0)
+
+# 1: Nested up to level one:
+#  Comment (level 0)
+#   |-- Comment (level 1)
+
+# 2: Nested up to level two:
+#  Comment (level 0)
+#   |-- Comment (level 1)
+#        |-- Comment (level 2)
+
+COMMENTS_XTD_MAX_THREAD_LEVEL = 2
+
+COMMENTS_XTD_CONFIRM_EMAIL = False
+
+# Either enable sending mail messages to the console:
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Or set up the EMAIL_* settings so that Django can send emails:
+# EMAIL_HOST = "smtp.mail.com"
+# EMAIL_PORT = "587"
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'Your email'
+# EMAIL_HOST_PASSWORD = 'Your email password'
+# DEFAULT_FROM_EMAIL = "Helpdesk <helpdesk@yourdomain>"
+
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'quotes.quote': {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'users'
+    }
+}
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
@@ -222,3 +268,4 @@ TINYMCE_DEFAULT_CONFIG = {
 
 }
 TINYMCE_SPELLCHECKER = True
+

@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load comments %}
+{% load comments_xtd %}
+{% comment %} {% comments_xtd_js %} {% endcomment %}
+
 {% block content %}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
@@ -70,22 +75,23 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="calificacion-estrellas"><br>
-                <div class="rating">
-                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="1" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
-                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="2" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
-                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="3" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
-                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="4" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
-                    <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="5" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
-                    <span style="font-size: 20px; margin-left: 5px">
-                        <span id="calificacion-cantidad" style="color: gray;">{{ publicacion.calificaciones_cantidad }}</span>
-                    </span>
+            {%if not publicador %}
+                <div class="calificacion-estrellas"><br>
+                    <div class="rating">
+                        <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="1" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                        <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="2" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                        <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="3" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                        <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="4" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                        <a style="color: gray;" href="{% url 'publicaciones:calificar' publicacion.id_publicacion %}" class="star-link" data-rating="5" data-publicacion-id="{{ publicacion.id_publicacion }}"><span class="fa fa-star" style="font-size: 25px; margin-right: 7px"></span></a>
+                        <span style="font-size: 20px; margin-left: 5px">
+                            <span id="calificacion-cantidad" style="color: gray;">{{ publicacion.calificaciones_cantidad }}</span>
+                        </span>
+                    </div><br>
+                    <span style="font-size: 20px;" id="calificacion-mensaje" data-id="{{ publicacion.id_publicacion }}">
+                        <span id="mensaje-color"></span>
+                    </span>                                
                 </div><br>
-                <span style="font-size: 20px;" id="calificacion-mensaje" data-id="{{ publicacion.id_publicacion }}">
-                    <span id="mensaje-color"></span>
-                </span>                                
-            </div><br>
+            {% endif %}
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
                 {%if not publicador %}    
@@ -103,10 +109,22 @@
                                     <i class="fas fa-thumbs-down icon-dislike"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
+                                
+                                <script>
+                                    function toggleComentarios() {
+                                        console.log("Función toggleComentarios llamada");
+                                        var comentariosSection = document.getElementById('comentariosSection');
+                                        if (comentariosSection.style.display === 'none' || comentariosSection.style.display === '') {
+                                            comentariosSection.style.display = 'block';
+                                        } else {
+                                            comentariosSection.style.display = 'none';
+                                        }
+                                    }                                    
+                                </script>
 
                                 <!-- Botón de Comentar con ícono personalizado -->
-                                <a href="#">
-                                    <i class="fas fa-comment icon-comment"></i>
+                                <a href="#comentariosSection" onclick="toggleComentarios()">
+                                    <i class="fas fa-comment icon-comment {% if user.is_authenticated %}active{% endif %}"></i>
                                 </a>
                                 <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
                             </div>
@@ -150,7 +168,59 @@
             </div>    
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
+
+        <div class="comentarios">
+            <h3>Comentarios</h3>
+            {% render_xtdcomment_tree for publicacion %}
+        </div>
         
+        <div id="comentariosSection" style="display: none;">    
+            {% if user.is_authenticated %}
+                <div class="agregar-comentario">
+                    <h4>Agregar comentario</h4>
+                    {% render_comment_form for publicacion %}
+                    <button id="cancelarBtn" type="button">Cancelar</button>
+                </div>
+            {% endif %}
+        </div>
+
+        <script>
+            document.getElementById("cancelarBtn").addEventListener("click", function() {
+                document.getElementById("comentariosSection").style.display = "none";
+            });
+        </script>   
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let formulario = document.querySelector('.agregar-comentario form');
+                
+                if (formulario) {
+                    formulario.addEventListener('submit', function(event) {
+                        event.preventDefault();  // Evita el comportamiento predeterminado del formulario
+            
+                        let datosFormulario = new FormData(formulario);
+            
+                        fetch(formulario.action, {
+                            method: 'POST',
+                            body: datosFormulario
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Comentario enviado con éxito!');
+                                location.reload();
+                            } else {
+                                alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
+                            }
+                        })
+                        .catch(error => {
+                            alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
+                        });
+                    });
+                }
+            });
+            </script>
+            
+
         {%if publicador %}
             <form method="post">
                 {% csrf_token %}
@@ -160,4 +230,15 @@
         {% endif %}
     </div>
 </div>
+<script>
+    function toggleComentarios() {
+        var section = document.getElementById("comentariosSection");
+        if (section.style.display === "none") {
+            section.style.display = "block";
+        } else {
+            section.style.display = "none";
+        }
+    }
+</script>
+
 {% endblock %}

@@ -1,0 +1,12 @@
+[
+    {
+        "nombre": "Nacional",
+        "moderada": false,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Ciberseguridad",
+        "moderada": true,
+        "suscriptores": false
+    }
+]

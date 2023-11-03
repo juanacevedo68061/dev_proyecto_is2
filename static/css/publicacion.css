@@ -49,6 +49,11 @@
     color: gray;
 }
 
+.icon-comment.active {
+    color: #3498db !important; /* Cambia este color por el que desees */
+}
+
+
 /* Margen de 10px entre los botones dentro de cada grupo */
 .reacciones .btn-icon {
     margin-right: 60px;
@@ -193,4 +198,7 @@
     font-size: 16px; /* Tamaño del texto (ajusta según tus preferencias) */
     color: black; /* Color del texto (negro) */
     margin: 5px;
+}
+.permalink {
+    display: none;
 }

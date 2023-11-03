@@ -187,6 +187,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'Your email password'
 # DEFAULT_FROM_EMAIL = "Helpdesk <helpdesk@yourdomain>"
 
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'quotes.quote': {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'users'
+    }
+}
+
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
     "width": "780px",
@@ -259,3 +268,4 @@ TINYMCE_DEFAULT_CONFIG = {
 
 }
 TINYMCE_SPELLCHECKER = True
+

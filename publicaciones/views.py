@@ -504,6 +504,7 @@ def decrease_comment_count(sender, instance, **kwargs):
     instance.content_object.comments -= 1
     instance.content_object.save()
 
+@login_required
 def custom_post_comment(request):
     response = post_comment(request)
     

@@ -89,7 +89,7 @@ class Rol(models.Model):
 
         Parameters:
         -----------
-        *args, **kwargs:
+        `*args`, `**kwargs`:
             Argumentos adicionales para el método de guardar.
         """
         super(Rol, self).save(*args, **kwargs)

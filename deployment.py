@@ -66,8 +66,22 @@ def change_branch(reference):
     current_branch = get_current_branch()
     if has_uncommitted_changes():
         if current_branch != 'development':
-            print("Error: En 'producción' hay cambios sin commitear. Proceso de deployment.py finalizado.")
-            sys.exit(1)
+            print("Advertencia: En 'producción' hay cambios sin commitear. Continuar con el despliegue limpiará los cambios no commiteados.")
+            user_input = input("¿Deseas continuar con el despliegue? (Sí/No): ")
+            if user_input.lower() == "si" or user_input.lower() == "sí":
+                os.system("git reset --hard")
+                try:
+                    os.system(f"git checkout {branch_name}")
+                    print(f"Cambiado a la rama {branch_name}")
+                    if branch_name != 'development':
+                        merge_development(branch_name)
+                    os.system("python manage.py runserver")
+                except Exception as e:
+                    print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
+                    sys.exit(1)
+            else:
+                print("Proceso de deployment.py finalizado.")
+                sys.exit(1)            
         else:
             if test_project():
                 commit_message = input("Por favor, ingresa un mensaje de commit para tus cambios: ")

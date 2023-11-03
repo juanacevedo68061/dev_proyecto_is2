@@ -94,7 +94,7 @@ def change_branch(reference):
                 merge_development(branch_name)
                 print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
                 sys.exit(1)
-            os.system("python manage.py runserver")
+            os.system("python manage.py runserver > /dev/null 2>&1 &")
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
             sys.exit(1)

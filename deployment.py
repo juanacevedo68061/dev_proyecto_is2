@@ -75,6 +75,7 @@ def change_branch(reference):
                     print("Error: El mensaje de commit no puede estar vacío. Proceso de deployment.py finalizado.")
                     sys.exit(1)
                 commit_changes(commit_message)
+                hizo_commit = True
                 print("Cambios commiteados correctamente.")
                 user_input = input("Aviso: El proyecto se sirve de manera adecuada, pero aún es propenso a errores en el lado del cliente. ¿Deseas continuar con el despliegue? (Sí/No): ")
                 if user_input.lower() == "si" or user_input.lower() == "sí":
@@ -83,10 +84,7 @@ def change_branch(reference):
                         print(f"Cambiado a la rama {branch_name}")
                         if branch_name != 'development':
                             merge_development(branch_name)
-                            hizo_commit = True
-                        else:
-                            print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
-                            sys.exit(1)
+                        os.system("python manage.py runserver")
                     except Exception as e:
                         print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                         sys.exit(1)

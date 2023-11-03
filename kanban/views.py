@@ -19,19 +19,30 @@ from login.models import Usuario
 @login_required
 def kanban(request):
     """
+<<<<<<< HEAD
     Vista para el panel de kanban.
 
     Esta función obtiene y clasifica las publicaciones basadas en sus estados ('borrador', 'rechazado', 'revision', 'publicar', 'publicado'). 
     Solo se consideran las publicaciones que están activas y pertenecen a categorías moderadas.
+=======
+    Vista para mostrar el tablero Kanban de la aplicación.
+
+    Esta vista muestra las publicaciones en diferentes columnas según su estado.
+>>>>>>> documentacion
 
     Parameters:
     -----------
     request : HttpRequest
+<<<<<<< HEAD
         Objeto de solicitud HTTP.
+=======
+        La solicitud HTTP recibida.
+>>>>>>> documentacion
 
     Returns:
     --------
     HttpResponse
+<<<<<<< HEAD
         Respuesta HTTP con el tablero Kanban renderizado.
 
     Context Variables:
@@ -50,6 +61,9 @@ def kanban(request):
     Template:
     ---------
     - 'kanban/tablero.html'
+=======
+        Una respuesta HTTP que renderiza el tablero Kanban.
+>>>>>>> documentacion
     """
     publicaciones_borrador = Publicacion_solo_text.objects.filter(
     Q(estado='borrador', activo=True, categoria__moderada=True) |
@@ -78,6 +92,7 @@ def kanban(request):
 @csrf_exempt
 def actualizar(request):
     """
+<<<<<<< HEAD
     Actualiza el estado de una publicación basándose en el nuevo estado proporcionado en la solicitud POST.
     
     La función primero verifica si el método de solicitud es POST. A continuación, extrae el `id_publicacion` 
@@ -90,10 +105,21 @@ def actualizar(request):
     request : HttpRequest
     La solicitud HTTP del cliente. Espera que el método de la solicitud sea POST y que contenga
     `id_publicacion` y `nuevo_estado` en el cuerpo de la solicitud.
+=======
+    Vista para actualizar el estado de una publicación en el tablero Kanban.
+
+    Permite cambiar el estado de una publicación y realiza validaciones de permisos.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+>>>>>>> documentacion
 
     Returns:
     --------
     JsonResponse
+<<<<<<< HEAD
     Una respuesta JSON que puede contener varios estados:
     - `vuelve`: Indica si la publicación debe regresar a su estado anterior.
     - `autor`: Indica si hay un error relacionado con el autor de la publicación.
@@ -107,6 +133,9 @@ def actualizar(request):
     -------
     ValueError, Http404, Publicacion_solo_text.DoesNotExist
         Estas excepciones se manejan internamente y se devuelven como respuestas JSON con mensajes de error adecuados.
+=======
+        Una respuesta JSON con el resultado de la actualización.
+>>>>>>> documentacion
     """
 
     if request.method == 'POST':
@@ -214,6 +243,21 @@ def actualizar(request):
 @login_required
 @csrf_exempt
 def motivo(request):
+    """
+    Vista para proporcionar un motivo al rechazar una publicación en el tablero Kanban.
+
+    Permite agregar un motivo al rechazar una publicación y cambia su estado.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+
+    Returns:
+    --------
+    JsonResponse
+        Una respuesta JSON con el resultado de la operación.
+    """
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')
         publicacion_id = UUID(publicacion_id)
@@ -247,6 +291,7 @@ def motivo(request):
 @login_required
 def historial(request, publicacion_id):
     """
+<<<<<<< HEAD
     Devuelve el historial de registros de una publicación.
     
     Esta función recupera y muestra el historial de registros relacionados con una publicación
@@ -259,13 +304,29 @@ def historial(request, publicacion_id):
         La solicitud HTTP del cliente.
     publicacion_id : str
         El identificador único de la publicación para la cual se solicita el historial.
+=======
+    Vista para ver el historial de cambios de una publicación en el tablero Kanban.
+
+    Permite ver el historial de registros de cambios de una publicación específica.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+    publicacion_id : UUID
+        El ID único de la publicación.
+>>>>>>> documentacion
 
     Returns:
     --------
     HttpResponse
+<<<<<<< HEAD
         Una respuesta HTTP que contiene el renderizado de la página 'kanban/historial.html' 
         con los registros asociados a la publicación.
 
+=======
+        Una respuesta HTTP que renderiza el historial de cambios de la publicación.
+>>>>>>> documentacion
     """
     registros = Registro.objects.filter(publicacion_id=publicacion_id)
     if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
@@ -274,6 +335,7 @@ def historial(request, publicacion_id):
 
 @login_required
 def registrar(request, publicacion, anterior):
+<<<<<<< HEAD
 
     """
     Registra un cambio de estado en una publicación.
@@ -282,25 +344,40 @@ def registrar(request, publicacion, anterior):
     el cambio de estado de una publicación. Guarda información sobre el usuario 
     responsable, la publicación afectada, el estado anterior y el nuevo estado. 
     Además, asocia los roles del usuario al registro.
+=======
+    """
+    Función para registrar un cambio de estado en el historial de una publicación.
+
+    Registra un nuevo registro de cambio en el historial de la publicación.
+>>>>>>> documentacion
 
     Parameters:
     -----------
     request : HttpRequest
+<<<<<<< HEAD
         El objeto de solicitud HTTP.
     publicacion : Publicacion_solo_text
         El objeto de la publicación cuyo estado ha cambiado.
+=======
+        La solicitud HTTP recibida.
+    publicacion : Publicacion_solo_text
+        La instancia de la publicación.
+>>>>>>> documentacion
     anterior : str
         El estado anterior de la publicación.
 
     Returns:
     --------
     None
+<<<<<<< HEAD
         La función no devuelve ningún valor, pero crea un nuevo registro en la base de datos.
 
     Note:
     -----
     Se espera que esta función se llame después de cualquier cambio en el estado 
     de una publicación para mantener un historial de dichos cambios.
+=======
+>>>>>>> documentacion
     """
     usuario = request.user
     roles = usuario.roles.all()

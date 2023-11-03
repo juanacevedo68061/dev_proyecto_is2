@@ -1,14 +1,14 @@
-
 Kanban App
 ==========
 
-Models
-------
+Modelos
+-------
 
-.. automodule:: kanban.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
+ .. automodule:: kanban.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Vistas
 ------
 

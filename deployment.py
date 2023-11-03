@@ -88,8 +88,6 @@ def change_branch(reference):
             if branch_name == 'development':
                 print("Cambiado a la rama development")
             else:
-                if branch_name == 'prueba':
-                    branch_name = 'production'
                 os.system(f"git checkout {branch_name}")
                 print(f"Cambiado a la rama {branch_name}")
                 if hizo_commit and branch_name != 'development':

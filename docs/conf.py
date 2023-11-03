@@ -25,6 +25,13 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon'
 ]
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'private-members': True,
+    'show-inheritance': True,
+    'exclude-members': 'DoesNotExist, MultipleObjectsReturned, _meta, get_next_by_fecha_cambio, get_previous_by_fecha_cambio, objects'
+}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

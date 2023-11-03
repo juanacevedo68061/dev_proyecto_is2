@@ -11,10 +11,106 @@ from django_comments_xtd.moderation import moderator, XtdCommentModerator
 
 
 class Calificacion(models.Model):
+    """
+    Modelo que representa las calificaciones de una publicación.
+
+    Atributos:
+    -----------
+    usuario : ForeignKey a Usuario
+        El usuario que ha realizado la calificación.
+    rating : PositiveIntegerField
+        El valor de la calificación (puede ser 0 o más).
+
+    """
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE,blank=True, null=True)
     rating = models.PositiveIntegerField(default=0)
 
 class Publicacion_solo_text(models.Model):
+    """
+    Modelo que representa una publicación de texto en el sistema.
+
+    Atributos:
+    -----------
+    activo : BooleanField
+        Indica si la publicación está activa o no.
+    titulo : CharField, opcional
+        El título de la publicación.
+    texto : HTMLField
+        El contenido HTML de la publicación.
+    id_publicacion : UUIDField
+        ID único de la publicación.
+    url_publicacion : CharField, opcional
+        La URL de la publicación.
+    codigo_qr : ImageField, opcional
+        La imagen del código QR asociado a la publicación.
+    autor : ForeignKey a Usuario
+        El autor de la publicación.
+    version : PositiveIntegerField
+        La versión de la publicación.
+    estado : CharField, choices=ESTADOS_CONTENIDO, opcional
+        El estado de la publicación (borrador, revisión, publicar, publicado, rechazado).
+    para_editor : BooleanField
+        Indica si la publicación está destinada a un editor.
+    fecha_creacion : DateTimeField
+        La fecha de creación de la publicación.
+    fecha_publicacion : DateField, opcional
+        La fecha de publicación de la publicación.
+    categoria : ForeignKey a Categoria, opcional
+        La categoría a la que pertenece la publicación.
+    palabras_clave : CharField, opcional
+        Las palabras clave asociadas a la publicación.
+    likes : PositiveIntegerField
+        La cantidad de "me gusta" recibidos por la publicación.
+    like_usuario : ManyToManyField a Usuario
+        Los usuarios que han dado "me gusta" a la publicación.
+    dislikes : PositiveIntegerField
+        La cantidad de "no me gusta" recibidos por la publicación.
+    dislike_usuario : ManyToManyField a Usuario
+        Los usuarios que han dado "no me gusta" a la publicación.
+    views : PositiveIntegerField
+        La cantidad de visualizaciones de la publicación.
+    comments : PositiveIntegerField
+        La cantidad de comentarios en la publicación.
+    shared : PositiveIntegerField
+        La cantidad de veces que la publicación ha sido compartida.
+    semaforo : CharField, choices=COLORES
+        El estado del semáforo asociado a la publicación (rojo, amarillo, verde).
+    calificaciones : ManyToManyField a Calificacion
+        Las calificaciones asociadas a la publicación.
+    calificaciones_cantidad : PositiveIntegerField
+        La cantidad total de calificaciones recibidas.
+
+    vigencia : BooleanField
+        Indica si la publicación tiene una fecha de vigencia programada.
+    vigencia_tiempo : DateTimeField, opcional
+        La fecha y hora en la que la publicación dejará de ser vigente.
+    vigencia_unidad : CharField, choices=UNIDADES_TIEMPO, opcional
+        La unidad de tiempo para la vigencia (días, horas, minutos).
+    vigencia_cantidad : PositiveIntegerField, opcional
+        La cantidad de tiempo para la vigencia.
+
+    programar : BooleanField
+        Indica si la publicación está programada para una fecha futura.
+    programar_tiempo : DateTimeField, opcional
+        La fecha y hora en la que la publicación será programada para su publicación.
+    programar_unidad : CharField, choices=UNIDADES_TIEMPO, opcional
+        La unidad de tiempo para la programación (días, horas, minutos).
+    programar_cantidad : PositiveIntegerField, opcional
+        La cantidad de tiempo para la programación.
+
+    Métodos:
+    --------
+    get_absolute_url():
+        Obtiene la URL absoluta de la publicación.
+    calcular_vigencia():
+        Calcula la fecha y hora de vigencia de la publicación.
+    calcular_programar():
+        Calcula la fecha y hora de programación de la publicación.
+    save(`*args`, `**kwargs`):
+        Método personalizado para guardar la publicación y gestionar su versión.
+
+    """
+
     ESTADOS_CONTENIDO = [
         ('borrador', 'Borrador'),
         ('revision', 'Revisión'),
@@ -71,12 +167,23 @@ class Publicacion_solo_text(models.Model):
     programar_cantidad = models.PositiveIntegerField(null=True, blank=True)
 
     def get_absolute_url(self):
+        """
+        Obtiene la URL absoluta de la publicación.
+
+        Returns:
+        --------
+        str
+            La URL absoluta de la publicación.
+        """
         domain = f'{settings.SITE_DOMAIN}:{settings.SITE_PORT}'
         path = reverse('publicaciones:mostrar_publicacion', args=[str(self.id_publicacion)])
         url= f'http://{domain}{path}'
         return url
 
     def calcular_vigencia(self):
+        """
+        Calcula la fecha y hora de vigencia de la publicación.
+        """
         if self.vigencia_unidad and self.vigencia_cantidad:
             if self.vigencia_unidad == 'd':
                 delta = datetime.timedelta(days=self.vigencia_cantidad)
@@ -90,6 +197,9 @@ class Publicacion_solo_text(models.Model):
             print(self.vigencia_tiempo)
     
     def calcular_programar(self):
+        """
+        Calcula la fecha y hora de programación de la publicación.
+        """
         if self.programar_unidad and self.programar_cantidad:
             if self.programar_unidad == 'd':
                 delta = datetime.timedelta(days=self.programar_cantidad)
@@ -102,6 +212,16 @@ class Publicacion_solo_text(models.Model):
             self.save()
 
     def save(self, *args, **kwargs):
+        """
+        Método personalizado para guardar la publicación y gestionar su versión.
+
+        Si la publicación ya existe, aumenta la versión si hay cambios en los atributos específicos.
+
+        Parameters:
+        -----------
+        `*args`, `**kwargs`:
+            Argumentos adicionales para el método de guardar.
+        """
         original = None
         
         if self.id_publicacion:
@@ -124,6 +244,14 @@ class Publicacion_solo_text(models.Model):
 
 
     def __str__(self):
+        """
+        Devuelve una representación en cadena del título de la publicación.
+
+        Returns:
+        --------
+        str
+            Representación en cadena del título de la publicación.
+        """
         return self.titulo
     
 class PublicacionCommentModerator(XtdCommentModerator):

@@ -70,9 +70,28 @@ class Rol(models.Model):
     permisos = models.ManyToManyField('auth.Permission', blank=True)
 
     def __str__(self):
+        """
+        Devuelve una representación en cadena del rol.
+
+        Returns:
+        --------
+        str
+            Representación en cadena del rol.
+        """
         return self.get_nombre_display()
 
     def save(self, *args, **kwargs):
+        """
+        Método personalizado para guardar el rol y asignar permisos correspondientes.
+
+        Este método guarda el rol en la base de datos y asigna los permisos correspondientes
+        de acuerdo a la configuración en el diccionario PERMISOS.
+
+        Parameters:
+        -----------
+        `*args`, `**kwargs`:
+            Argumentos adicionales para el método de guardar.
+        """
         super(Rol, self).save(*args, **kwargs)
         # Después de guardar el rol, asigna los permisos correspondientes si existen en el diccionario
         if self.nombre in self.PERMISOS:

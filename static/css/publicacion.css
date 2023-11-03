@@ -199,3 +199,6 @@
     color: black; /* Color del texto (negro) */
     margin: 5px;
 }
+.permalink {
+    display: none;
+}

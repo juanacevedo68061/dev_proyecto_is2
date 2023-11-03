@@ -2,6 +2,7 @@
 {% load static %}
 {% load comments %}
 {% load comments_xtd %}
+{% comment %} {% comments_xtd_js %} {% endcomment %}
 
 {% block content %}
 
@@ -107,6 +108,18 @@
                                     <i class="fas fa-thumbs-down icon-dislike"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
+                                
+                                <script>
+                                    function toggleComentarios() {
+                                        console.log("Función toggleComentarios llamada");
+                                        var comentariosSection = document.getElementById('comentariosSection');
+                                        if (comentariosSection.style.display === 'none' || comentariosSection.style.display === '') {
+                                            comentariosSection.style.display = 'block';
+                                        } else {
+                                            comentariosSection.style.display = 'none';
+                                        }
+                                    }                                    
+                                </script>
 
                                 <!-- Botón de Comentar con ícono personalizado -->
                                 <a href="#comentariosSection" onclick="toggleComentarios()">
@@ -157,16 +170,7 @@
 
         <div class="comentarios">
             <h3>Comentarios</h3>
-            {% get_comment_list for publicacion as comentarios %}
-            {% for comentario in comentarios %}
-            <strong>{{ comentario.user.username }}</strong><br>
-                <div class="comentario">
-                    {{ comentario.comment }}
-                    <hr>
-                </div>
-            {% empty %}
-                <p>No hay comentarios para esta publicación.</p>
-            {% endfor %}
+            {% render_xtdcomment_tree for publicacion %}
         </div>
         
         <div id="comentariosSection" style="display: none;">    
@@ -174,9 +178,16 @@
                 <div class="agregar-comentario">
                     <h4>Agregar comentario</h4>
                     {% render_comment_form for publicacion %}
+                    <button id="cancelarBtn" type="button">Cancelar</button>
                 </div>
             {% endif %}
         </div>
+
+        <script>
+            document.getElementById("cancelarBtn").addEventListener("click", function() {
+                document.getElementById("comentariosSection").style.display = "none";
+            });
+        </script>   
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -207,7 +218,6 @@
                 }
             });
             </script>
-            
             
 
         {%if publicador %}

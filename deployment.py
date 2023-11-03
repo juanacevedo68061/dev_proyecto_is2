@@ -91,13 +91,10 @@ def change_branch(reference):
 
     else:
         try:
-            if branch_name == 'development':
-                print("Cambiado a la rama development")
-            else:
-                os.system(f"git checkout {branch_name}")
-                print(f"Cambiado a la rama {branch_name}")
-                if hizo_commit and branch_name != 'development':
-                    merge_development(branch_name)
+            os.system(f"git checkout {branch_name}")
+            print(f"Cambiado a la rama {branch_name}")
+            if hizo_commit and branch_name != 'development':
+                merge_development(branch_name)
             os.system("python manage.py runserver")
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")

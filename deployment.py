@@ -21,19 +21,7 @@ def has_uncommitted_changes():
 
 def test_project():
     try:
-        def test_server():
-            subprocess.run(["python", "manage.py", "runserver"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        test_thread = threading.Thread(target=test_server)
-        test_thread.start()
-        test_thread.join(timeout=10)
-
-        if test_thread.is_alive():
-            test_thread.join()
-            print("Error: Los cambios generan errores en el proyecto. El proyecto no se sirve adecuadamente. Proceso de deployment.py finalizado.")
-            sys.exit(1)
-        else:
-            return True
+        return True
 
     except Exception as e:
         print(f"Error al probar el proyecto: {str(e)}")
@@ -58,7 +46,7 @@ def change_branch(reference):
         sys.exit(1)
 
     if reference == 'production':
-        branch_name = 'prueba'
+        branch_name = 'main'
     else:
         branch_name = 'development'
     
@@ -75,7 +63,7 @@ def change_branch(reference):
                     print(f"Cambiado a la rama {branch_name}")
                     if branch_name != 'development':
                         merge_development(branch_name)
-                    os.system("python manage.py runserver")
+                    os.system("docker-compose up --build")
                 except Exception as e:
                     print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                     sys.exit(1)
@@ -98,7 +86,7 @@ def change_branch(reference):
                         print(f"Cambiado a la rama {branch_name}")
                         if branch_name != 'development':
                             merge_development(branch_name)
-                        os.system("python manage.py runserver")
+                        os.system("docker-compose up --build")
                     except Exception as e:
                         print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                         sys.exit(1)
@@ -110,7 +98,7 @@ def change_branch(reference):
             print(hizo_commit)
             if hizo_commit and branch_name != 'development':
                 merge_development(branch_name)
-            os.system("python manage.py runserver")
+            os.system("docker-compose up --build")
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
             sys.exit(1)

@@ -4,6 +4,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,6 +27,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'cms.team.is2@gmail.com'  # Tu dirección de correo de Gmail
 EMAIL_HOST_PASSWORD = 'vseb krgh vskk zdch'  # Tu contraseña de correo de Gmail (o usa variables de entorno)
 
+# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     "PIL",
     "tinymce",    
     "kanban",
+    "storages",
+    'django_comments',
+    'django_comments_xtd',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = "cms.urls"
 
@@ -77,12 +83,6 @@ WSGI_APPLICATION = "cms.wsgi.application"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -112,9 +112,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Configuración de Google Cloud Storage
+#for media storage in the bucket
+##getting credential
+from google.oauth2 import service_account
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR,'credencial.json'))
+
+## configuracion para archivos multimedia
+ ###configuration for media file storing and reriving media file from gcloud 
+DEFAULT_FILE_STORAGE='cms.gcloud.GoogleCloudMediaFileStorage'
+GS_PROJECT_ID = 'proyectois2-402511'
+GS_BUCKET_NAME = 'proyecto_is2_bucket'
+MEDIA_ROOT = "media/"
+UPLOAD_ROOT = 'media/uploads/'
+MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -123,6 +139,49 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'login.Usuario'
 LOGIN_URL = 'login:inicio_sesion'  # Configura la URL de inicio de sesión
 LOGIN_REDIRECT_URL = 'login:perfil'  # Configura la URL de redirección después del inicio de sesión
+
+## CONFIGURACION PARA COMMENTS
+SITE_ID = 1
+COMMENTS_APP = 'django_comments_xtd'
+
+
+# Set the COMMENTS_XTD_MAX_THREAD_LEVEL to N, being N the maximum 
+# level of threading up to which comments will be nested in your project.
+# 0: No nested comments:
+#  Comment (level 0)
+
+# 1: Nested up to level one:
+#  Comment (level 0)
+#   |-- Comment (level 1)
+
+# 2: Nested up to level two:
+#  Comment (level 0)
+#   |-- Comment (level 1)
+#        |-- Comment (level 2)
+
+COMMENTS_XTD_MAX_THREAD_LEVEL = 2
+
+COMMENTS_XTD_CONFIRM_EMAIL = False
+
+# Either enable sending mail messages to the console:
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Or set up the EMAIL_* settings so that Django can send emails:
+# EMAIL_HOST = "smtp.mail.com"
+# EMAIL_PORT = "587"
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'Your email'
+# EMAIL_HOST_PASSWORD = 'Your email password'
+# DEFAULT_FROM_EMAIL = "Helpdesk <helpdesk@yourdomain>"
+
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'quotes.quote': {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'users'
+    }
+}
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": "320px",
@@ -136,6 +195,28 @@ TINYMCE_DEFAULT_CONFIG = {
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
     "images_upload_url": '/tinymce/upload/',
+    "file_picker_callback": """function(callback, value, meta) {
+        if (meta.filetype == 'file') {
+          callback('mypage.html', {text: 'My text'});
+        }
+        if (meta.filetype == 'image') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload/',
+              title: 'Insertar/Editar Imagen'  
+          });
+        }
+        if (meta.filetype == 'media') {
+          tinymce.activeEditor.windowManager.openUrl({
+              url: '/tinymce/upload_media/',
+              title: 'Insertar/Editar Media'  
+          });
+        }
+    }""",
+    "media_poster": True,  # Para permitir imágenes de vista previa para videos
+    "media_alt_source": True,  # Para permitir fuentes alternativas
+    "media_dimensions": True,  # Para permitir dimensiones personalizadas
+    "media_live_embeds": True,  # Para permitir incrustaciones en vivo
+    "media_url": "tinymce/upload_media/",
     "automatic_uploads": True,
     "custom_undo_redo_levels": 10,
     "language": "es_ES",
@@ -175,7 +256,6 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 TINYMCE_SPELLCHECKER = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1"] # Solo para desarrollo, cambia a tus necesidades de producción
 
 '''
 DATABASES = {

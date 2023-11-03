@@ -33,7 +33,7 @@ class Categoria(models.Model):
 
         Parameters:
         -----------
-        *args, **kwargs:
+        `*args`, `**kwargs`:
             Argumentos adicionales para el método de guardar.
         """
         if not self.color:

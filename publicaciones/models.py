@@ -219,7 +219,7 @@ class Publicacion_solo_text(models.Model):
 
         Parameters:
         -----------
-        *args, **kwargs:
+        `*args`, `**kwargs`:
             Argumentos adicionales para el método de guardar.
         """
         original = None

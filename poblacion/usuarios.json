@@ -10,26 +10,28 @@
         "username": "derlis",
         "email": "derlis@gmail.com",
         "password1": "albirroja2023",
-        "password2": "albirroja2023"
+        "password2": "albirroja2023",
+        "roles": ["editor","publicador"]
     },
     {
         "username": "luis",
         "email": "luis@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
-        "roles": ["autor","editor","publicador"]
+        "roles": ["autor"]
     },
     {
         "username": "pedro",
         "email": "pedro@gmail.com",
         "password1": "albirroja2023",
-        "password2": "albirroja2023"
+        "password2": "albirroja2023",
+        "roles": ["editor"]
     },
     {
         "username": "carlos",
         "email": "carlos@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
-        "roles": ["autor","publicador"]
+        "roles": ["publicador"]
     }
 ]

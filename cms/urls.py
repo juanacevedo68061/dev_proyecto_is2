@@ -13,6 +13,7 @@ urlpatterns = [
     path('publicaciones/', include('publicaciones.urls', namespace='publicaciones')),
     path('kanban/', include('kanban.urls', namespace='kanban')),
     path('categoria/<int:categoria_id>/', views.publicaciones_categoria, name='publicaciones_categoria'),
+    path('comments/', include('django_comments_xtd.urls')),
 ]
 
 if settings.DEBUG:

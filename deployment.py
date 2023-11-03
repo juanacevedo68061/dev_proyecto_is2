@@ -18,52 +18,72 @@ def test_project():
 
         test_thread = threading.Thread(target=test_server)
         test_thread.start()
-        test_thread.join(timeout=10)
+        test_thread.join(timeout=10) 
 
         if test_thread.is_alive():
             test_thread.join()
-            return False
+            print("Error: Los cambios generan errores en el proyecto. El proyecto no se sirve adecuadamente. Proceso de deployment.py finalizado.")
+            sys.exit(1)
         else:
             return True
 
     except Exception as e:
         print(f"Error al probar el proyecto: {str(e)}")
-        return False
+        sys.exit(1)
 
 def commit_changes(commit_message):
     os.system("git add .")
     os.system(f'git commit -m "{commit_message}"')
 
-def change_branch(branch_name, current_branch_name):
+def merge_development(branch_name):
+    try:
+        os.system("git config --global merge.ours.driver true")
+        os.system(f"git merge -X theirs development -m 'Merge de development'")
+        print(f"Merge de development a {branch_name} completado.")
+    except Exception as e:
+        print(f"Error al hacer el merge de development en {branch_name}: {str(e)}")
+        sys.exit(1)
+
+def change_branch(branch_name):
     if has_uncommitted_changes():
-        if test_project():
-            commit_message = input("Por favor, ingresa un mensaje de commit para tus cambios: ")
-            commit_changes(commit_message)
-            print("Cambios commiteados correctamente.")
-            
-            print("Aviso: El proyecto se sirve de manera adecuada, pero aún es propenso a errores en el lado del cliente.")
-            user_input = input("¿Deseas continuar con el despliegue? (Sí/No): ")
-            if user_input.lower() == "si" or user_input.lower() == "sí":
-                try:
-                    os.system(f"git checkout {branch_name}")
-                    print(f"Cambiado a la rama {branch_name}")
-                    
-                    # Realiza un merge de la rama actual en la rama de destino con mensaje personalizado
-                    merge_message = f"Merge de {branch_name}"
-                    os.system(f"git merge {current_branch_name} -m '{merge_message}'")
-                    
-                    print(f"Merge de {current_branch_name} a {branch_name} completado.")
-                except Exception as e:
-                    print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
+        if branch_name == 'development':
+            print("Error: No puedes cambiar a la rama 'development' si hay cambios sin commitear. Proceso de deployment.py finalizado.")
+            sys.exit(1)
+        else:
+            if test_project():
+                commit_message = input("Por favor, ingresa un mensaje de commit para tus cambios: ")
+                if not commit_message:
+                    print("Error: El mensaje de commit no puede estar vacío. Proceso de deployment.py finalizado.")
+                    sys.exit(1)
+                commit_changes(commit_message)
+                print("Cambios commiteados correctamente.")
+                user_input = input("Aviso: El proyecto se sirve de manera adecuada, pero aún es propenso a errores en el lado del cliente. ¿Deseas continuar con el despliegue? (Sí/No): ")
+                if user_input.lower() == "si" or user_input.lower() == "sí":
+                    try:
+                        os.system(f"git checkout {branch_name}")
+                        print(f"Cambiado a la rama {branch_name}")
+                        if branch_name != 'development':
+                            merge_development(branch_name)
+                        else:
+                            print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
+                            sys.exit(1)
+                    except Exception as e:
+                        print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
+                        sys.exit(1)
+                else:
+                    print("No se ha cambiado de rama. Proceso de deployment.py finalizado.")
                     sys.exit(1)
             else:
-                print("No se ha cambiado de rama. Proceso de deployment.py finalizado.")
-        else:
-            print("Error: Los cambios generan errores en el proyecto. El proyecto no se sirve adecuadamente. Proceso de deployment.py finalizado.")
+                print("Error: Los cambios generan errores en el proyecto. El proyecto no se sirve adecuadamente. Proceso de deployment.py finalizado.")
+                sys.exit(1)
     else:
         try:
             os.system(f"git checkout {branch_name}")
             print(f"Cambiado a la rama {branch_name}")
+            if branch_name != 'development':
+                merge_development(branch_name)
+                print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
+                sys.exit(1)
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
             sys.exit(1)
@@ -75,7 +95,4 @@ if __name__ == '__main__':
 
     branch_name = sys.argv[1]
     
-    # Obtiene el nombre de la rama actual
-    current_branch_name = os.popen('git branch --show-current').read().strip()
-    
-    change_branch(branch_name, current_branch_name)
+    change_branch(branch_name)

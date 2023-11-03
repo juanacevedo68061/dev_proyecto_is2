@@ -433,6 +433,16 @@ def dislike(request, publicacion_id):
     return JsonResponse(response_data)
 
 def track_view(request, publicacion_id):
+    """
+    Incrementa el contador de vistas de una publicación y devuelve el número actualizado de vistas.
+
+    Args:
+        request: Objeto HttpRequest.
+        publicacion_id: ID de la publicación que se está viendo.
+
+    Returns:
+        JsonResponse con el estado y el número de vistas actualizado.
+    """
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     publicacion.views += 1
     publicacion.save()
@@ -440,6 +450,17 @@ def track_view(request, publicacion_id):
 
 @login_required
 def estado(request, publicacion_id):
+    """
+    Cambia el estado activo/inactivo de una publicación. 
+    Si la publicación se desactiva, notifica y elimina los registros asociados.
+
+    Args:
+        request: Objeto HttpRequest.
+        publicacion_id: ID de la publicación cuyo estado se está cambiando.
+
+    Returns:
+        JsonResponse con el estado activo/inactivo actualizado.
+    """
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     publicacion.activo = not publicacion.activo
     publicacion.save()
@@ -452,6 +473,19 @@ def estado(request, publicacion_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def calificar(request, publicacion_id):
+    """
+    Permite a un usuario calificar o modificar su calificación para una publicación. 
+    Si es un POST, establece o actualiza la calificación. 
+    Si es un GET, recupera la calificación actual del usuario.
+
+    Args:
+        request: Objeto HttpRequest.
+        publicacion_id: ID de la publicación que se está calificando.
+
+    Returns:
+        JsonResponse con la calificación y el total de calificaciones. 
+        Si el método HTTP no está permitido, devuelve un HttpResponseBadRequest.
+    """
     publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     usuario = request.user
     if request.method == "POST":
@@ -495,17 +529,42 @@ def calificar(request, publicacion_id):
 
 @receiver(post_save, sender=XtdComment)
 def update_comment_count(sender, instance, created, **kwargs):
+    """
+    Actualiza el contador de comentarios de un objeto relacionado cuando se crea un nuevo comentario.
+
+    Args:
+        sender: Modelo que envía la señal.
+        instance: Instancia del comentario que fue guardado.
+        created: Booleano que indica si la instancia fue creada.
+    """
     if created:
         instance.content_object.comments += 1
         instance.content_object.save()
 
 @receiver(post_delete, sender=XtdComment)
 def decrease_comment_count(sender, instance, **kwargs):
+    """
+    Actualiza el contador de comentarios de un objeto relacionado cuando se elimina un comentario.
+
+    Args:
+        sender: Modelo que envía la señal.
+        instance: Instancia del comentario que fue eliminado.
+    """
     instance.content_object.comments -= 1
     instance.content_object.save()
 
 @login_required
 def custom_post_comment(request):
+    """
+    Procesa y envía un comentario. Si el comentario se envía correctamente, 
+    devuelve una respuesta JSON indicando el éxito, de lo contrario, indica un error.
+
+    Args:
+        request: Objeto HttpRequest.
+
+    Returns:
+        JsonResponse indicando el estado y el mensaje relacionado con el envío del comentario.
+    """
     response = post_comment(request)
     
     # Si el comentario se creó correctamente, devuelve una respuesta JSON.

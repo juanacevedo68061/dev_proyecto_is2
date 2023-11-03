@@ -265,7 +265,7 @@ DATABASES = {
         'USER': 'postgres',  # Usuario PostgreSQL
         'PASSWORD': '12345',  # Contraseña PostgreSQL
         'HOST': 'db',  # Nombre del servicio de la base de datos en Docker Compose
-        'PORT': '5432',  # Puerto por defecto de PostgreSQL
+        'PORT': '5434',  # Puerto por defecto de PostgreSQL
     }
 }
 '''

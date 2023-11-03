@@ -347,3 +347,6 @@
 .texto-gris {
     color: gray;
 }
+.permalink {
+    display: none;
+}

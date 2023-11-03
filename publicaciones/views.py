@@ -1,6 +1,6 @@
 """
 Módulo views.py para gestionar las publicaciones
-=============================================
+================================================
 Este módulo contiene las vistas relacionadas con la gestión de publicaciones, 
 incluyendo la creación, edición, eliminación, visualización y funcionalidades adicionales 
 como generación de códigos QR y gestión de likes/dislikes.

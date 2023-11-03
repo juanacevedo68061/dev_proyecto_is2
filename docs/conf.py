@@ -27,7 +27,6 @@ extensions = [
 ]
 autodoc_default_options = {
     'members': True,
-    'undoc-members': True,
     'private-members': True,
     'show-inheritance': True,
     'exclude-members': 'DoesNotExist, MultipleObjectsReturned, _meta, get_next_by_fecha_cambio, get_previous_by_fecha_cambio, objects'
@@ -40,3 +39,4 @@ language = 'es'
 
 html_theme = 'sphinx_rtd_theme'
 #html_static_path = ['_static']
+

@@ -6,7 +6,6 @@ Modelos
 
  .. automodule:: kanban.models
     :members:
-    :undoc-members:
     :show-inheritance:
 
 Vistas
@@ -14,6 +13,5 @@ Vistas
 
 .. automodule:: kanban.views
    :members:
-   :undoc-members:
    :show-inheritance:
 

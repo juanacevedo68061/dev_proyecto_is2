@@ -28,9 +28,25 @@ class Categoria(models.Model):
     color = models.CharField(max_length=7)
 
     def save(self, *args, **kwargs):
+        """
+        Método personalizado para guardar la categoría y asignar un color único si no se proporciona.
+
+        Parameters:
+        -----------
+        *args, **kwargs:
+            Argumentos adicionales para el método de guardar.
+        """
         if not self.color:
             self.color = get_random_color()
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """
+        Devuelve una representación en cadena del objeto, que es el nombre de la categoría.
+
+        Returns:
+        --------
+        str
+            Representación en cadena del nombre de la categoría.
+        """
         return self.nombre

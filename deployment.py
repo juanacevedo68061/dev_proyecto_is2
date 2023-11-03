@@ -53,6 +53,8 @@ def change_branch(reference):
         branch_name = 'prueba'
     else:
         branch_name = 'development'
+    
+    hizo_commit = False
 
     if has_uncommitted_changes():
         if branch_name == 'development':
@@ -73,28 +75,26 @@ def change_branch(reference):
                         print(f"Cambiado a la rama {branch_name}")
                         if branch_name != 'development':
                             merge_development(branch_name)
+                            hizo_commit = True
                         else:
                             print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
                             sys.exit(1)
                     except Exception as e:
                         print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
                         sys.exit(1)
-                    os.system("python manage.py runserver")
-                else:
-                    print("No se ha cambiado de rama. Proceso de deployment.py finalizado.")
-                    sys.exit(1)
-            else:
-                print("Error: Los cambios generan errores en el proyecto. El proyecto no se sirve adecuadamente. Proceso de deployment.py finalizado.")
-                sys.exit(1)
+
     else:
         try:
-            os.system(f"git checkout {branch_name}")
-            print(f"Cambiado a la rama {branch_name}")
-            if branch_name != 'development':
-                merge_development(branch_name)
-                print("Aviso: No se realiza el merge a la rama 'development'. Proceso de deployment.py finalizado.")
-                sys.exit(1)
-            os.system("python manage.py runserver > /dev/null 2>&1 &")
+            if branch_name == 'development':
+                print("Cambiado a la rama development")
+            else:
+                if branch_name == 'prueba':
+                    branch_name = 'production'
+                os.system(f"git checkout {branch_name}")
+                print(f"Cambiado a la rama {branch_name}")
+                if hizo_commit and branch_name != 'development':
+                    merge_development(branch_name)
+            os.system("python manage.py runserver")
         except Exception as e:
             print(f"Error al cambiar a la rama {branch_name}: {str(e)}")
             sys.exit(1)

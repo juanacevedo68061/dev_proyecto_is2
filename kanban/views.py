@@ -18,7 +18,21 @@ from login.models import Usuario
 @permiso_requerido
 @login_required
 def kanban(request):
+    """
+    Vista para mostrar el tablero Kanban de la aplicación.
 
+    Esta vista muestra las publicaciones en diferentes columnas según su estado.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+
+    Returns:
+    --------
+    HttpResponse
+        Una respuesta HTTP que renderiza el tablero Kanban.
+    """
     publicaciones_borrador = Publicacion_solo_text.objects.filter(
     Q(estado='borrador', activo=True, categoria__moderada=True) |
     Q(estado='rechazado', para_editor=False, activo=True, categoria__moderada=True)
@@ -45,6 +59,22 @@ def kanban(request):
 @login_required
 @csrf_exempt
 def actualizar(request):
+    """
+    Vista para actualizar el estado de una publicación en el tablero Kanban.
+
+    Permite cambiar el estado de una publicación y realiza validaciones de permisos.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+
+    Returns:
+    --------
+    JsonResponse
+        Una respuesta JSON con el resultado de la actualización.
+    """
+
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')        
         nuevo_estado = request.POST.get('nuevo_estado')
@@ -150,6 +180,21 @@ def actualizar(request):
 @login_required
 @csrf_exempt
 def motivo(request):
+    """
+    Vista para proporcionar un motivo al rechazar una publicación en el tablero Kanban.
+
+    Permite agregar un motivo al rechazar una publicación y cambia su estado.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+
+    Returns:
+    --------
+    JsonResponse
+        Una respuesta JSON con el resultado de la operación.
+    """
     if request.method == 'POST':
         publicacion_id = request.POST.get('id_publicacion')
         publicacion_id = UUID(publicacion_id)
@@ -182,6 +227,23 @@ def motivo(request):
     
 @login_required
 def historial(request, publicacion_id):
+    """
+    Vista para ver el historial de cambios de una publicación en el tablero Kanban.
+
+    Permite ver el historial de registros de cambios de una publicación específica.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+    publicacion_id : UUID
+        El ID único de la publicación.
+
+    Returns:
+    --------
+    HttpResponse
+        Una respuesta HTTP que renderiza el historial de cambios de la publicación.
+    """
     registros = Registro.objects.filter(publicacion_id=publicacion_id)
     if not tiene_rol(request.user, "editor") and not tiene_rol(request.user, "publicador"):
         registros = Registro.objects.filter(publicacion_id=publicacion_id, responsable=request.user)
@@ -189,6 +251,24 @@ def historial(request, publicacion_id):
 
 @login_required
 def registrar(request, publicacion, anterior):
+    """
+    Función para registrar un cambio de estado en el historial de una publicación.
+
+    Registra un nuevo registro de cambio en el historial de la publicación.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+    publicacion : Publicacion_solo_text
+        La instancia de la publicación.
+    anterior : str
+        El estado anterior de la publicación.
+
+    Returns:
+    --------
+    None
+    """
     usuario = request.user
     roles = usuario.roles.all()
     nuevo_registro = Registro.objects.create(

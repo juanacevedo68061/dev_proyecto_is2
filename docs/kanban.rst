@@ -1,18 +1,18 @@
-Canvan App
+Kanban App
 ==========
 
-Models
+Modelos
+-------
+
+ .. automodule:: kanban.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Vistas
 ------
 
-.. .. .. automodule:: canvan.models
-.. ..    :members:
-.. ..    :undoc-members:
-.. ..    :show-inheritance:
-
-Views
------
-
-.. automodule:: canvan.views
+.. automodule:: kanban.views
    :members:
    :undoc-members:
    :show-inheritance:

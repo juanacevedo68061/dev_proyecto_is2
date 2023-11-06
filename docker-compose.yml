@@ -9,12 +9,12 @@ services:
       POSTGRES_PASSWORD: 12345
     ports:
       - "5434:5432"
+    entrypoint: /app/comandos.sh
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "./comandos.sh"
     volumes:
       - .:/app
     depends_on:

@@ -8,14 +8,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
     ports:
-      - "5434:5434"
+      - "5434:5432"
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
     command: >
-      sh -c "./inicio.sh &&
+      sh -c "./inicio.sh && unzip -o credencial.zip && ./init-db.sh &&
       python manage.py makemigrations roles login kanban administracion publicaciones && 
       python manage.py migrate &&
       python poblacion/poblar.py &&

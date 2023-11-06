@@ -1,6 +1,7 @@
 # Dockerfile
 
 FROM python:3.9
+FROM postgres:14.9
 
 ENV PYTHONUNBUFFERED 1
 

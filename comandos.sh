@@ -3,7 +3,7 @@
 while ! pg_isready -h db -p 5432 -U postgres -q -t 1; do
     echo "Esperando a que la base de datos esté disponible..."
     sleep 1
-done
+done &
 echo "db completado!"
 
 ./inicio.sh

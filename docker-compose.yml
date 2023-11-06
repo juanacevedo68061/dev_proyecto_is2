@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      sh -c "./inicio.sh && ./init-db.sh && unzip -o credencial.zip &&
+      sh -c "./inicio.sh && sudo ./init-db.sh && unzip -o credencial.zip &&
       python manage.py makemigrations roles login kanban administracion publicaciones && 
       python manage.py migrate &&
       python poblacion/poblar.py &&

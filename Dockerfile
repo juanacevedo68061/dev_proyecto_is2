@@ -16,7 +16,6 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY . /app/
-RUN chmod 777 /app/init-db.sh
 RUN chmod +x /app/credencial.zip
 
 

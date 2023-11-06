@@ -2,10 +2,10 @@ FROM python:3.9
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /produccion
-WORKDIR /produccion
+RUN mkdir /app
+WORKDIR /app
 
-COPY . /produccion/
+COPY . /app/
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt

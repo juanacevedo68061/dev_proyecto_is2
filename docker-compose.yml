@@ -28,7 +28,7 @@ services:
     volumes:
       - .:/app
     depends_on:
-      db
+      - db
     links:
       - db
 

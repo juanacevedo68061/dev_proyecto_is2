@@ -1,33 +1,21 @@
 import subprocess
+import os
 
 def run_docker_compose(file):
-    command = ["docker-compose", "-f", file, "up", "-d"]
-    subprocess.run(command, check=True)
-
-def capture_logs_to_file(container_name, log_file):
-    command = ["docker", "logs", "--follow", container_name]
-    with open(log_file, "w") as log_output:
-        process = subprocess.Popen(command, stdout=log_output, stderr=subprocess.STDOUT, text=True)
-        process.wait()
+    command = f"docker-compose -f {file} up -d"
+    os.system(command)
 
 def monitor_logs_and_execute_second_docker_compose(container_name):
-    first_message = "PostgreSQL init process complete; ready for start up."
-    second_message = "database system is ready to accept connections"
-    log_file = "container_logs.txt"
-    
-    run_docker_compose("db.yml")
-    capture_logs_to_file(container_name, log_file)
+    mensaje = "PostgreSQL init process complete; ready for start up."
+    process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
 
-    with open(log_file, "r") as log_output:
-        for line in log_output:
-            print("contenedores =", line, end="")
+    for linea in process.stdout:
+        print("POSTGRES =", linea, end="")
 
-            if first_message in line:
-                print("\n\nDETECTOOO")
-
-            if second_message in line:
-                print("\n\nSE EJECUTÓ EL SEGUNDO DOCKER-COMPOSE")
+        if mensaje in linea:
+            print("\nSE EJECUTA DOCKER-COMPOSE")
 
 if __name__ == "__main__":
-    container_name = "proyecto_is2-db-1"
+    container_name = "nombre_del_contenedor"
+    run_docker_compose("db.yml")
     monitor_logs_and_execute_second_docker_compose(container_name)

@@ -17,6 +17,7 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
 
         if state == 0 and first_message in line:
             state = 1
+            print("\n\nDETECTOOOOOOO")
         elif state == 1 and second_message in line:
             print("\n\nEMPIEZA EL SEGUNDO DOCKER-COMPOSE")
             run_docker_compose("docker-compose.yml")

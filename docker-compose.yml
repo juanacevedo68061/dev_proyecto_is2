@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
     command: >
       sh -c "./inicio.sh && unzip -o credencial.zip &&
-      gunicorn cms.wsgi:application --bind 0.0.0.0:8000 && bash db.sh"
+      gunicorn cms.wsgi:application --bind 0.0.0.0:8000 && ./db.sh"
     volumes:
       - .:/app
     depends_on:

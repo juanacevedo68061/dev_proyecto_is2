@@ -14,7 +14,7 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
     process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
 
     for line in process.stdout:
-        print(line, end="")
+        print("contenedores = ", line, end="")
 
         if state == 0 and first_message in line:
             state = 1

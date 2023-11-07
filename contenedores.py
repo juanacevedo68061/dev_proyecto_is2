@@ -20,8 +20,6 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
             state = 1
         elif state == 1 and second_message in line:
             run_docker_compose("docker-compose.yml")
-            break
-
 if __name__ == "__main__":
     container_name = "proyecto_is2-db-1"
 

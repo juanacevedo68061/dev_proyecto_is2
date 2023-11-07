@@ -5,11 +5,11 @@ from time import sleep
 def run_docker_compose(file):
     command = f"docker-compose -f {file} up -d"
     os.system(command)
-bandera = False
+
 def monitor_logs_and_execute_second_docker_compose(container_name):
     mensaje = "PostgreSQL init process complete; ready for start up."
     process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
-
+    bandera = False
     for linea in process.stdout:
         print("POSTGRES =", linea, end="")
 
@@ -17,7 +17,7 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
             print("\nEsperando 5 segundos...")
             sleep(5)
             bandera = True
-            
+
         if bandera:
             print("\nSE EJECUTA DOCKER-COMPOSE")
 

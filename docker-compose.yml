@@ -10,6 +10,11 @@ services:
     ports:
       - "5434:5432"
 
+  comodin:
+    image: python:3.9      
+    depends_on:
+      - db    
+
   web:
     build:
       context: .
@@ -21,10 +26,7 @@ services:
       && python poblacion/poblar.py
       && gunicorn cms.wsgi:application --bind 0.0.0.0:8000"  
     volumes:
-      - .:/app
-    depends_on:
-      - db
-      - comodin
+      - .:/app    
 
   nginx:
     image: nginx:latest
@@ -37,5 +39,3 @@ services:
     depends_on:
       - web
 
-  comodin:
-    image: python:3.9

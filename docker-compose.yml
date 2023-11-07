@@ -9,8 +9,6 @@ services:
       POSTGRES_PASSWORD: 12345
     ports:
       - "5434:5432"
-    depends_on:
-      - nginx
 
   web:
     build:
@@ -43,3 +41,7 @@ services:
       && python poblacion/poblar.py"      
     volumes:
       - .:/app    
+    depends_on:
+      - db
+      - web
+      - nginx

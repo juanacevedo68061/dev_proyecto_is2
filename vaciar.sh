@@ -4,9 +4,6 @@
 docker stop $(docker ps -q)
 docker rm -f $(docker ps -a -q)
 
-# Detener y eliminar todos los servicios de Docker Compose
-docker-compose down --volumes
-
 # Eliminar todas las imágenes de Docker
 docker rmi $(docker images -q)
 

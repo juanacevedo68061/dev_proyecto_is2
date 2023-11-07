@@ -7,8 +7,8 @@ def run_docker_compose(file):
 def monitor_logs_and_execute_second_docker_compose(container_name):
     first_message = "CREATE DATABASE"
     second_message = "database system is ready to accept connections"
-
     state = 0
+    received_first_message = False
 
     process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
 

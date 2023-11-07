@@ -1,14 +1,14 @@
 import subprocess
 
 def run_docker_compose(file):
-    log_file = open("second_docker_compose.log", "w")
-    command = ["docker-compose", "-f", file, "up"]
-    subprocess.run(command, check=True, stdout=log_file, stderr=log_file)
-    log_file.close()
+    command = ["docker-compose", "-f", file, "up", "-d"]
+    subprocess.run(command, check=True)
 
 def monitor_logs_and_execute_second_docker_compose(container_name):
     first_message = "PostgreSQL init process complete; ready for start up."
     process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
+
+    second_docker_compose_started = False
 
     for line in process.stdout:
         print("contenedores = ", line, end="")
@@ -16,7 +16,12 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
         if first_message in line:
             print("\n\nEMPIEZA EL SEGUNDO DOCKER-COMPOSE")
             run_docker_compose("docker-compose.yml")
+            second_docker_compose_started = True
             print("\n\nSE EJECUTÓ EL SEGUNDO DOCKER-COMPOSE")
+
+        # Agregar una condición para seguir mostrando los logs del segundo Docker Compose.
+        if second_docker_compose_started:
+            print("contenedores = ", line, end="")
 
 if __name__ == "__main__":
     container_name = "proyecto_is2-db-1"

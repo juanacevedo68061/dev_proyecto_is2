@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: 12345
     ports:
       - "5434:5432"
+    command: sh -c "./db.sh"
 
   web:
     build:

@@ -16,11 +16,15 @@ services:
       dockerfile: Dockerfile
     command: >
       sh -c "./inicio.sh && unzip -o credencial.zip
+      && python manage.py makemigrations roles login kanban administracion publicaciones
+      && python manage.py migrate
+      && python poblacion/poblar.py
       && gunicorn cms.wsgi:application --bind 0.0.0.0:8000"  
     volumes:
       - .:/app
     depends_on:
       - db
+      - comodin
 
   nginx:
     image: nginx:latest
@@ -33,15 +37,5 @@ services:
     depends_on:
       - web
 
-  migration:
+  comodin:
     image: python:3.9
-    command: >
-      sh -c "python manage.py makemigrations roles login kanban administracion publicaciones
-      && python manage.py migrate
-      && python poblacion/poblar.py"      
-    volumes:
-      - .:/app    
-    depends_on:
-      - db
-      - web
-      - nginx

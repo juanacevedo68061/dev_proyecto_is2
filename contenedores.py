@@ -15,13 +15,17 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
     for line in process.stdout:
         print("contenedores = ", line, end="")
 
-        if state == 0 and first_message in line:
+        if first_message in line:
+            received_first_message = True
+            print("\n\nDETECTOOO")
+
+        if received_first_message and state == 0 and second_message in line:
             state = 1
-            print("\n\nDETECTOOOOOOO")
         elif state == 1 and second_message in line:
             print("\n\nEMPIEZA EL SEGUNDO DOCKER-COMPOSE")
             run_docker_compose("docker-compose.yml")
             print("\n\nSE EJECUTÓ EL SEGUNDO DOCKER-COMPOSE")
+            break
 
 if __name__ == "__main__":
     container_name = "proyecto_is2-db-1"

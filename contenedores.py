@@ -10,7 +10,7 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
     received_first_message = False
     log_file = "container_logs.txt"
 
-    process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["docker", "logs", "--follow", "--tail", "all", container_name], stdout=subprocess.PIPE, text=True)
 
     with open(log_file, "w") as log_output:
         for line in process.stdout:

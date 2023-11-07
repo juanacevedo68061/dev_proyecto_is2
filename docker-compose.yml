@@ -43,7 +43,3 @@ services:
       && python poblacion/poblar.py"      
     volumes:
       - .:/app    
-    depends_on:
-      - db
-      - web
-      - nginx

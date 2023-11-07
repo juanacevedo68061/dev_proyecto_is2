@@ -5,23 +5,13 @@ def run_docker_compose(file):
     subprocess.run(command, check=True)
 
 def monitor_logs_and_execute_second_docker_compose(container_name):
-    first_message = "CREATE DATABASE"
-    second_message = "database system is ready to accept connections"
-    state = 0
-    received_first_message = False
-
+    first_message = "PostgreSQL init process complete; ready for start up."
     process = subprocess.Popen(["docker", "logs", "--follow", container_name], stdout=subprocess.PIPE, text=True)
 
     for line in process.stdout:
         print("contenedores = ", line, end="")
 
         if first_message in line:
-            received_first_message = True
-            print("\n\nDETECTOOO")
-
-        if received_first_message and state == 0 and second_message in line:
-            state = 1
-        elif state == 1 and second_message in line:
             print("\n\nEMPIEZA EL SEGUNDO DOCKER-COMPOSE")
             run_docker_compose("docker-compose.yml")
             print("\n\nSE EJECUTÓ EL SEGUNDO DOCKER-COMPOSE")

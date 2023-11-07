@@ -19,7 +19,7 @@ def monitor_logs_and_execute_second_docker_compose(container_name):
             bandera = True
 
         if bandera:
-            print("\nSE EJECUTA DOCKER-COMPOSE")
+            print("\nSE COMPLETO!")
             break
 
 if __name__ == "__main__":

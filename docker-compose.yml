@@ -15,8 +15,11 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      sh -c "./inicio.sh && unzip -o credencial.zip &&
-      gunicorn cms.wsgi:application --bind 0.0.0.0:8000 && ./db.sh"
+      sh -c "./inicio.sh && unzip -o credencial.zip
+      && gunicorn cms.wsgi:application --bind 0.0.0.0:8000 
+      && python manage.py makemigrations roles login kanban administracion publicaciones
+      && python manage.py migrate
+      && python poblacion/poblar.py"
     volumes:
       - .:/app
     depends_on:

@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:14.9
-    environment:
-      POSTGRES_DB: cms_bd
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 12345
-    ports:
-      - "5434:5432"
-
   web:
     build:
       context: .
@@ -22,8 +13,6 @@ services:
       && gunicorn cms.wsgi:application --bind 0.0.0.0:8000"  
     volumes:
       - .:/app
-    depends_on:
-      - db
 
   nginx:
     image: nginx:latest

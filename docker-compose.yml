@@ -34,7 +34,7 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db        
+      - comodin
 
   nginx:
     image: nginx:latest

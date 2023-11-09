@@ -1,5 +1,7 @@
 import os
 import sys
+import threading
+import signal
 
 def cambiar_rama_y_desplegar(rama_objetivo):
     # Verificar la rama actual
@@ -12,15 +14,21 @@ def cambiar_rama_y_desplegar(rama_objetivo):
         os.system(f'git checkout {rama_objetivo}')
     
     # Hacer un hard reset en la rama actual
-    #print('Haciendo git reset --hard')
-    #os.system('git reset --hard')
+    print('Haciendo git reset --hard')
+    os.system('git reset --hard')
 
+    # Ejecutar el servidor Django en un hilo
+    server_thread = threading.Thread(target=ejecutar_servidor)
+    server_thread.start()
+
+def ejecutar_servidor():
     # Ejecutar el servidor Django
-    print('Ejecutando python manage.py runserver')
     os.system('python manage.py runserver')
-    
 
 if __name__ == "__main__":
+    # Configurar el manejo de la señal de interrupción (CTRL-C)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
     # Verificar la cantidad de argumentos
     if len(sys.argv) != 2:
         print("Uso: python despliegue.py <ambiente>")

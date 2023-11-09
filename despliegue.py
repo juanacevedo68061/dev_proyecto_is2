@@ -12,12 +12,13 @@ def cambiar_rama_y_desplegar(rama_objetivo):
         os.system(f'git checkout {rama_objetivo}')
     
     # Hacer un hard reset en la rama actual
-    print('Haciendo git reset --hard')
-    os.system('git reset --hard')
+    #print('Haciendo git reset --hard')
+    #os.system('git reset --hard')
 
     # Ejecutar el servidor Django
     print('Ejecutando python manage.py runserver')
     os.system('python manage.py runserver')
+    
 
 if __name__ == "__main__":
     # Verificar la cantidad de argumentos

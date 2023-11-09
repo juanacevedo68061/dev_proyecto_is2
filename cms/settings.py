@@ -257,7 +257,7 @@ TINYMCE_DEFAULT_CONFIG = {
 TINYMCE_SPELLCHECKER = True
 
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -276,7 +276,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-'''
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
 "http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]
 

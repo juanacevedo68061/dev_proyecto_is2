@@ -13,4 +13,3 @@ docker volume prune --force >/dev/null 2>&1
 # Eliminar todas las redes Docker de manera forzada
 docker network prune --force >/dev/null 2>&1
 
-echo "Entorno Docker limpiado exitosamente."

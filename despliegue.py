@@ -8,17 +8,23 @@ def cambiar_rama_y_desplegar(rama_objetivo):
     resultado = os.popen('git rev-parse --abbrev-ref HEAD').read().strip()
     rama_actual = resultado.strip()
 
+    #limpieza total
+    os.system('bash armagedon.sh')
+
     # Cambiar de rama si es necesario
     if rama_actual != rama_objetivo:
         print(f'Cambiando a la rama {rama_objetivo}')
         os.system(f'git checkout {rama_objetivo}')
-    
-    # Hacer un hard reset en la rama actual
-    print('Haciendo git reset --hard')
-    os.system('git reset --hard')
+
+    #actualizacion
+    os.system('git pull')
     
     #limpieza total
     os.system('bash armagedon.sh')
+
+    # Hacer un hard reset en la rama actual
+    print('Haciendo git reset --hard')
+    os.system('git reset --hard')
     
     # Ejecutar el despliegue en un hilo
     if rama_objetivo == 'main':

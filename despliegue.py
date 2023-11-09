@@ -16,14 +16,24 @@ def cambiar_rama_y_desplegar(rama_objetivo):
     # Hacer un hard reset en la rama actual
     print('Haciendo git reset --hard')
     os.system('git reset --hard')
-
-    # Ejecutar el servidor Django en un hilo
-    server_thread = threading.Thread(target=ejecutar_servidor)
+    
+    #limpieza total
+    os.system('bash armagedon.sh')
+    
+    # Ejecutar el despliegue en un hilo
+    if rama_objetivo == 'main':
+        server_thread = threading.Thread(target=desplegar_produccion)
+    else:
+        server_thread = threading.Thread(target=desplegar_desarrollo)
     server_thread.start()
 
-def ejecutar_servidor():
-    # Ejecutar el servidor Django
-    os.system('python manage.py runserver')
+def desplegar_produccion():
+    print('Iniciando despliegue...')
+    os.system('python3 postgres.py && docker-compose up')
+
+def desplegar_desarrollo():
+    print('Iniciando despliegue...')
+    os.system('docker-compose up')
 
 if __name__ == "__main__":
     # Configurar el manejo de la señal de interrupción (CTRL-C)

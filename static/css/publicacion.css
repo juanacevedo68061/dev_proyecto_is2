@@ -50,7 +50,7 @@
 }
 
 .icon-comment.active {
-    color: #3498db !important; /* Cambia este color por el que desees */
+    color: gray !important; /* Cambia este color por el que desees */
 }
 
 

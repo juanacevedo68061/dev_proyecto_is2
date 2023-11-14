@@ -7,20 +7,6 @@
     /* Agrega espacio en la parte superior */
 }
 
-/* Estilo para el contenedor de cada publicación */
-.publicacion {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* Alinea el contenido en la esquina superior izquierda */
-    margin-bottom: 20px;
-    /* Espacio entre las publicaciones */
-    padding: 20px;
-    /* Espaciado interno para el recuadro de la publicación */
-    position: relative;
-    /* Añadimos posición relativa al contenedor de la publicación */
-}
-
 /* Estilo para el círculo de perfil, nombre del autor y fecha */
 .perfil-nombre-fecha {
     display: flex;
@@ -180,48 +166,22 @@
     /* Agrega un espacio de 40px entre .enlace-previa y .categoria-y-enlace */
 }
 
-/* Estilo para el enlace de reportar */
-.enlace-reportar {
-    color: #888;
-    /* Color gris para el enlace de reportar */
-    text-decoration: none;
-    /* Sin subrayado */
-    margin-left: 10px;
-    /* Espacio a la izquierda del enlace de reportar */
-}
-
-/* Estilo para el enlace de puntos suspensivos */
-.puntos-suspensivos {
-    font-size: 24px;
-    /* Tamaño de fuente más grande */
-    font-weight: bold;
-    /* Texto en negrita */
-    cursor: pointer;
-    /* Cambiar el cursor al estilo de selección al pasar el mouse */
-}
-
-/* Ajuste de posición para el menú desplegable */
-.dropdown-menu.dropdown-menu-end {
-    left: auto;
-    /* Alinea el menú desplegable a la derecha */
-    right: 0;
-    /* Alinea el menú desplegable a la derecha */
-}
-
-/* Estilo para la categoría destacada */
 .categoria-destacada {
-    background-color: #ececec;
-    /* Fondo gris más suave */
-    padding: 2px 6px;
-    /* Espaciado interno más pequeño */
+    background: linear-gradient(45deg, #bc1888 0%, #cc2366 25%, #dc2743 50%, #e6683c 75%, #f09433 100%);
+    padding: 6px 8px;
     border-radius: 10px;
-    /* Borde redondeado */
-    color: #000;
-    /* Texto negro */
+    color: #fff; /* Cambié el color del texto a blanco para asegurar la legibilidad */
     font-size: 14px;
-    /* Tamaño de fuente más pequeño */
     display: inline-block;
-    /* Para que el fondo se ajuste al contenido */
+}
+
+.categoria {
+    background-color: #ececec;
+    padding: 6px 8px;
+    border-radius: 10px;
+    color: #000;
+    font-size: 14px;
+    display: inline-block;
 }
 
 /* Estilo para la barra lateral */
@@ -349,4 +309,23 @@
 }
 .permalink {
     display: none;
+}
+
+/* Estilo para el contenedor de cada publicación */
+.destacada {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 20px;
+}
+
+.publicacion {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 20px;
+    position: relative;
 }

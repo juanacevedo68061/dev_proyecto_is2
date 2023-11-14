@@ -243,6 +243,18 @@ class Publicacion_solo_text(models.Model):
 
         super(Publicacion_solo_text, self).save(*args, **kwargs)
 
+    def actualizar_destacado(self):
+        reglas = self.categoria
+        if not self.destacado: 
+            if (
+                self.likes >= reglas.likes and
+                self.views >= reglas.views and
+                self.comments >= reglas.comments and
+                self.shared >= reglas.shared and
+                self.calificaciones_cantidad >= reglas.calificaciones_cantidad
+            ):
+                self.destacado = True
+                Publicacion_solo_text.objects.filter(pk=self.pk).update(destacado=True)
 
     def __str__(self):
         """

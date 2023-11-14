@@ -41,24 +41,14 @@
 /* Estilo para el título de la vista previa */
 .titulo-previa {
     margin-bottom: 10px;
-    /* Espacio entre el título y el contenido */
     overflow: hidden;
-    /* Oculta el desbordamiento horizontal */
     white-space: nowrap;
-    /* Evita el salto de línea en el título */
     text-overflow: ellipsis;
-    /* Agrega puntos suspensivos al final del título si se desborda */
     font-size: 18px;
-    /* Tamaño de fuente para el texto en el contenido */
     line-height: 1.5;
-    /* Espaciado entre líneas */
     font-family: 'Sohne', sans-serif;
-    /* Fuente genérica en caso de que la fuente específica no esté disponible */
     font-weight: 800;
-    /* Establece el peso de la fuente en negrita (bold) */
     font-style: normal;
-    /* Asegura que no haya estilo itálico */
-    /* Puedes ajustar otros estilos según tus preferencias */
 }
 
 /* Estilo para el contenido del medio de la vista previa */
@@ -91,16 +81,16 @@
 /* Estilo para el enlace de la vista previa */
 .enlace-previa {
     text-decoration: none;
-    /* Sin subrayado */
     color: inherit;
-    /* Color de texto heredado */
     position: relative;
-    /* Añadimos posición relativa al enlace de la vista previa */
     width: 700px;
-    /* Ancho fijo para el enlace */
     height: 100px;
-    /* Altura fija para el enlace */
 }
+
+.enlace-instagram {
+    --bs-link-hover-color: #dc2743;
+}
+
 
 .contenido-previa {
     position: relative;
@@ -319,6 +309,13 @@
     margin-bottom: 20px;
     position: relative;
     padding: 20px;
+    border-radius: 7px;
+    box-shadow: 
+        2px 3px 4px #bc1888,
+        2px 2px 1px #cc2366,
+        1px 0px 3px #dc2743,
+        2px 2px 4px #e6683c,
+        2px 2px 2px #f09433;
 }
 
 .publicacion {

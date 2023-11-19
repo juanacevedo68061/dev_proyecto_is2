@@ -11,12 +11,9 @@ Bienvenidos a la documentación de nuestro proyecto CMS, desarrollado utilizando
 
 Nuestro CMS en Django es una plataforma robusta y flexible para la gestión de contenido, diseñada para ser intuitiva y eficiente en su uso. Consta de varias aplicaciones integradas, cada una con su propósito específico, que trabajan conjuntamente para proporcionar una experiencia completa de gestión de contenido.
 
-Contenidos
-----------
-
 .. toctree::
    :maxdepth: 2
-   :caption: Aplicaciones:
+   :caption: Contenidos:
 
    introduccion
    login

@@ -1,6 +1,7 @@
 from administracion.models import Categoria
 from django import forms
 from .models import Publicacion_solo_text
+from froala_editor.widgets import FroalaEditor
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
@@ -19,7 +20,7 @@ class PublicacionForm(forms.ModelForm):
         ('h', 'Horas'),
         ('m', 'Minutos'),
     ]
-
+    texto = forms.CharField(widget=FroalaEditor)
     vigencia_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     programar_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     vigencia_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
@@ -41,7 +42,7 @@ class PublicacionForm(forms.ModelForm):
     def __init__(self, kanban=True, tiene=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'id': 'id_titulo'})
-        self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
+        #self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
         self.fields['palabras_clave'].widget.attrs.update({'class': 'form-control', 'id': 'id_palabras_clave'})
         self.fields['vigencia'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_vigencia'})
         self.fields['programar'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_programar'})

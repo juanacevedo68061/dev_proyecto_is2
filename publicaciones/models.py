@@ -1,7 +1,7 @@
 from django.db import models
 from login.models import Usuario
 from administracion.models import Categoria
-from tinymce.models import HTMLField
+from froala_editor.fields import FroalaField
 from django.urls import reverse
 import uuid
 from django.conf import settings
@@ -133,7 +133,7 @@ class Publicacion_solo_text(models.Model):
 
     activo = models.BooleanField(default=True)
     titulo = models.CharField(max_length=200, blank=True, null=True)
-    texto = HTMLField()
+    texto = FroalaField()
     id_publicacion = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     url_publicacion = models.CharField(max_length=200, blank=True, null=True)
     codigo_qr = models.ImageField(upload_to='codigos_qr/', blank=True)

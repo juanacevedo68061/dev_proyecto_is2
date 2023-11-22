@@ -122,7 +122,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR,'credencial.json'))
 
 ## configuracion para archivos multimedia
- ###configuration for media file storing and reriving media file from gcloud 
+###configuration for media file storing and reriving media file from gcloud 
 DEFAULT_FILE_STORAGE='cms.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'proyectois2-402511'
 GS_BUCKET_NAME = 'proyecto_is2_bucket'

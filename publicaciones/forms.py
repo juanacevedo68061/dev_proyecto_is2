@@ -1,6 +1,7 @@
 from administracion.models import Categoria
 from django import forms
 from .models import Publicacion_solo_text
+from froala_editor.widgets import FroalaEditor
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
@@ -19,7 +20,7 @@ class PublicacionForm(forms.ModelForm):
         ('h', 'Horas'),
         ('m', 'Minutos'),
     ]
-
+    texto = forms.CharField(widget=FroalaEditor)
     vigencia_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     programar_unidad = forms.ChoiceField(choices=UNIDADES_TIEMPO, label='Unidad de Tiempo', required=False)
     vigencia_cantidad = forms.IntegerField(label='Cantidad de Tiempo', required=False)
@@ -38,24 +39,24 @@ class PublicacionForm(forms.ModelForm):
         required=False,
     )
 
-    def __init__(self, canvan=True, tiene=False, *args, **kwargs):
+    def __init__(self, kanban=True, tiene=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['titulo'].widget.attrs.update({'class': 'form-control', 'id': 'id_titulo'})
-        self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
+        #self.fields['texto'].widget.attrs.update({'class': 'form-control', 'id': 'id_texto', 'rows': '4'})
         self.fields['palabras_clave'].widget.attrs.update({'class': 'form-control', 'id': 'id_palabras_clave'})
         self.fields['vigencia'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_vigencia'})
         self.fields['programar'].widget.attrs.update({'class': 'form-check-input', 'id': 'id_programar'})
         self.fields['categoria_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_suscriptores'})
         self.fields['categoria_no_suscriptores'].widget.attrs.update({'class': 'form-control', 'id': 'id_categoria_no_suscriptores'})
-        self.fields['categoria_suscriptores'].choices = self.get_categoria_choices(True, canvan, tiene)
-        self.fields['categoria_no_suscriptores'].choices = self.get_categoria_choices(False, canvan, tiene)
+        self.fields['categoria_suscriptores'].choices = self.get_categoria_choices(True, kanban, tiene)
+        self.fields['categoria_no_suscriptores'].choices = self.get_categoria_choices(False, kanban, tiene)
         if self.instance and self.instance.categoria:
             if self.instance.categoria.suscriptores:
                 self.fields['categoria_suscriptores'].initial = self.instance.categoria
             else:
                 self.fields['categoria_no_suscriptores'].initial = self.instance.categoria        
-    def get_categoria_choices(self, suscriptores, canvan, tiene):
-        if canvan:
+    def get_categoria_choices(self, suscriptores, kanban, tiene):
+        if kanban:
             categorias = Categoria.objects.filter(suscriptores=suscriptores, moderada=True)
         else:
             if tiene:

@@ -206,4 +206,3 @@ DATABASES = {
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
 "http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 megabytes en bytes

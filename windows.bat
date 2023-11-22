@@ -15,6 +15,8 @@ pip install -r requirements.txt
 :: Realizar migraciones en la base de datos
 python manage.py makemigrations roles login kanban administracion publicaciones
 python manage.py migrate
+python poblacion/poblar.py
+python manage.py runserver
 
 :: Mensaje de finalización
 echo Configuración y migraciones completadas.

@@ -9,7 +9,7 @@ def cambiar_rama_y_desplegar(rama_objetivo):
     rama_actual = resultado.strip()
 
     #limpieza total
-    os.system('bash armagedon.sh')
+    os.system('bash restablecimiento.sh')
 
     # Cambiar de rama si es necesario
     if rama_actual != rama_objetivo:
@@ -20,7 +20,7 @@ def cambiar_rama_y_desplegar(rama_objetivo):
     os.system('git pull')
     
     #limpieza total
-    os.system('bash armagedon.sh')
+    os.system('bash restablecimiento.sh')
 
     # Hacer un hard reset en la rama actual
     print('Haciendo git reset --hard')

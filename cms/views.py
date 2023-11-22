@@ -1,20 +1,12 @@
 from django.shortcuts import render
-from cms.settings import GS_BUCKET_NAME
 from publicaciones.forms import BusquedaAvanzadaForm
 from publicaciones.models import Publicacion_solo_text
 from administracion.models import Categoria
-from django.http import JsonResponse
-from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render
 import re
 import bleach
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.core.files.storage import default_storage
-
-
 
 def principal(request):
 
@@ -124,63 +116,3 @@ def publicaciones_categoria(request, categoria_id):
     publicaciones = Publicacion_solo_text.objects.filter(categoria=categoria, activo=True, estado='publicado')
         
     return render(request, 'cms/principal.html', {'categorias': categorias, 'publicaciones': publicaciones, 'principal': True})
-
-@csrf_exempt
-def tinymce_upload(request):
-    if request.method == 'POST' and request.FILES['file']:
-        file = request.FILES['file']
-        
-        # Guarda el archivo usando el sistema de almacenamiento predeterminado 
-        filename = default_storage.save(file.name, file)
-        
-        # Obtiene la URL del archivo en GCS
-        file_url = default_storage.url(filename)
-        
-        return JsonResponse({'location': file_url})
-    return JsonResponse({'error': 'Failed to upload image.'})
-
-
-ALLOWED_EXTENSIONS = {
-    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg',  # Imágenes
-    'mp3', 'wav', 'ogg', 'm4a',                 # Audio
-    'mp4', 'mov', 'avi', 'mkv', 'flv',          # Video
-    'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'  # Documentos
-}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def is_valid_url(url):
-    import re
-    pattern = re.compile(
-        r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-    )
-    return bool(pattern.match(url))
-
-@csrf_exempt
-def tinymce_upload_media(request):
-    if request.method == 'POST':
-        # Verifica si se envió un archivo
-        if 'media' in request.FILES:
-            media = request.FILES['media']
-            
-            if not allowed_file(media.name):
-                return JsonResponse({'error': 'File type not allowed.'})
-
-            # Guarda el archivo usando el sistema de almacenamiento predeterminado
-            filename = default_storage.save(media.name, media)
-            
-            # Obtiene la URL del archivo en GCS
-            media_url = default_storage.url(filename)
-            
-            return JsonResponse({'location': media_url})
-        
-        # Verifica si se envió una URL
-        elif 'url' in request.POST and is_valid_url(request.POST['url']):
-            
-            return JsonResponse({'location': request.POST['url']})
-        
-        else:
-            return JsonResponse({'error': 'Invalid data. Either a file or a valid URL is expected.'})
-
-    return JsonResponse({'error': 'Failed to upload media.'})

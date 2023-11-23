@@ -471,6 +471,23 @@ def estado(request, publicacion_id):
     return JsonResponse({'activo': publicacion.activo})
 
 @login_required
+def estatus(request, publicacion_id):
+    """
+    Cambia el estatus de una publicación. 
+
+    Args:
+        request: Objeto HttpRequest.
+        publicacion_id: ID de la publicación cuyo estado se está cambiando.
+
+    Returns:
+        JsonResponse con el estatus.
+    """
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    publicacion.destacado = not publicacion.destacado
+    publicacion.save()
+    return JsonResponse({'destacado': publicacion.destacado})
+
+@login_required
 @require_http_methods(["GET", "POST"])
 def calificar(request, publicacion_id):
     """

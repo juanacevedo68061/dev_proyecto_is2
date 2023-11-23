@@ -28,13 +28,7 @@ class Categoria(models.Model):
     suscriptores = models.BooleanField(default=False)
     favorito_usuario = models.ManyToManyField(Usuario, blank=True, related_name='categorias_favoritos')
     color = models.CharField(max_length=7)
-    #para las reglas
-    likes = models.PositiveIntegerField(default=1)
-    views = models.PositiveIntegerField(default=2)
-    comments = models.PositiveIntegerField(default=0)
-    shared = models.PositiveIntegerField(default=0)
-    calificaciones_cantidad = models.PositiveIntegerField(default=1)    
-
+    
     def save(self, *args, **kwargs):
         """
         Método personalizado para guardar la categoría y asignar un color único si no se proporciona.

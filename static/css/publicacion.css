@@ -181,6 +181,15 @@
     align-items: center;
 }
 
+.btn-destacado {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
 .btn-encendido {
     color: #007BFF; /* Color azul para el icono de encendido */
     font-size: 30px; /* Tamaño del icono (ajusta según tus preferencias) */
@@ -193,12 +202,31 @@
     cursor: pointer;
 }
 
+.btn-encendido-destacado {
+    color: rgb(243, 68, 190); /* Color azul para el icono de encendido */
+    font-size: 30px; /* Tamaño del icono (ajusta según tus preferencias) */
+    cursor: pointer;
+}
+
+.btn-apagado-destacado {
+    color: #808080; /* Color gris para el icono de apagado */
+    font-size: 30px; /* Tamaño del icono (ajusta según tus preferencias) */
+    cursor: pointer;
+}
+
 /* Estilos de la descripción (letras) */
 .descripcion {
     font-size: 16px; /* Tamaño del texto (ajusta según tus preferencias) */
     color: black; /* Color del texto (negro) */
     margin: 5px;
 }
+
+.descripcion-destacado {
+    font-size: 16px; /* Tamaño del texto (ajusta según tus preferencias) */
+    color: black; /* Color del texto (negro) */
+    margin: 5px;
+}
+
 .permalink {
     display: none;
 }

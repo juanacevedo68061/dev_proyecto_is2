@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_tags %}
 {% load comments %}
 {% load comments_xtd %}
 {% comment %} {% comments_xtd_js %} {% endcomment %}
@@ -14,6 +15,10 @@
 <!--Si quieres que el publicador pueda desactivar solo desde el kanban, quitale rol_-->
 {%if rol_publicador or user == publicacion.autor %}
     <script src="{% static 'js/activate.js' %}"></script>
+{%endif%}
+
+{% if rol_publicador or user|has_role:"administrador"%}
+    <script src="{% static 'js/destacado.js' %}"></script>
 {%endif%}
 
 {%if not publicador %}
@@ -37,11 +42,21 @@
     <div class="publicacion">
         <!--Si quieres que el publicador pueda desactivar solo desde el kanban, quitale rol_-->
         {% if rol_publicador or user == publicacion.autor %}
-            <a class="btn-estado" data-publicacion-id="{{ publicacion.id_publicacion }}" data-activo="{{ publicacion.activo }}">
+            <a class="btn-estado" data-publicacion-id="{{ publicacion.id_publicacion }}">
                 {% if publicacion.activo %}
                     <i class="fas fa-toggle-on btn-encendido"></i> <span class="descripcion">Inactivar</span>
                 {% else %}
                     <i class="fas fa-toggle-off btn-apagado"></i> <span class="descripcion">Activar</span>
+                {% endif %}
+            </a><br><br>                         
+        {% endif %}
+
+        {% if rol_publicador or user|has_role:"administrador"%}
+            <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
+                {% if publicacion.destacado %}
+                    <i class="fas fa-toggle-on btn-encendido-destacado"></i> <span class="descripcion-destacado">Quitar Destacado</span>
+                {% else %}
+                    <i class="fas fa-toggle-off btn-apagado-destacado"></i> <span class="descripcion-destacado">Destacar</span>
                 {% endif %}
             </a><br><br>                         
         {% endif %}

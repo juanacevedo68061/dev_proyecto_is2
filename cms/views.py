@@ -7,6 +7,7 @@ import re
 import bleach
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Case, When, Value, IntegerField
 
 def principal(request):
 
@@ -23,7 +24,8 @@ def principal(request):
     """
     anonimo = isinstance(request.user, AnonymousUser)
     query = request.GET.get('q')
-    publicaciones = obtener_publicaciones(request, anonimo)
+    publicaciones_sin_orden = obtener_publicaciones(request, anonimo)
+    publicaciones = ordenamiento(request, publicaciones_sin_orden)
     avanzada_form = BusquedaAvanzadaForm(anonimo)
 
     if not anonimo:
@@ -92,6 +94,27 @@ def obtener_publicaciones(request, anonimo):
             publicaciones = [publicacion for publicacion in publicaciones if re.search(re.escape(autor), publicacion.autor.username, re.IGNORECASE)]
 
     return publicaciones
+
+def ordenamiento(request, publicaciones):
+    anonimo = isinstance(request.user, AnonymousUser)
+    destacadas = publicaciones.filter(destacado=True)
+    favoritas = Publicacion_solo_text.objects.none()
+    categorias_favoritas = Categoria.objects.none()
+    if not anonimo:
+        categorias_favoritas = Categoria.objects.filter(favorito_usuario=request.user)
+        favoritas = publicaciones.filter(categoria__in=categorias_favoritas)
+
+    restantes = publicaciones.exclude(destacado=True).exclude(categoria__in=categorias_favoritas)
+
+    destacadas_list = list(destacadas)
+    favoritas_list = list(favoritas)
+    restantes_list = list(restantes)
+    resultados = destacadas_list + favoritas_list + restantes_list
+
+    ordenadas = Publicacion_solo_text.objects.filter(pk__in=[pub.pk for pub in resultados]).order_by(
+    Case(*[When(pk=pub.pk, then=Value(index)) for index, pub in enumerate(resultados)], default=Value(len(resultados)), output_field=IntegerField()))
+
+    return ordenadas
 
 def publicaciones_categoria(request, categoria_id):
 

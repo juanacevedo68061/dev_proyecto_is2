@@ -1,7 +1,6 @@
 $(document).ready(function() {
     $('.btn-estado').on('click', function() {
         var publicacionId = $(this).data('publicacion-id');
-        var activo = $(this).data('activo');
         
         $.ajax({
             url: '/publicaciones/estado/' + publicacionId + '/', // URL directa

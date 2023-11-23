@@ -155,6 +155,7 @@ class Publicacion_solo_text(models.Model):
     semaforo = models.CharField(max_length=9, choices=COLORES, default='rojo')
     calificaciones = models.ManyToManyField(Calificacion, blank=True, related_name='publicaciones_calificaciones')
     calificaciones_cantidad = models.PositiveIntegerField(default=0)
+    destacado = models.BooleanField(default=False)
 
     vigencia = models.BooleanField(default=False)
     vigencia_tiempo = models.DateTimeField(null=True, blank=True)
@@ -241,7 +242,6 @@ class Publicacion_solo_text(models.Model):
                 self.version += 1
 
         super(Publicacion_solo_text, self).save(*args, **kwargs)
-
 
     def __str__(self):
         """

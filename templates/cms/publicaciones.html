@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     {% if publicaciones %}
       {% for publicacion in publicaciones %}
-        <div class="publicacion">
+        <div class="{% if publicacion.destacado %}destacada{% else %}publicacion{% endif %}">
           <!-- Círculo de perfil, nombre del autor y fecha en la misma línea -->
           <div class="perfil-nombre-fecha">
             <div class="perfil-circle">
@@ -28,9 +28,15 @@
             <span class="espacio-a-f"></span>
             <!-- Fecha de publicación (dia, mes, año) -->
             <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
+            
+            <!--Destacado-->
+            {% if publicacion.destacado %}
+              <span style="margin-left: 10px;"><i class="fas fa-trophy fa-1x" style="color: gold; "></i></span>
+            {% endif %}
+
           </div>
           <!-- Enlace a la publicación completa (vista previa como enlace) -->
-          <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id_publicacion %}" class="enlace-previa">
+          <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id_publicacion %}" class="enlace-previa {% if publicacion.destacado %}enlace-instagram{% endif %}">
             <!-- Vista previa de la publicación (imagen y contenido) -->
             <div class="vista-previa">
               {% with img_url=publicacion.texto|safe|find_image_url %}
@@ -63,21 +69,14 @@
           <!-- Línea que muestra la categoría y el enlace de reportar -->
           <div class="categoria-y-enlace">
             <!-- Muestra la categoría de la publicación -->
-            <span class="categoria-destacada">{{ publicacion.categoria }}</span>
-            <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
-            <div class="dropdown">
-              <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                    <li>
-                        <a class="dropdown-item" href="#">Reportar</a>
-                    </li>
-                </ul>
-            </div>
+            {% if publicacion.destacado %}
+              <span class="categoria-destacada">{{ publicacion.categoria }}</span>
+            {% else %}
+              <span class="categoria">{{ publicacion.categoria }}</span>
+            {% endif %}
           </div> 
-
-          <hr class="hr">  
         </div>
-        
+        <hr>
       {% endfor %}
     {% else %}
       <br><br><br><br>
@@ -86,7 +85,6 @@
         <h3 style ="color: #999; margin-top: -130px; padding: 25px;">No hay publicaciones</h3>
       </div>
     {% endif %}
-
   </div>
   {% if principal and publicaciones %}
     {% block content %}

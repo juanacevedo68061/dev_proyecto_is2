@@ -16,4 +16,5 @@ urlpatterns = [
     path('usuarios/eliminar_roles/<int:usuario_id>/', views.eliminar_roles_usuario, name='eliminar_roles_usuario'),
     path('usuarios/agregar_permisos/<int:usuario_id>/', views.agregar_permisos_roles_usuario, name='agregar_permisos_roles_usuario'),
     path('usuarios/eliminar_permisos/<int:usuario_id>/', views.eliminar_permisos_roles_usuario, name='eliminar_permisos_roles_usuario'),
+    path('favorito/<int:categoria_id>/', views.favorito, name='favorito'),
 ]

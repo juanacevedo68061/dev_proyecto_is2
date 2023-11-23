@@ -1,17 +1,26 @@
+{% load static %}
 {% block content %}
+
+{% if user.is_authenticated %}
+<script src="{% static 'js/favorito.js' %}"></script>
+{% endif %}
 
 <style>
     .categoria-item {
-        text-decoration: none; /* Elimina el subrayado del enlace */
-        color: black;          /* Establece el color del texto en negro */
-        transition: color 0.2s; /* Agrega una transición suave para el cambio de color */
+        text-decoration: none;
+        /* Elimina el subrayado del enlace */
+        color: black;
+        /* Establece el color del texto en negro */
+        transition: color 0.2s;
+        /* Agrega una transición suave para el cambio de color */
     }
-    
+
     .categoria-item a:hover {
-        color: blue;           /* Cambia el color del texto a azul al pasar el mouse por encima */
+        color: blue;
+        /* Cambia el color del texto a azul al pasar el mouse por encima */
     }
 </style>
-        
+
 <div class="barra-lateral">
     <div class="fijado">
         {%if categorias%}
@@ -20,15 +29,25 @@
             <h3>Categorías Recomendadas</h3>
             <br>
             <ul>
-                <!-- Itera sobre las primeras 8 categorías del contexto -->
-                {% for categoria in categorias|slice:":8" %}
-                <li class="categoria-item"><a class="categoria-item" href="{% url 'publicaciones_categoria' categoria.id %}">{{ categoria }}</a></li>
-                {% endfor %}
+            {% for categoria in categorias %}
+                <li class="categoria-item">
+                    <a class="categoria-item" href="{% url 'publicaciones_categoria' categoria.id %}">{{ categoria }}</a>
+                    <span>
+                        <a href="{% url 'administracion:favorito' categoria.id %}" class="favorito-button {% if favorito %}favorito{% endif %}" data-categoria-id="{{ categoria.id }}" style="text-decoration: none; color: inherit;" title="Favorito">
+                            {% if user in categoria.favorito_usuario.all%}
+                                <i class="fa fa-heart icon-favorito" style="margin-left: 5px; color: #f91880;"></i>
+                            {% else %}
+                                <i class="far fa-heart icon-favorito" style="margin-left: 5px; color: gray;"></i>
+                            {% endif %}
+                        </a>
+                    </span>
+                </li>
+            {% endfor %}                                    
             </ul>
         </div>
         {% endif %}
 
-<!--        {% if user.is_authenticated and usuarios %}
+        <!--        {% if user.is_authenticated and usuarios %}
         
         <div class="a-quien-seguir">
             <h3>A quién seguir</h3>

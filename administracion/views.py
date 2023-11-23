@@ -10,6 +10,7 @@ from roles.models import Rol
 from login.models import Usuario
 from django.urls import reverse
 from roles.forms import AgregarRolForm
+from django.http import JsonResponse
 
 @rol_requerido('administrador')
 @login_required
@@ -365,3 +366,23 @@ def crear_rol(request):
         form = AgregarRolForm()
 
     return render(request, 'administracion/crear_rol.html', {'form': form,'redirect_url': redirect_url})
+
+@login_required
+def favorito(request, categoria_id):
+    categoria = get_object_or_404(Categoria, pk=categoria_id)
+    usuario = request.user
+    
+    if usuario in categoria.favorito_usuario.all():
+        categoria.favorito_usuario.remove(usuario)
+        favorito = False
+    else:
+        categoria.favorito_usuario.add(usuario)
+        favorito = True
+
+    categoria.save() 
+
+    response_data = {
+        'favorito': favorito
+    }
+
+    return JsonResponse(response_data)

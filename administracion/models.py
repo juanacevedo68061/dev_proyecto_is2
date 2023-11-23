@@ -1,5 +1,6 @@
 from django.db import models
 import secrets
+from login.models import Usuario
 
 def get_random_color():
     while True:
@@ -25,8 +26,9 @@ class Categoria(models.Model):
     moderada = models.BooleanField(default=False)
     descripcion = models.TextField(blank=True, null=True)
     suscriptores = models.BooleanField(default=False)
-    color = models.CharField(max_length=7, blank=True, null=True)
-
+    favorito_usuario = models.ManyToManyField(Usuario, blank=True, related_name='categorias_favoritos')
+    color = models.CharField(max_length=7)
+    
     def save(self, *args, **kwargs):
         """
         Método personalizado para guardar la categoría y asignar un color único si no se proporciona.

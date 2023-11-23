@@ -183,25 +183,28 @@ COMMENTS_XTD_APP_MODEL_OPTIONS = {
     }
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cms_bd',  # Nombre de la base de datos PostgreSQL
-        'USER': 'postgres',  # Usuario PostgreSQL
-        'PASSWORD': '12345',  # Contraseña PostgreSQL
-        'HOST': 'db',  # Nombre del servicio de la base de datos en Docker Compose
-        'PORT': '5432',  # Puerto por defecto de PostgreSQL
-    }
-}
-'''
+ENTORNO = 'produccion'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if ENTORNO == 'produccion':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'cms_bd',  # Nombre de la base de datos PostgreSQL
+            'USER': 'postgres',  # Usuario PostgreSQL
+            'PASSWORD': '12345',  # Contraseña PostgreSQL
+            'HOST': 'db',  # Nombre del servicio de la base de datos en Docker Compose
+            'PORT': '5432',  # Puerto por defecto de PostgreSQL
+        }
     }
-}
-'''
+
+if ENTORNO == 'desarrollo':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
 "http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]

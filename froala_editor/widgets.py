@@ -3,12 +3,7 @@ from django.utils.safestring import mark_safe
 from django.conf import settings
 import json
 from . import PLUGINS, PLUGINS_WITH_CSS, THIRD_PARTY, THIRD_PARTY_WITH_CSS
-
-try:
-    from django.urls import NoReverseMatch, reverse
-except ImportError:
-    from django.core.urlresolvers import reverse, NoReverseMatch
-
+from django.urls import NoReverseMatch, reverse
 
 class FroalaEditor(widgets.Textarea):
     def __init__(self, *args, **kwargs):
@@ -18,6 +13,7 @@ class FroalaEditor(widgets.Textarea):
         self.theme = kwargs.pop('theme', getattr(settings, 'FROALA_EDITOR_THEME', None))
         self.image_upload = kwargs.pop('image_upload', True)
         self.video_upload = kwargs.pop('video_upload', True)
+        self.files_manager_upload = kwargs.pop('files_manager_upload', True)
         self.file_upload = kwargs.pop('file_upload', True)
         self.language = (getattr(settings, 'FROALA_EDITOR_OPTIONS', {})).get('language', '')
         super(FroalaEditor, self).__init__(*args, **kwargs)
@@ -41,6 +37,13 @@ class FroalaEditor(widgets.Textarea):
             default_options.update([('videoUploadParams', {'csrfmiddlewaretoken': 'csrftokenplaceholder'})])
         except NoReverseMatch:
             default_options['videoUpload'] = False
+        
+        try:
+            files_manager_upload_url = reverse('froala_editor_files_manager_upload')
+            default_options['filesManagerUploadURL'] = files_manager_upload_url
+            default_options.update([('filesManagerUploadParams', {'csrfmiddlewaretoken': 'csrftokenplaceholder'})])
+        except NoReverseMatch:
+            default_options['files_managerUpload'] = False
 
         try:
             file_upload_url = reverse('froala_editor_file_upload')

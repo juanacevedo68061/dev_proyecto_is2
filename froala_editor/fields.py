@@ -17,6 +17,7 @@ class FroalaField(Field):
         self.third_party = kwargs.pop('plugins', getattr(settings, 'FROALA_EDITOR_THIRD_PARTY', THIRD_PARTY))
         self.image_upload = kwargs.pop('image_upload', True)
         self.video_upload = kwargs.pop('video_upload', True)
+        self.files_manager_upload = kwargs.pop('files_manager_upload', True)
         self.file_upload = kwargs.pop('file_upload', True)
         self.use_froala = kwargs.pop('', getattr(settings, 'USE_FROALA_EDITOR', True))
         super(FroalaField, self).__init__(*args, **kwargs)
@@ -27,17 +28,10 @@ class FroalaField(Field):
     def formfield(self, **kwargs):
         if self.use_froala:
             widget = FroalaEditor(options=self.options, theme=self.theme, plugins=self.plugins,
-            image_upload=self.image_upload, video_upload=self.video_upload, file_upload=self.file_upload, third_party=self.third_party)
+            image_upload=self.image_upload, video_upload=self.video_upload, files_manager_upload=self.files_manager_upload, file_upload=self.file_upload, third_party=self.third_party)
         else:
             widget = Textarea()
         defaults = {'widget': widget}
         defaults.update(kwargs)
         return super(FroalaField, self).formfield(**defaults)
 
-
-try:
-    from south.modelsinspector import add_introspection_rules
-
-    add_introspection_rules([], ["^froala_editor\.fields\.FroalaField"])
-except ImportError:
-    pass

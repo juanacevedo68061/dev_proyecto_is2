@@ -53,6 +53,14 @@ def video_upload(request):
         link = request.build_absolute_uri(storage.url(path))
         return HttpResponse(json.dumps({'link': link}), content_type="application/json")
 
+def files_manager_upload(request):
+    if 'file' in request.FILES:
+        the_file = request.FILES['file']
+        upload_to = getattr(settings, 'FROALA_UPLOAD_PATH', 'uploads/froala_editor/files_managers/')
+        path = storage.save(os.path.join(upload_to, the_file.name), the_file)
+        link = storage.url(path)
+        return HttpResponse(json.dumps({'link': link}), content_type="application/json")
+
 def file_upload(request):
     if 'file' in request.FILES:
         the_file = request.FILES['file']

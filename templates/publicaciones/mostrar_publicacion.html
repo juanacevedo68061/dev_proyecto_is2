@@ -17,8 +17,10 @@
     <script src="{% static 'js/activate.js' %}"></script>
 {%endif%}
 
-{% if user|has_role:"administrador"%}
+{% if user.is_authenticated %}                                            
+    {% if user|has_role:"administrador" %}
     <script src="{% static 'js/destacado.js' %}"></script>
+    {%endif%}
 {%endif%}
 
 {%if not publicador %}
@@ -51,14 +53,16 @@
             </a><br><br>                         
         {% endif %}
 
-        {% if user|has_role:"administrador"%}
-            <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
-                {% if publicacion.destacado %}
-                    <i class="fas fa-toggle-on btn-encendido-destacado"></i> <span class="descripcion-destacado">Quitar Destacado</span>
-                {% else %}
-                    <i class="fas fa-toggle-off btn-apagado-destacado"></i> <span class="descripcion-destacado">Destacar</span>
-                {% endif %}
-            </a><br><br>                         
+        {% if user.is_authenticated %}                                            
+            {% if user|has_role:"administrador" %}
+                <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
+                    {% if publicacion.destacado %}
+                        <i class="fas fa-toggle-on btn-encendido-destacado"></i> <span class="descripcion-destacado">Quitar Destacado</span>
+                    {% else %}
+                        <i class="fas fa-toggle-off btn-apagado-destacado"></i> <span class="descripcion-destacado">Destacar</span>
+                    {% endif %}
+                </a><br><br>                         
+            {% endif %}
         {% endif %}
 
         
@@ -185,7 +189,9 @@
         <div>{{ publicacion.texto | safe }}</div><br>
 
         <div class="comentarios">
-            <h3>Comentarios</h3>
+            {% if publicacion.comments > 0 %}
+                <h3 style="font-weight: bold;">Comentarios</h3><br><br>
+            {% endif %}
             {% render_xtdcomment_tree for publicacion %}
         </div>
         

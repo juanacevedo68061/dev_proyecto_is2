@@ -87,7 +87,51 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
 
                             if (data.reason_required) {
-                                $('#motivoModal').modal('show');
+                                $('#motivoModal').modal({
+                                    backdrop: 'static',
+                                    keyboard: false
+                                }).modal('show');
+                                
+                                
+                                var cerrarMotivoBtn = document.getElementById('cerrarMotivoBtn');
+                                cerrarMotivoBtn.addEventListener('click', function () {
+                                    var motivo = '';
+                                    var columnaId = evt.to.id;
+                                    console.log('Columna destino:', columnaId);
+                                    $('#motivoModal').modal('hide');
+
+                                    if (!motivoSubmitted) {
+                                        motivoSubmitted = true;
+
+                                        fetch('/kanban/motivo/', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                                'X-CSRFToken': getCookie('csrftoken'),
+                                            },
+                                            body: 'id_publicacion=' + publicacionId + '&motivo=' + motivo + '&nuevo=' + columnaId,
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('Respuesta de la solicitud de motivo:', data);
+
+                                                var motivoInput = '';
+                                                motivoInput.value = '';
+
+                                                if (data.vuelve === true) {
+                                                    reloadColumns();
+                                                }
+
+                                                isUpdating = false;  // Restablecer la bandera
+                                                motivoSubmitted = false;  // Restablecer la bandera
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                isUpdating = false;  // Restablecer la bandera
+                                                motivoSubmitted = false;  // Restablecer la bandera
+                                            });
+                                    }
+                                });
 
                                 var guardarMotivoBtn = document.getElementById('guardarMotivoBtn');
                                 guardarMotivoBtn.addEventListener('click', function () {

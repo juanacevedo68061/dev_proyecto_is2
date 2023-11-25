@@ -369,6 +369,13 @@ def crear_rol(request):
 
 @login_required
 def favorito(request, categoria_id):
+    """
+    Gestiona la acción de marcar o desmarcar una categoría como favorita para un usuario.
+
+    :param request: Objeto HttpRequest.
+    :param categoria_id: ID de la categoría que se desea marcar o desmarcar como favorita.
+    :return: Objeto JsonResponse con el estado de la categoría marcada como favorita o no.
+    """
     categoria = get_object_or_404(Categoria, pk=categoria_id)
     usuario = request.user
     

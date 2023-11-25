@@ -254,7 +254,6 @@ def motivo(request):
             
             return JsonResponse({'vuelve': True})
         else:
-            print("VACIOOOOO")
             return JsonResponse({'vuelve': True})
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)

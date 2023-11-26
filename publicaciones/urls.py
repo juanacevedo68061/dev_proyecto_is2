@@ -17,7 +17,6 @@ urlpatterns = [
     path('estado/<uuid:publicacion_id>/', views.estado, name='estado'),
     path('estatus/<uuid:publicacion_id>/', views.estatus, name='estatus'),
     path('calificar/<uuid:publicacion_id>/', views.calificar, name='calificar'),
-    path('comments/post/', views.custom_post_comment, name='comments-post-comment'),
 ]
 
 

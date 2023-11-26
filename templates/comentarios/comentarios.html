@@ -20,7 +20,7 @@
     </form>
 </div>
 <br>
-<hr>
+<hr style="width: 100%; border: 0.5px solid #b8b8b8; margin: 0;">
 <br>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -29,13 +29,13 @@
 
         comentarioInput.addEventListener('input', function () {
             if (comentarioInput.value.trim() !== '') {
-                btnComentar.style.backgroundColor = '#007BFF';
-                btnComentar.style.border = '0px solid #007BFF';
+                btnComentar.style.backgroundColor = 'green';
+                btnComentar.style.border = '0px solid green';
                 btnComentar.style.cursor = 'pointer';
                 btnComentar.removeAttribute('disabled');
             } else {
-                btnComentar.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-                btnComentar.style.border = 'none';
+                btnComentar.style.backgroundColor = '#bdf8ae';
+                btnComentar.style.border = '0px solid #bdf8ae';
                 btnComentar.style.cursor = 'not-allowed';
                 btnComentar.setAttribute('disabled', 'disabled');
             }

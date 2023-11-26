@@ -2,7 +2,6 @@ from .forms import CommentForm
 from django.http import JsonResponse
 
 def comentar(request, publicacion_id):
-    print("Entroo a comentar")
     response_data = {'success': False}
 
     if request.method == 'POST':

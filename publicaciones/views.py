@@ -263,6 +263,7 @@ def mostar_para_publicador(request, publicacion_id):
         {'publicacion': publicacion, 'redirect_url': redirect_url, 'publicador': publicador}
     )
 
+from comentarios.forms import CommentForm
 def mostrar_publicacion(request, publicacion_id):
 
     """
@@ -281,8 +282,11 @@ def mostrar_publicacion(request, publicacion_id):
     if request.user.is_authenticated:
         if request.user.roles.filter(nombre="publicador").exists():
             rol_publicador = True
+
+    comment_form = CommentForm()
     context = {
         'publicacion': publicacion,
+        'comment_form': comment_form,
         'ha_dado_like': ha_dado_like,
         'ha_dado_dislike': ha_dado_dislike,
         'rol_publicador': rol_publicador

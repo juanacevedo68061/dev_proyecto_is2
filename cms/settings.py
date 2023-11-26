@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django_comments",
     "django_comments_xtd",
     "froala_editor",
+    "comentarios",
 ]
 
 MIDDLEWARE = [

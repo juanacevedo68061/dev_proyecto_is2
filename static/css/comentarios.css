@@ -1,0 +1,47 @@
+/*estilos del modal*/
+.modal {
+    overflow-y: auto;
+    margin: 0;
+}
+
+.modal-dialog {
+    width: 45%;
+    height: 100%;
+    margin: 0;
+    position: absolute;
+    right: 0;
+}
+
+.modal-content {
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: translateX(0);
+}
+.modal-header {
+    border-bottom: none;
+}
+
+/*estilos del comentario*/
+
+.comentar {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Agrega un box-shadow suave */
+    padding: 15px; /* Añade un relleno para mejorar la apariencia */
+    overflow: hidden;
+}
+
+.btn-comentar {
+    background-color: #007BFF;
+    color: #FFFFFF;
+    border: 0px solid #007BFF;
+    border-radius: 50px; /* Valor alto para crear la forma de un óvalo estirado */
+    padding: 5px 12px;
+    cursor: pointer;
+    float: right;
+}

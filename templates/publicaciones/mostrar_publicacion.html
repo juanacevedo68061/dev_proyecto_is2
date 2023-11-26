@@ -1,15 +1,31 @@
 {% extends "base.html" %}
 {% load static %}
 {% load custom_tags %}
-{% load comments %}
-{% load comments_xtd %}
-{% comment %} {% comments_xtd_js %} {% endcomment %}
 
 {% block content %}
 
+<!-- Scripts de Bootstrap (asegúrate de tener estas bibliotecas incluidas) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- CSS de Bootstrap (puedes cambiar la versión según tu proyecto) -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+<!-- Iconos de FontAwesome (puedes cambiar la versión según tu proyecto) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<!-- jQuery (asegúrate de tener esta biblioteca incluida) -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<!-- Popper.js (asegúrate de tener esta biblioteca incluida) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<!-- JavaScript de Bootstrap (puedes cambiar la versión según tu proyecto) -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 
 <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'css/comentarios.css' %}" rel="stylesheet" />
 <link href="{% static 'css/publicacion.css' %}" rel="stylesheet" />
 
 <!--Si quieres que el publicador pueda desactivar solo desde el kanban, quitale rol_-->
@@ -128,26 +144,52 @@
                                     <i class="far fa-thumbs-down icon-dislike"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
-                                
-                                <script>
-                                    function toggleComentarios() {
-                                        console.log("Función toggleComentarios llamada");
-                                        var comentariosSection = document.getElementById('comentariosSection');
-                                        if (comentariosSection.style.display === 'none' || comentariosSection.style.display === '') {
-                                            comentariosSection.style.display = 'block';
-                                        } else {
-                                            comentariosSection.style.display = 'none';
-                                        }
-                                    }                                    
-                                </script>
-
+                            
                                 <!-- Botón de Comentar con ícono personalizado -->
-                                <a href="#comentariosSection" onclick="toggleComentarios()">
-                                    <i class="far fa-comment icon-comment {% if user.is_authenticated %}active{% endif %}"></i>
+                                <a href="#" id="abrir-comentarios">
+                                    <i class="far fa-comment icon-comment"></i>
                                 </a>
                                 <p class="btn-icon cantidad">{{ publicacion.comments }}</p>
-                            </div>
+                                <script>
+                                    $(document).ready(function () {
+                                        // Al hacer clic en el ícono de comentarios
+                                        $("#abrir-comentarios").click(function () {
+                                            // Mostrar el modal
+                                            $("#comentarios-modal").modal("show");
+                                        });
+                                
+                                        // Al hacer clic en el botón de cerrar del modal
+                                        $("#comentarios-modal .close").click(function () {
+                                            // Cerrar el modal
+                                            $("#comentarios-modal").modal("hide");
+                                        });
+                                
+                                        // Deshabilitar cierre al hacer clic en la sombra del modal
+                                        $("#comentarios-modal").modal({
+                                            backdrop: 'static',
+                                            keyboard: false
+                                        });
+                                    });
+                                </script>
+                                                            
+                                <!-- Modal de comentarios (inicialmente oculto) -->
+                                <div class="modal fade" id="comentarios-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-right" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 style="font-weight: bold;">Comentarios ({{publicacion.comments}})</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% include 'comentarios/comentarios.html' %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                            </div>
                         <!-- Espacio mayor entre los dos grupos de botones -->
                         <div class="espacio"></div>
                     
@@ -188,60 +230,6 @@
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
 
-        <div class="comentarios">
-            {% if publicacion.comments > 0 %}
-                <h3 style="font-weight: bold;">Comentarios</h3><br><br>
-            {% endif %}
-            {% render_xtdcomment_tree for publicacion %}
-        </div>
-        
-        <div id="comentariosSection" style="display: none;">    
-            {% if user.is_authenticated %}
-                <div class="agregar-comentario">
-                    <h4>Agregar comentario</h4>
-                    {% render_comment_form for publicacion %}
-                    <button id="cancelarBtn" type="button">Cancelar</button>
-                </div>
-            {% endif %}
-        </div>
-
-        <script>
-            document.getElementById("cancelarBtn").addEventListener("click", function() {
-                document.getElementById("comentariosSection").style.display = "none";
-            });
-        </script>   
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                let formulario = document.querySelector('.agregar-comentario form');
-                
-                if (formulario) {
-                    formulario.addEventListener('submit', function(event) {
-                        event.preventDefault();  // Evita el comportamiento predeterminado del formulario
-            
-                        let datosFormulario = new FormData(formulario);
-            
-                        fetch(formulario.action, {
-                            method: 'POST',
-                            body: datosFormulario
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                alert('Comentario enviado con éxito!');
-                                location.reload();
-                            } else {
-                                alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
-                            }
-                        })
-                        .catch(error => {
-                            alert('Hubo un error al enviar el comentario. Por favor, inténtalo de nuevo.');
-                        });
-                    });
-                }
-            });
-            </script>
-            
-
         {%if publicador %}
             <form method="post">
                 {% csrf_token %}
@@ -251,15 +239,5 @@
         {% endif %}
     </div>
 </div>
-<script>
-    function toggleComentarios() {
-        var section = document.getElementById("comentariosSection");
-        if (section.style.display === "none") {
-            section.style.display = "block";
-        } else {
-            section.style.display = "none";
-        }
-    }
-</script>
 
 {% endblock %}

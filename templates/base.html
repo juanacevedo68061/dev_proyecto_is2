@@ -176,6 +176,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% include 'mensajes.html' %}
 
+    {% block javascript %}
+        <script>
+        // Asegúrate de que el código de GA esté cargado antes de definir esta función
+        function sendEventToGA(action, category, label, value) {
+            gtag('event', action, {
+            'event_category': category,
+            'event_label': label,
+            'value': value
+            });
+        }
+        </script>
+    {% endblock %}
+
+
 </body>
 
 </html>

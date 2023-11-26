@@ -16,9 +16,11 @@ DEBUG = True
 
 SITE_DOMAIN = '127.0.0.1'
 SITE_PORT = '8000'
-ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0', 'cms-is2.loca.lt']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
+CSRF_TRUSTED_ORIGINS = ['https://*.loca.lt']
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

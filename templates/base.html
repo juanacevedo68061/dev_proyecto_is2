@@ -19,7 +19,10 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-8PCDK3WX2T');
+    gtag('config', 'G-8PCDK3WX2T', {
+        'page_path': '/publicaciones/mostrar/' + publicacionId
+    });
+
     </script>
 
     <meta charset="utf-8" />
@@ -178,17 +181,49 @@
 
     {% block javascript %}
         <script>
-        // Asegúrate de que el código de GA esté cargado antes de definir esta función
-        function sendEventToGA(action, category, label, value) {
-            gtag('event', action, {
-            'event_category': category,
-            'event_label': label,
-            'value': value
+            // Asegúrate de que estas funciones se definen después de que gtag.js esté cargado
+            function sendLikeEvent(publicacionId) {
+            gtag('event', 'like', {
+                'event_category': 'Interacción',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': 1
             });
-        }
+            }
+            
+            function sendDislikeEvent(publicacionId) {
+            gtag('event', 'dislike', {
+                'event_category': 'Interacción',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': 1
+            });
+            }
+            
+            function sendCommentEvent(publicacionId) {
+            gtag('event', 'comment', {
+                'event_category': 'Interacción',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': 1
+            });
+            }
+            
+            function sendViewEvent(publicacionId) {
+            gtag('event', 'view', {
+                'event_category': 'Interacción',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': 1
+            });
+            }
+            
+            function sendShareEvent(publicacionId) {
+            gtag('event', 'share', {
+                'event_category': 'Interacción',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': 1
+            });
+            }
         </script>
+            
     {% endblock %}
-
 
 </body>
 

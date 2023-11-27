@@ -118,7 +118,7 @@
                             <!-- Primer grupo de botones -->
                             <div class="btn-group">
                                 <!-- Botón de Like con ícono personalizado -->
-                                <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}" class="like-button {% if ha_dado_like %}liked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <a href="#" class="like-button {% if ha_dado_like %}liked{% endif %}" onclick="sendLikeEvent('{{ publicacion.id_publicacion }}'); return false;" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                     <i class="far fa-thumbs-up icon-like"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
@@ -159,9 +159,10 @@
                             <p id="publicacion-data" data-id="{{ publicacion.id_publicacion }}" class="btn-icon cantidad">{{ publicacion.views }}</p>
 
                             <!-- Botón de Compartir con ícono personalizado -->
-                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}" onclick="sendShareEvent('{{ publicacion.id_publicacion }}');">
                                 <i class="fas fa-share icon-share"></i>
                             </a>
+
                             <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
                             
                             <!-- Modal para mostrar el código QR -->

@@ -1,0 +1,32 @@
+
+    {% for comentario in comentarios %}
+        <div class="perfil-circle">
+            {% if comentario.usuario.imagen %}
+            <img src="{{ comentario.usuario.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="23" height="23"
+                style="object-fit: cover; margin-top: -3px;">
+            {% else %}
+            <i class="fas fa-user"></i>
+            {% endif %}
+            <span style="margin-right: 10px;">{{ comentario.usuario.username }} <span style="color: gray; font-size: 14px;">{{ comentario.fecha_creacion }}</span></span>
+        </div>
+        
+        <div style="margin-top: 10px; color: #555; font-family: 'Arial', sans-serif;">
+            {{ comentario.texto }}
+        </div>
+        
+        <br>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="#" style="text-decoration: none; color: black;">
+                    <i class="far fa-comment" style="font-size: 14px;"></i>
+                </a>
+                <span class="btn-icon" style="color: black; font-size: 14px;">0</span>
+            </div>
+            <a href="#" style="margin-left: auto; text-decoration: none; color: black;">Responder</a>
+        </div>
+        
+        <hr>
+        <br>
+    {% endfor %}
+

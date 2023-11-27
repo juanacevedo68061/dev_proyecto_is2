@@ -5,8 +5,7 @@
 }
 
 .modal-dialog {
-    width: 45%;
-    height: 100%;
+    /*max-width: 100%;*/
     margin: 0;
     position: absolute;
     right: 0;

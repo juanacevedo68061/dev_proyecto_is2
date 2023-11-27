@@ -22,6 +22,7 @@
 <br>
 <hr style="width: 100%; border: 0.5px solid #b8b8b8; margin: 0;">
 <br>
+{% include 'comentarios/comentario.html' with comentarios=comentarios %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var comentarioInput = document.querySelector('#id_texto'); // Reemplaza 'id_texto' con el ID real de tu campo de texto

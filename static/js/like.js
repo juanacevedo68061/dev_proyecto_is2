@@ -14,14 +14,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => {
                     likesCount.textContent = data.likes;
 
-                    if (data.ha_dado_like !== undefined) {
-                        // Envío del evento a Google Analytics
-                        gtag('event', 'like', {
-                            'event_category': 'Interacción',
-                            'event_label': 'Publicación ' + publicacionId,
-                            'value': data.ha_dado_like ? 1 : 0  // '1' para like, '0' para unlike.
-                        });
-                    }
+                    // if (data.ha_dado_like !== undefined) {
+                    //     // Envío del evento a Google Analytics
+                    //     gtag('event', 'like', {
+                    //         'event_category': 'Interacción',
+                    //         'event_label': 'Publicación ' + publicacionId,
+                    //         'value': data.ha_dado_like ? 1 : 0  // '1' para like, '0' para unlike.
+                    //     });
+                    // }
 
                     if (data.ha_dado_like) {
                         likeButton.classList.add("liked");

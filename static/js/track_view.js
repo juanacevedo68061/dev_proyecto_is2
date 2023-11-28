@@ -4,6 +4,16 @@ $(document).ready(function() {
     var publicacionId = $("#publicacion-data").data("id"); // Obtiene el valor de id desde el atributo de datos
     var csrfToken = $("input[name=csrfmiddlewaretoken]").val(); // Obtiene el token CSRF
 
+    // Función para enviar evento de vista a Google Analytics
+    function sendViewEvent(publicacionId) {
+        gtag('event', 'view', {
+            'event_category': 'Interacción',
+            'event_label': 'Publicación ' + publicacionId,
+            'non_interaction': true // Marca el evento como no interactivo para no afectar la tasa de rebote
+        });
+        console.log("Evento de vista enviado para la publicación:", publicacionId);
+    }
+
     // Al ingresar a la publicación, borra el valor del almacenamiento local
     localStorage.removeItem("publicacion_" + publicacionId);
 
@@ -28,9 +38,18 @@ $(document).ready(function() {
                     if (data.status === "success") {
                         console.log("Vista registrada con éxito. Nuevas vistas:", data.views);
                         $("#contador-views").html(data.views);
+
+                        // Llama a sendViewEvent para enviar el evento a Google Analytics
+                        sendViewEvent(publicacionId);
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al registrar la vista:", error);
                 }
             });
         }
     });
+
+    // Envía inmediatamente una vista al cargar la página
+    sendViewEvent(publicacionId);
 });

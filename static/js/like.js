@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     const likeButtons = document.querySelectorAll(".like-button");
-    const dislikeButtons = document.querySelectorAll(".dislike-button");
 
     likeButtons.forEach(likeButton => {
         likeButton.addEventListener("click", function(event) {
@@ -14,9 +13,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(response => response.json())
                 .then(data => {
                     likesCount.textContent = data.likes;
+
+                    // if (data.ha_dado_like !== undefined) {
+                    //     // Envío del evento a Google Analytics
+                    //     gtag('event', 'like', {
+                    //         'event_category': 'Interacción',
+                    //         'event_label': 'Publicación ' + publicacionId,
+                    //         'value': data.ha_dado_like ? 1 : 0  // '1' para like, '0' para unlike.
+                    //     });
+                    // }
+
                     if (data.ha_dado_like) {
                         likeButton.classList.add("liked");
-                        // Si tenía un "dislike", quitarlo y actualizar la cantidad de dislikes
                         if (data.tiene_dislike) {
                             dislikesButton.classList.remove("disliked");
                             dislikesCount.textContent = data.dislikes;
@@ -24,8 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         likeButton.classList.remove("liked");
                     }
-                    
-                    
                 })
                 .catch(error => {
                     console.error("Error en la solicitud fetch:", error);

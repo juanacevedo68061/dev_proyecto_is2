@@ -13,20 +13,55 @@
         <div style="margin-top: 10px; color: #555; font-family: 'Arial', sans-serif;">
             {{ comentario.texto }}
         </div>
-        
-        <br>
+        <br>    
+        <div class="comentario">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a href="#" style="text-decoration: none; color: black;">
+                        <i class="far fa-comment" style="font-size: 14px;"></i>
+                    </a>
+                    <span class="btn-icon" style="color: black; font-size: 14px;">0</span>
+                </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <a href="#" style="text-decoration: none; color: black;">
-                    <i class="far fa-comment" style="font-size: 14px;"></i>
-                </a>
-                <span class="btn-icon" style="color: black; font-size: 14px;">0</span>
+                <a href="#" id="enlace-responder-{{ comentario.id }}" style="margin-left: auto; text-decoration: none; color: black;">Responder</a>
             </div>
-            <a href="#" style="margin-left: auto; text-decoration: none; color: black;">Responder</a>
-        </div>
-        
+            
+            <br>        
+            <div id="comentario-responder-{{ comentario.id }}" class="comentario-responder">
+                {% include 'comentarios/responder.html' %}
+            </div>
+        </div>    
         <hr>
         <br>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var enlaceResponder = document.querySelector('#enlace-responder-{{ comentario.id }}');
+                var elementoMostrarOcultar = document.querySelector('#comentario-responder-{{ comentario.id }}');
+                
+                enlaceResponder.addEventListener('click', function(e) {
+                    e.preventDefault();
+    
+                    // Cierra todos los comentarios antes de abrir el correspondiente
+                    document.querySelectorAll('.comentario-responder').forEach(function(comentario) {
+                        if (comentario !== elementoMostrarOcultar) {
+                            comentario.style.display = 'none';
+                        }
+                    });
+    
+                    // Abre o cierra el comentario actual
+                    if (elementoMostrarOcultar.style.display === 'block') {
+                        elementoMostrarOcultar.style.display = 'none';
+                    } else {
+                        elementoMostrarOcultar.style.display = 'block';
+                    }
+                });
+            });
+        </script>
     {% endfor %}
 
+    <style>
+        .comentario-responder {
+            display: none;
+        }
+    </style>
+    

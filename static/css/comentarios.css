@@ -35,17 +35,6 @@
     overflow: hidden;
 }
 
-.btn-comentar {
-    background-color: #bdf8ae;
-    color: #FFFFFF;
-    border: 0px solid #bdf8ae;
-    border-radius: 50px;
-    padding: 5px 12px;
-    cursor: pointer;
-    float: right;
-    cursor: not-allowed;
-}
-
 .full-width-hr {
     width: 100%;
     border: 0.5px solid #dcdcdc;

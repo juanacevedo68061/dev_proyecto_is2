@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (data.ha_dado_dislike) {
                         dislikeButton.classList.add("disliked");
                         // Si tenía un "like", quitarlo y actualizar la cantidad de likes
+                        gtag('event', 'dislike', {
+                            'event_category': 'Interacción',
+                            'event_label': 'Publicación ' + publicacionId,
+                            'value': data.ha_dado_dislike ? 1 : 0  // '1' para like, '0' para unlike.
+                        });
                         if (data.tiene_like) {
                             likesButton.classList.remove("liked");
                             likesCount.textContent = data.likes;

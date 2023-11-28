@@ -280,7 +280,7 @@ def mostrar_publicacion(request, publicacion_id):
         if request.user.roles.filter(nombre="publicador").exists():
             rol_publicador = True
     
-    comentarios = Comment.objects.filter(publicacion_id=publicacion_id)
+    comentarios = Comment.objects.filter(publicacion_id=publicacion_id, comentario_padre=None)
     comment_form = CommentForm()
     context = {
         'publicacion': publicacion,

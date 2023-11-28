@@ -3,6 +3,13 @@
 <!DOCTYPE html>
 <html lang="es">
 
+{% comment %} <script>
+    // Se define una variable global que puede ser usada por otros scripts.
+    window.CMSData = {
+        'publicacionId': null
+    };
+</script> {% endcomment %}
+
 <head>
 
     <title>{% block title %} {% endblock %}</title>
@@ -183,43 +190,48 @@
         <script>
             // Asegúrate de que estas funciones se definen después de que gtag.js esté cargado
             function sendLikeEvent(publicacionId) {
-            gtag('event', 'like', {
-                'event_category': 'Interacción',
-                'event_label': 'Publicación ' + publicacionId,
-                'value': 1
-            });
+                gtag('event', 'like', {
+                    'event_category': 'Interacción',
+                    'event_label': 'Publicación ' + publicacionId,
+                    'value': 1
+                });
+                console.log("Evento de like enviado para la publicación:", publicacionId);
             }
             
             function sendDislikeEvent(publicacionId) {
-            gtag('event', 'dislike', {
-                'event_category': 'Interacción',
-                'event_label': 'Publicación ' + publicacionId,
-                'value': 1
-            });
+                gtag('event', 'dislike', {
+                    'event_category': 'Interacción',
+                    'event_label': 'Publicación ' + publicacionId,
+                    'value': 1
+                });
+                console.log("Evento de dislike enviado para la publicación:", publicacionId);
             }
             
             function sendCommentEvent(publicacionId) {
-            gtag('event', 'comment', {
-                'event_category': 'Interacción',
-                'event_label': 'Publicación ' + publicacionId,
-                'value': 1
-            });
+                gtag('event', 'comment', {
+                    'event_category': 'Interacción',
+                    'event_label': 'Publicación ' + publicacionId,
+                    'value': 1
+                });
+                console.log("Evento de comentario enviado para la publicación:", publicacionId);
             }
             
             function sendViewEvent(publicacionId) {
-            gtag('event', 'view', {
-                'event_category': 'Interacción',
-                'event_label': 'Publicación ' + publicacionId,
-                'value': 1
-            });
+                gtag('event', 'view', {
+                    'event_category': 'Interacción',
+                    'event_label': 'Publicación ' + publicacionId,
+                    'value': 1
+                });
+                console.log("Evento de vista enviado para la publicación:", publicacionId);
             }
             
             function sendShareEvent(publicacionId) {
-            gtag('event', 'share', {
-                'event_category': 'Interacción',
-                'event_label': 'Publicación ' + publicacionId,
-                'value': 1
-            });
+                gtag('event', 'compartir', {
+                    'event_category': 'Interacción',
+                    'event_label': 'Publicación ' + publicacionId,
+                    'value': 1
+                });
+                console.log("Evento de compartir enviado para la publicación:", publicacionId);
             }
         </script>
             

@@ -4,7 +4,7 @@
 {% load comments %}
 {% load comments_xtd %}
 {% comment %} {% comments_xtd_js %} {% endcomment %}
-
+{% block title %}{{ publicacion.titulo }}{% endblock %}
 {% block content %}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -124,9 +124,9 @@
                                 <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
                                 
                                 <!-- Botón de No me gusta con ícono personalizado -->
-                                <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <a href="#" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" onclick="sendDislikeEvent('{{ publicacion.id_publicacion }}'); return false;" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                     <i class="far fa-thumbs-down icon-dislike"></i>
-                                </a>
+                                </a>                                
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
                                 
                                 <script>

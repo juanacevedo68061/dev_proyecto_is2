@@ -4,6 +4,20 @@ document.addEventListener("DOMContentLoaded", function() {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const calificacionMensaje = document.querySelector("#calificacion-mensaje");
 
+    // Función para enviar el evento de calificación a Google Analytics
+    function sendRatingEvent(rating, publicacionId) {
+        if (typeof gtag === 'function') {
+            gtag('event', 'rating', {
+                'event_category': 'Calificación',
+                'event_label': 'Publicación ' + publicacionId,
+                'value': rating
+            });
+            console.log("Evento de calificación enviado:", rating, "para la publicación:", publicacionId);
+        } else {
+            console.warn("Google Analytics no está definido.");
+        }
+    }
+
     starLinks.forEach(starLink => {
         starLink.addEventListener("click", function(event) {
             event.preventDefault();
@@ -28,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     calificacionCantidad.textContent = data.calificaciones;
                     mostrarCalificacionMensaje(data.rating);
                     mostrarCalificacionEstrellas(data.rating);
+                    sendRatingEvent(data.rating, publicacionId);
                 })
                 .catch(error => {
                     console.error("Error en la solicitud fetch:", error);

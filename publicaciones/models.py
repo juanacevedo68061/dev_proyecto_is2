@@ -7,8 +7,6 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 import datetime
-from django_comments_xtd.moderation import moderator, XtdCommentModerator
-
 
 class Calificacion(models.Model):
     """
@@ -253,8 +251,3 @@ class Publicacion_solo_text(models.Model):
             Representación en cadena del título de la publicación.
         """
         return self.titulo
-    
-class PublicacionCommentModerator(XtdCommentModerator):
-    email_notification = True  # Si quieres notificaciones por correo electrónico
-
-moderator.register(Publicacion_solo_text, PublicacionCommentModerator)

@@ -10,8 +10,8 @@ urlpatterns = [
     path('administracion/', include('administracion.urls', namespace='administracion')),
     path('publicaciones/', include('publicaciones.urls', namespace='publicaciones')),
     path('kanban/', include('kanban.urls', namespace='kanban')),
+    path('comentarios/', include('comentarios.urls', namespace='comentarios')),
     path('categoria/<int:categoria_id>/', views.publicaciones_categoria, name='publicaciones_categoria'),
-    path('comments/', include('django_comments_xtd.urls')),
 ]
 
 if settings.DEBUG:

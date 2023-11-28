@@ -1,0 +1,99 @@
+{% load filtro_comentarios %}
+
+    {% for comentario in comentarios %}
+        <div class="perfil-circle">
+            {% if comentario.usuario.imagen %}
+            <img src="{{ comentario.usuario.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="23" height="23"
+                style="object-fit: cover; margin-top: -3px;">
+            {% else %}
+            <i class="fas fa-user"></i>
+            {% endif %}
+            <span style="margin-right: 10px;">{{ comentario.usuario.username }} <span style="color: gray; font-size: 14px;">{{ comentario.fecha_creacion }}</span></span>
+        </div>
+        <div style="margin-top: 10px; color: #555; font-family: 'Arial', sans-serif; word-wrap: break-word;">
+            {{ comentario.texto }}
+        </div>
+        <br>    
+        <div class="comentario">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <a href="#" style="text-decoration: none; color: black;" id="enlace-respuestas-{{ comentario.id }}">
+                        <i class="far fa-comment" style="font-size: 14px;"></i>
+                    </a>
+                    <span class="btn-icon" style="color: black; font-size: 14px;">
+                        {% cantidad comentario.id as cantidad %}
+                        {{cantidad}}
+                    </span>
+                </div>
+
+                <a href="#" id="enlace-responder-{{ comentario.id }}" style="margin-left: auto; text-decoration: none; color: black;">Responder</a>
+            </div>
+            
+            <br>        
+            <div id="comentario-responder-{{ comentario.id }}" class="comentario-responder">
+                {% include 'comentarios/responder.html' %}
+            </div>
+        </div>    
+        <hr>
+        <br>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var enlaceResponder = document.querySelector('#enlace-responder-{{ comentario.id }}');
+                var elementoMostrarOcultar = document.querySelector('#comentario-responder-{{ comentario.id }}');
+                
+                enlaceResponder.addEventListener('click', function(e) {
+                    e.preventDefault();
+    
+                    document.querySelectorAll('.comentario-responder').forEach(function(comentario) {
+                        if (comentario !== elementoMostrarOcultar) {
+                            comentario.style.display = 'none';
+                        }
+                    });
+    
+
+                    if (elementoMostrarOcultar.style.display === 'block') {
+                        elementoMostrarOcultar.style.display = 'none';
+                    } else {
+                        elementoMostrarOcultar.style.display = 'block';
+                    }
+                });
+            });
+        </script>
+        {% if cantidad > 0 %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var enlaceRespuestas = document.querySelector('#enlace-respuestas-{{ comentario.id }}');
+                    var respuestasOcultar = document.querySelector('#comentario-respuestas-{{ comentario.id }}');
+                    
+                    enlaceRespuestas.addEventListener('click', function(e) {
+                        e.preventDefault();
+            
+                        if (respuestasOcultar.style.display === 'block') {
+                            respuestasOcultar.style.display = 'none';
+                        } else {
+                            respuestasOcultar.style.display = 'block';
+                        }
+                    });
+                });
+            </script>
+
+
+            {% respuestas comentario.id as respuestas %}
+            {% if respuestas %}
+            <div style="margin-left: 30px;" id="comentario-respuestas-{{ comentario.id }}" class="comentario-respuestas">
+                    {% include 'comentarios/comentario.html' with comentarios=respuestas %}
+                </div>
+            {% endif %}        
+        {% endif %}
+
+    {% endfor %}
+
+    <style>
+        .comentario-responder {
+            display: none;
+        }
+
+        .comentario-respuestas {
+            display: none;
+        }
+    </style>

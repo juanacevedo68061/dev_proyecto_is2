@@ -2,9 +2,12 @@ from .forms import CommentForm
 from django.http import JsonResponse
 from .models import Comment
 from django.contrib.auth.decorators import login_required
+from publicaciones.models import Publicacion_solo_text
+from django.shortcuts import get_object_or_404
 
 @login_required
 def comentar(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
     response_data = {'success': False}
 
     if request.method == 'POST':
@@ -14,6 +17,8 @@ def comentar(request, publicacion_id):
             comentario.usuario = request.user
             comentario.publicacion_id = publicacion_id
             comentario.save()
+            publicacion.comments+=1
+            publicacion.save()
             print("Comentario: ", comentario)
             
             response_data['success'] = True
@@ -35,7 +40,10 @@ def responder(request, comentario_id):
             comentario.comentario_padre = padre
             comentario.publicacion_id = padre.publicacion_id
             comentario.save()
-            
+            publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=padre.publicacion_id)
+            publicacion.comments+=1
+            publicacion.save()
+
             response_data['success'] = True
             print("Respuesta: ", comentario)
             print("Padre: ", comentario.comentario_padre)

@@ -10,8 +10,7 @@
             {% endif %}
             <span style="margin-right: 10px;">{{ comentario.usuario.username }} <span style="color: gray; font-size: 14px;">{{ comentario.fecha_creacion }}</span></span>
         </div>
-        
-        <div style="margin-top: 10px; color: #555; font-family: 'Arial', sans-serif;">
+        <div style="margin-top: 10px; color: #555; font-family: 'Arial', sans-serif; word-wrap: break-word;">
             {{ comentario.texto }}
         </div>
         <br>    
@@ -21,7 +20,10 @@
                     <a href="#" style="text-decoration: none; color: black;" id="enlace-respuestas-{{ comentario.id }}">
                         <i class="far fa-comment" style="font-size: 14px;"></i>
                     </a>
-                    <span class="btn-icon" style="color: black; font-size: 14px;">0</span>
+                    <span class="btn-icon" style="color: black; font-size: 14px;">
+                        {% cantidad comentario.id as cantidad %}
+                        {{cantidad}}
+                    </span>
                 </div>
 
                 <a href="#" id="enlace-responder-{{ comentario.id }}" style="margin-left: auto; text-decoration: none; color: black;">Responder</a>
@@ -57,30 +59,32 @@
                 });
             });
         </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var enlaceRespuestas = document.querySelector('#enlace-respuestas-{{ comentario.id }}');
-                var respuestasOcultar = document.querySelector('#comentario-respuestas-{{ comentario.id }}');
-                
-                enlaceRespuestas.addEventListener('click', function(e) {
-                    e.preventDefault();
-        
-                    if (respuestasOcultar.style.display === 'block') {
-                        respuestasOcultar.style.display = 'none';
-                    } else {
-                        respuestasOcultar.style.display = 'block';
-                    }
+        {% if cantidad > 0 %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var enlaceRespuestas = document.querySelector('#enlace-respuestas-{{ comentario.id }}');
+                    var respuestasOcultar = document.querySelector('#comentario-respuestas-{{ comentario.id }}');
+                    
+                    enlaceRespuestas.addEventListener('click', function(e) {
+                        e.preventDefault();
+            
+                        if (respuestasOcultar.style.display === 'block') {
+                            respuestasOcultar.style.display = 'none';
+                        } else {
+                            respuestasOcultar.style.display = 'block';
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
 
 
-        {% respuestas comentario.id as respuestas %}
-        {% if respuestas %}
-        <div style="margin-left: 30px;" id="comentario-respuestas-{{ comentario.id }}" class="comentario-respuestas">
-                {% include 'comentarios/comentario.html' with comentarios=respuestas %}
-            </div>
-        {% endif %}        
+            {% respuestas comentario.id as respuestas %}
+            {% if respuestas %}
+            <div style="margin-left: 30px;" id="comentario-respuestas-{{ comentario.id }}" class="comentario-respuestas">
+                    {% include 'comentarios/comentario.html' with comentarios=respuestas %}
+                </div>
+            {% endif %}        
+        {% endif %}
 
     {% endfor %}
 
@@ -93,4 +97,3 @@
             display: none;
         }
     </style>
-    

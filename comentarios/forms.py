@@ -8,7 +8,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['texto']
         widgets = {
-            'texto': forms.Textarea(attrs={'rows': 1, 'style': 'border: none; outline: none; resize: none; overflow: hidden;', 'placeholder': '¿Qué piensas?'}),
+            'texto': forms.Textarea(attrs={'rows': 2, 'style': 'font-family: Helvetica; border: none; outline: none; resize: none; overflow-y: auto; max-height: 10em;', 'placeholder': '¿Qué piensas?'}),
         }
         labels = {
             'texto': '',

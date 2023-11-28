@@ -25,7 +25,7 @@
     <form method="post" action="{% url 'comentarios:comentar' publicacion.id_publicacion %}" id="comentarioForm">
         {% csrf_token %}
         {{ comment_form.as_p }}
-        <br><br>
+        <br>
         <button id="btnComentar" type="submit" class="btn-comentar" disabled>Comentar</button>
     </form>
 </div>

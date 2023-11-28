@@ -2,6 +2,7 @@
 .modal {
     overflow-y: auto;
     margin: 0;
+    height: 100%; /* Establece la altura mínima al 100% de la altura de la ventana */
 }
 
 .modal-dialog {
@@ -9,10 +10,11 @@
     margin: 0;
     position: absolute;
     right: 0;
+    height: 100%; /* Establece la altura del modal al 100% */
 }
 
 .modal-content {
-    height: 100%;
+    min-height: 100%;
     border: 0;
     border-radius: 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

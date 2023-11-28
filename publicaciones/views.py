@@ -28,10 +28,8 @@ from roles.decorators import permiso_requerido, permiso_redireccion_requerido
 import json
 from django.http import HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django_comments_xtd.models import XtdComment
-from django_comments.views.comments import post_comment
+from comentarios.models import Comment
+from comentarios.forms import CommentForm
 
 @permiso_requerido
 @login_required
@@ -281,8 +279,13 @@ def mostrar_publicacion(request, publicacion_id):
     if request.user.is_authenticated:
         if request.user.roles.filter(nombre="publicador").exists():
             rol_publicador = True
+    
+    comentarios = Comment.objects.filter(publicacion_id=publicacion_id, comentario_padre=None)
+    comment_form = CommentForm()
     context = {
         'publicacion': publicacion,
+        'comment_form': comment_form,
+        'comentarios': comentarios,
         'ha_dado_like': ha_dado_like,
         'ha_dado_dislike': ha_dado_dislike,
         'rol_publicador': rol_publicador
@@ -543,49 +546,3 @@ def calificar(request, publicacion_id):
         return JsonResponse({'rating': rating, 'calificaciones': cantidad})
 
     return HttpResponseBadRequest('Método no permitido')
-
-@receiver(post_save, sender=XtdComment)
-def update_comment_count(sender, instance, created, **kwargs):
-    """
-    Actualiza el contador de comentarios de un objeto relacionado cuando se crea un nuevo comentario.
-
-    Args:
-        sender: Modelo que envía la señal.
-        instance: Instancia del comentario que fue guardado.
-        created: Booleano que indica si la instancia fue creada.
-    """
-    if created:
-        instance.content_object.comments += 1
-        instance.content_object.save()
-
-@receiver(post_delete, sender=XtdComment)
-def decrease_comment_count(sender, instance, **kwargs):
-    """
-    Actualiza el contador de comentarios de un objeto relacionado cuando se elimina un comentario.
-
-    Args:
-        sender: Modelo que envía la señal.
-        instance: Instancia del comentario que fue eliminado.
-    """
-    instance.content_object.comments -= 1
-    instance.content_object.save()
-
-@login_required
-def custom_post_comment(request):
-    """
-    Procesa y envía un comentario. Si el comentario se envía correctamente, 
-    devuelve una respuesta JSON indicando el éxito, de lo contrario, indica un error.
-
-    Args:
-        request: Objeto HttpRequest.
-
-    Returns:
-        JsonResponse indicando el estado y el mensaje relacionado con el envío del comentario.
-    """
-    response = post_comment(request)
-    
-    # Si el comentario se creó correctamente, devuelve una respuesta JSON.
-    if response.status_code == 302:
-        return JsonResponse({"status": "success", "message": "Comentario enviado con éxito!"})
-    else:
-        return JsonResponse({"status": "error", "message": "Hubo un error al enviar el comentario."})

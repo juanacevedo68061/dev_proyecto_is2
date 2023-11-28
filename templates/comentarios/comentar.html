@@ -1,0 +1,85 @@
+{% load static %}
+<style>
+.btn-comentar {
+    background-color: #bdf8ae;
+    color: #FFFFFF;
+    border: 0px solid #bdf8ae;
+    border-radius: 50px;
+    padding: 5px 12px;
+    cursor: pointer;
+    float: right;
+    cursor: not-allowed;
+}
+</style>
+<div class="comentar">
+    <div class="perfil-circle">
+        {% if publicacion.autor.imagen %}
+        <img src="{{ publicacion.autor.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="33" height="33"
+            style="object-fit: cover; margin-top: -3px;">
+        {% else %}
+        <i class="fas fa-user"></i>
+        {% endif %}
+        <span style="margin-left: 4px;">{{ publicacion.autor.username }}</span>
+    </div>
+    <br>
+    <form method="post" action="{% url 'comentarios:comentar' publicacion.id_publicacion %}" id="comentarioForm">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <br>
+        <button id="btnComentar" type="submit" class="btn-comentar" disabled>Comentar</button>
+    </form>
+</div>
+<br>
+<hr style="width: 100%; border: 0.5px solid #b8b8b8; margin: 0;">
+<br>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var comentarioInput = document.querySelector('#id_texto'); // Reemplaza 'id_texto' con el ID real de tu campo de texto
+        var btnComentar = document.querySelector('#btnComentar');
+
+        comentarioInput.addEventListener('input', function () {
+            if (comentarioInput.value.trim() !== '') {
+                btnComentar.style.backgroundColor = 'green';
+                btnComentar.style.border = '0px solid green';
+                btnComentar.style.cursor = 'pointer';
+                btnComentar.removeAttribute('disabled');
+            } else {
+                btnComentar.style.backgroundColor = '#bdf8ae';
+                btnComentar.style.border = '0px solid #bdf8ae';
+                btnComentar.style.cursor = 'not-allowed';
+                btnComentar.setAttribute('disabled', 'disabled');
+            }
+        });
+
+        document.getElementById('comentarioForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = event.target;
+
+            // Realiza una solicitud AJAX
+            fetch(form.getAttribute('action'), {
+                method: form.getAttribute('method'),
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Comentario creado exitosamente');
+                    comentarioInput.value = '';
+                    btnComentar.style.backgroundColor = '#bdf8ae';
+                    btnComentar.style.border = '0px solid #bdf8ae';
+                    btnComentar.style.cursor = 'not-allowed';
+                    btnComentar.setAttribute('disabled', 'disabled');
+                } else {
+                    console.log('Error al crear el comentario');
+                }
+            })
+            .catch(error => {
+                console.log('Error en la solicitud AJAX:', error);
+            });
+        });
+    });
+</script>

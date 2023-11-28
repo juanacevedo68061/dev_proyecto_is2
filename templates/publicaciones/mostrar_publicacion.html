@@ -17,7 +17,7 @@
     <script src="{% static 'js/activate.js' %}"></script>
 {%endif%}
 
-{% if user.is_authenticated %}                                            
+{% if user.is_authenticated %}
     {% if user|has_role:"administrador" %}
     <script src="{% static 'js/destacado.js' %}"></script>
     {%endif%}
@@ -50,10 +50,10 @@
                 {% else %}
                     <i class="fas fa-toggle-off btn-apagado"></i> <span class="descripcion">Activar</span>
                 {% endif %}
-            </a><br><br>                         
+            </a><br><br>
         {% endif %}
 
-        {% if user.is_authenticated %}                                            
+        {% if user.is_authenticated %}
             {% if user|has_role:"administrador" %}
                 <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
                     {% if publicacion.destacado %}
@@ -61,20 +61,20 @@
                     {% else %}
                         <i class="fas fa-toggle-off btn-apagado-destacado"></i> <span class="descripcion-destacado">Destacar</span>
                     {% endif %}
-                </a><br><br>                         
+                </a><br><br>
             {% endif %}
         {% endif %}
 
-        
+
         {% if user == publicacion.autor %}
             <h1 class="titulo" style="display: inline; margin-right: 10px;">{{ publicacion.titulo }}</h1>
-            <span style="color: green; display: inline;">version ({{publicacion.version}})</span>        
+            <span style="color: green; display: inline;">version ({{publicacion.version}})</span>
             <br><br>
         {% else %}
             <h1 class="titulo">{{ publicacion.titulo }}</h1>
         {% endif %}
         <div class="informacion">
-            
+
             <div class="perfil-info">
                 <div class="imagen-perfil">
                     {% if publicacion.autor.imagen %}
@@ -108,12 +108,12 @@
                     </div><br>
                     <span style="font-size: 20px;" id="calificacion-mensaje" data-id="{{ publicacion.id_publicacion }}">
                         <span id="mensaje-color"></span>
-                    </span>                                
+                    </span>
                 </div><br>
             {% endif %}
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
-                {%if not publicador %}    
+                {%if not publicador %}
                     <div class="reacciones">
                             <!-- Primer grupo de botones -->
                             <div class="btn-group">
@@ -122,13 +122,13 @@
                                     <i class="far fa-thumbs-up icon-like"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
-                                
+
                                 <!-- Botón de No me gusta con ícono personalizado -->
                                 <a href="#" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" onclick="sendDislikeEvent('{{ publicacion.id_publicacion }}'); return false;" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                     <i class="far fa-thumbs-down icon-dislike"></i>
-                                </a>                                
+                                </a>
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
-                                
+
                                 <script>
                                     function toggleComentarios() {
                                         console.log("Función toggleComentarios llamada");
@@ -138,7 +138,7 @@
                                         } else {
                                             comentariosSection.style.display = 'none';
                                         }
-                                    }                                    
+                                    }
                                 </script>
 
                                 <!-- Botón de Comentar con ícono personalizado -->
@@ -150,7 +150,7 @@
 
                         <!-- Espacio mayor entre los dos grupos de botones -->
                         <div class="espacio"></div>
-                    
+
                         <!-- Segundo grupo de botones -->
                         <div class="btn-group">
 
@@ -164,7 +164,7 @@
                             </a>
 
                             <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
-                            
+
                             <!-- Modal para mostrar el código QR -->
                             <div id="qrModal" class="modal">
                                 <div class="modal-content">
@@ -172,7 +172,7 @@
                                     <img id="qrImage" src="" alt="Código QR">
                                 </div>
                             </div>
-                    
+
                             <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
                             <div class="dropdown">
                                 <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
@@ -185,7 +185,7 @@
                         </div>
                     </div>
                 {% endif %}
-            </div>    
+            </div>
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
 
@@ -195,8 +195,8 @@
             {% endif %}
             {% render_xtdcomment_tree for publicacion %}
         </div>
-        
-        <div id="comentariosSection" style="display: none;">    
+
+        <div id="comentariosSection" style="display: none;">
             {% if user.is_authenticated %}
                 <div class="agregar-comentario">
                     <h4>Agregar comentario</h4>
@@ -206,22 +206,22 @@
             {% endif %}
         </div>
 
-        <script>
+        {% comment %} <script>
             document.getElementById("cancelarBtn").addEventListener("click", function() {
                 document.getElementById("comentariosSection").style.display = "none";
             });
-        </script>   
+        </script>    {% endcomment %}
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 let formulario = document.querySelector('.agregar-comentario form');
-                
+
                 if (formulario) {
                     formulario.addEventListener('submit', function(event) {
                         event.preventDefault();  // Evita el comportamiento predeterminado del formulario
-            
+
                         let datosFormulario = new FormData(formulario);
-            
+
                         fetch(formulario.action, {
                             method: 'POST',
                             body: datosFormulario
@@ -241,7 +241,7 @@
                 }
             });
             </script>
-            
+
 
         {%if publicador %}
             <form method="post">

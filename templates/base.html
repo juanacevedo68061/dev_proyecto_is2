@@ -12,25 +12,34 @@
 
 <head>
 
+     <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PCDK3WX2T"></script>
+     <script>
+         window.dataLayer = window.dataLayer || [];
+         var publicacionId = '{{ publicacion.id_publicacion }}';
+         console.log(publicacionId)
+         function gtag(){dataLayer.push(arguments);}
+         gtag('js', new Date());
+
+         gtag('config', 'G-8PCDK3WX2T', {
+             'page_path': '/publicaciones/mostrar/' + publicacionId
+         });
+     </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NKFGJZ53');</script>
+    <!-- End Google Tag Manager -->
+
     <title>{% block title %} {% endblock %}</title>
     <!-- Enlaces para los íconos de favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PCDK3WX2T"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-8PCDK3WX2T', {
-        'page_path': '/publicaciones/mostrar/' + publicacionId
-    });
-
-    </script>
 
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -46,6 +55,11 @@
 
 <!-- Si quitas el class que tiene body, al hacer scroll no se mantendra la parte superior-->
 <body class="sb-nav-fixed">
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKFGJZ53"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!-- Este es todo el Navbar-->
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -107,7 +121,7 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        
+
                             <div class="sb-sidenav-menu-heading">Principal</div>
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
                                     data-bs-target="#collapseLayoutsPublicaciones" aria-expanded="false" aria-controls="collapseLayouts">
@@ -118,7 +132,7 @@
                                 <div class="collapse" id="collapseLayoutsPublicaciones" aria-labelledby="headingOne"
                                     data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="/">Inicio</a>        
+                                        <a class="nav-link" href="/">Inicio</a>
 
                                         {% if user.roles %}
                                             {% for rol in user.roles.all %}
@@ -129,7 +143,7 @@
                                         {% endif %}
                                     </nav>
                                 </div>
-                        {% if user.is_authenticated %}                                            
+                        {% if user.is_authenticated %}
                             {% if user|has_role:"autor,editor,publicador" %}
                                 <div class="sb-sidenav-menu-heading">Kanban</div>
                                 <a class="nav-link" href="{% url 'kanban:kanban' %}">
@@ -138,7 +152,7 @@
                                 </a>
                             {% endif %}
                         {% endif %}
-                        
+
 
                         {% for rol in user.roles.all %}
                             {% if rol.nombre == 'administrador' %}
@@ -197,16 +211,16 @@
                 });
                 console.log("Evento de like enviado para la publicación:", publicacionId);
             }
-            
-            function sendDislikeEvent(publicacionId) {
+
+            {% comment %} function sendDislikeEvent(publicacionId) {
                 gtag('event', 'dislike', {
                     'event_category': 'Interacción',
                     'event_label': 'Publicación ' + publicacionId,
                     'value': 1
                 });
                 console.log("Evento de dislike enviado para la publicación:", publicacionId);
-            }
-            
+            } {% endcomment %}
+
             function sendCommentEvent(publicacionId) {
                 gtag('event', 'comment', {
                     'event_category': 'Interacción',
@@ -215,7 +229,7 @@
                 });
                 console.log("Evento de comentario enviado para la publicación:", publicacionId);
             }
-            
+
             function sendViewEvent(publicacionId) {
                 gtag('event', 'view', {
                     'event_category': 'Interacción',
@@ -224,7 +238,7 @@
                 });
                 console.log("Evento de vista enviado para la publicación:", publicacionId);
             }
-            
+
             function sendShareEvent(publicacionId) {
                 gtag('event', 'compartir', {
                     'event_category': 'Interacción',
@@ -234,7 +248,7 @@
                 console.log("Evento de compartir enviado para la publicación:", publicacionId);
             }
         </script>
-            
+
     {% endblock %}
 
 </body>

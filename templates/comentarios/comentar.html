@@ -51,7 +51,16 @@
                 btnComentar.setAttribute('disabled', 'disabled');
             }
         });
+        // Carga el script de Google Analytics
+        var scriptTag = document.createElement('script');
+        scriptTag.async = true;
+        scriptTag.src = 'https://www.googletagmanager.com/gtag/js?id=TU_ID_DE_SEGUIMIENTO_DE_GA4';
+        document.head.appendChild(scriptTag);
 
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-8PCDK3WX2T');
         document.getElementById('comentarioForm').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = event.target;
@@ -73,6 +82,12 @@
                     btnComentar.style.border = '0px solid #bdf8ae';
                     btnComentar.style.cursor = 'not-allowed';
                     btnComentar.setAttribute('disabled', 'disabled');
+
+                    // Enviar evento a Google Analytics
+                    gtag('event', 'comentario', {
+                    'event_category': 'Engagement',
+                    'event_label': 'Comment Submission'
+                    });
                 } else {
                     console.log('Error al crear el comentario');
                 }

@@ -230,14 +230,14 @@
                 console.log("Evento de comentario enviado para la publicación:", publicacionId);
             }
 
-            function sendViewEvent(publicacionId) {
+            {% comment %} function sendViewEvent(publicacionId) {
                 gtag('event', 'view', {
                     'event_category': 'Interacción',
                     'event_label': 'Publicación ' + publicacionId,
                     'value': 1
                 });
                 console.log("Evento de vista enviado para la publicación:", publicacionId);
-            }
+            } {% endcomment %}
 
             function sendShareEvent(publicacionId) {
                 gtag('event', 'compartir', {

@@ -50,7 +50,4 @@ class CommentModelTest(TestCase):
         # Verifica que el comentario hijo tiene el comentario original como padre.
         self.assertEqual(child_comment.comentario_padre, self.comment)
 
-# Nota: Asegúrate de que la aplicación 'login' con el modelo 'Usuario' esté correctamente configurada
-# y que el modelo 'Comment' esté definido en tu aplicación. Además, este código debe ejecutarse
-# en el contexto de un entorno de Django configurado, lo que significa que no se ejecutará correctamente
-# en esta plataforma de chat interactiva.
+

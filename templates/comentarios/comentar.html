@@ -51,7 +51,11 @@
                 btnComentar.setAttribute('disabled', 'disabled');
             }
         });
-
+        function reloadContent() {
+            // Realiza la recarga de contenido según tus necesidades
+            // Por ejemplo, puedes recargar la página completa usando window.location.reload()
+            window.location.reload();
+        }
         document.getElementById('comentarioForm').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = event.target;
@@ -73,6 +77,7 @@
                     btnComentar.style.border = '0px solid #bdf8ae';
                     btnComentar.style.cursor = 'not-allowed';
                     btnComentar.setAttribute('disabled', 'disabled');
+                    reloadContent();
                 } else {
                     console.log('Error al crear el comentario');
                 }

@@ -71,9 +71,18 @@
 
 <div class="responder">
     <form method="post" action="{% url 'comentarios:responder' comentario.id %}" id="responderForm-{{ comentario.id }}" class="responderForm">
-        {% csrf_token %}
-        <input type="text" name="respuesta_texto" class="respuesta-texto" placeholder="Escribe tu respuesta" style="border: none; border-bottom: 1px solid #e0e0e0; width: 100%; outline: none; padding-bottom: 5px;">
-
+        <div style="display: flex; align-items: center;">
+            <div class="perfil-circle">
+                {% if user.imagen %}
+                    <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="23" height="23" style="object-fit: cover; margin-top: -3px;">
+                {% else %}
+                    <i class="fas fa-user" style="margin-right: 5px;"></i>
+                {% endif %}
+            </div>
+            {% csrf_token %}
+            <input type="text" name="respuesta_texto" class="respuesta-texto" placeholder="Escribe tu respuesta" style="border: none; border-bottom: 1px solid #e0e0e0; flex: 1; margin-left: 5px; outline: none; padding-bottom: 5px;">
+        </div>
+        
         <br><br>
         <button type="submit" class="btn-responder" disabled>Enviar</button>
     </form>

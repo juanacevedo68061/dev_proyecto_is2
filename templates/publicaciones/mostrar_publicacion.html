@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load custom_tags %}
-
+{% block title %}{{ publicacion.titulo }}{% endblock %}
 {% block content %}
 
 <!-- Scripts de Bootstrap (asegúrate de tener estas bibliotecas incluidas) -->
@@ -30,7 +30,7 @@
     <script src="{% static 'js/activate.js' %}"></script>
 {%endif%}
 
-{% if user.is_authenticated %}                                            
+{% if user.is_authenticated %}
     {% if user|has_role:"administrador" %}
     <script src="{% static 'js/destacado.js' %}"></script>
     {%endif%}
@@ -63,10 +63,10 @@
                 {% else %}
                     <i class="fas fa-toggle-off btn-apagado"></i> <span class="descripcion">Activar</span>
                 {% endif %}
-            </a><br><br>                         
+            </a><br><br>
         {% endif %}
 
-        {% if user.is_authenticated %}                                            
+        {% if user.is_authenticated %}
             {% if user|has_role:"administrador" %}
                 <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
                     {% if publicacion.destacado %}
@@ -74,20 +74,20 @@
                     {% else %}
                         <i class="fas fa-toggle-off btn-apagado-destacado"></i> <span class="descripcion-destacado">Destacar</span>
                     {% endif %}
-                </a><br><br>                         
+                </a><br><br>
             {% endif %}
         {% endif %}
 
-        
+
         {% if user == publicacion.autor %}
             <h1 class="titulo" style="display: inline; margin-right: 10px;">{{ publicacion.titulo }}</h1>
-            <span style="color: green; display: inline;">version ({{publicacion.version}})</span>        
+            <span style="color: green; display: inline;">version ({{publicacion.version}})</span>
             <br><br>
         {% else %}
             <h1 class="titulo">{{ publicacion.titulo }}</h1>
         {% endif %}
         <div class="informacion">
-            
+
             <div class="perfil-info">
                 <div class="imagen-perfil">
                     {% if publicacion.autor.imagen %}
@@ -121,27 +121,27 @@
                     </div><br>
                     <span style="font-size: 20px;" id="calificacion-mensaje" data-id="{{ publicacion.id_publicacion }}">
                         <span id="mensaje-color"></span>
-                    </span>                                
+                    </span>
                 </div><br>
             {% endif %}
             <!-- Línea que muestra la categoría y el enlace de reportar -->
             <div class="categoria-y-enlace">
-                {%if not publicador %}    
+                {%if not publicador %}
                     <div class="reacciones">
                             <!-- Primer grupo de botones -->
                             <div class="btn-group">
                                 <!-- Botón de Like con ícono personalizado -->
-                                <a href="{% url 'publicaciones:like' publicacion.id_publicacion %}" class="like-button {% if ha_dado_like %}liked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <a href="#" class="like-button {% if ha_dado_like %}liked{% endif %}" onclick="sendLikeEvent('{{ publicacion.id_publicacion }}'); return false;" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                     <i class="far fa-thumbs-up icon-like"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="likes-count-{{ publicacion.id_publicacion }}">{{ publicacion.likes }}</p>
-                                
+
                                 <!-- Botón de No me gusta con ícono personalizado -->
-                                <a href="{% url 'publicaciones:dislike' publicacion.id_publicacion %}" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                                <a href="#" class="dislike-button {% if ha_dado_dislike %}disliked{% endif %}" onclick="sendDislikeEvent('{{ publicacion.id_publicacion }}'); return false;" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                     <i class="far fa-thumbs-down icon-dislike"></i>
                                 </a>
                                 <p class="btn-icon cantidad" id="dislikes-count-{{ publicacion.id_publicacion }}">{{ publicacion.dislikes }}</p>
-                            
+
                                 <!-- Botón de Comentar con ícono personalizado -->
                                 <a href="#" id="abrir-comentarios">
                                     <i class="far fa-comment icon-comment"></i>
@@ -154,13 +154,13 @@
                                             // Mostrar el modal
                                             $("#comentarios-modal").modal("show");
                                         });
-                                
+
                                         // Al hacer clic en el botón de cerrar del modal
                                         $("#comentarios-modal .close").click(function () {
                                             // Cerrar el modal
                                             $("#comentarios-modal").modal("hide");
                                         });
-                                
+
                                         // Deshabilitar cierre al hacer clic en la sombra del modal
                                         $("#comentarios-modal").modal({
                                             backdrop: 'static',
@@ -168,7 +168,7 @@
                                         });
                                     });
                                 </script>
-                                                            
+
                                 <!-- Modal de comentarios (inicialmente oculto) -->
                                 <div class="modal fade" id="comentarios-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-right" role="document">
@@ -189,7 +189,7 @@
                             </div>
                         <!-- Espacio mayor entre los dos grupos de botones -->
                         <div class="espacio"></div>
-                    
+
                         <!-- Segundo grupo de botones -->
                         <div class="btn-group">
 
@@ -198,11 +198,12 @@
                             <p id="publicacion-data" data-id="{{ publicacion.id_publicacion }}" class="btn-icon cantidad">{{ publicacion.views }}</p>
 
                             <!-- Botón de Compartir con ícono personalizado -->
-                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}">
+                            <a href="{% url 'publicaciones:generar_qr' publicacion.id_publicacion %}" class="compartir-btn" data-publicacion-id="{{ publicacion.id_publicacion }}" onclick="sendShareEvent('{{ publicacion.id_publicacion }}');">
                                 <i class="fas fa-share icon-share"></i>
                             </a>
+
                             <span class="cantidad btn-icon" id="shared_count">{{ publicacion.shared }}</span>
-                            
+
                             <!-- Modal para mostrar el código QR -->
                             <div id="qrModal" class="modal">
                                 <div class="modal-content">
@@ -210,7 +211,7 @@
                                     <img id="qrImage" src="" alt="Código QR">
                                 </div>
                             </div>
-                    
+
                             <!-- Enlace de puntos suspensivos para mostrar la opción de "Reportar" -->
                             <div class="dropdown">
                                 <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
@@ -223,7 +224,7 @@
                         </div>
                     </div>
                 {% endif %}
-            </div>    
+            </div>
         </div>
         <div>{{ publicacion.texto | safe }}</div><br>
 

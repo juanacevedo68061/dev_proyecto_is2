@@ -32,4 +32,11 @@ class Comment(models.Model):
     comentario_padre = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='padre')
 
     def __str__(self):
+        """
+        Devuelve una representación en cadena del comentario.
+        
+        Returns:
+            str: Una cadena que representa al comentario, incluyendo el nombre de usuario
+                 y los primeros 20 caracteres del texto del comentario.
+        """
         return f'{self.usuario.username} - {self.texto[:20]}'

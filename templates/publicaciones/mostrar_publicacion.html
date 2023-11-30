@@ -47,7 +47,7 @@
         {% if user.is_authenticated %}
             {% if user|has_role:"administrador" or rol_publicador or user == publicacion.autor%}    
                 <div class="dropdown" style="text-align: right;">
-                    <span class="fas fa-ellipsis-h puntos-suspensivos" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                    <span class="fas fa-sliders-h" style="font-size: 24px; cursor: pointer;" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink" style="padding-left: 10px; padding-right: 30px;">
                         <br>
                         <li style="text-align: left;">
@@ -84,15 +84,16 @@
         <h1 class="titulo" style="display: inline; margin-right: 10px;">{{ publicacion.titulo }}</h1>
         {% if publicacion.destacado %}
             <div class="contenedor-imagen" id="contenedor-imagen">
-                <img src="{% static 'destacado/image.png' %}" alt="Foto de perfil" class="rounded-circle" width="100" height="100" style="object-fit: cover; margin-top: -10px;">
+                <img src="{% static 'destacado/image.png' %}" alt="Foto de perfil" class="rounded-circle" width="40" height="40" style="object-fit: cover; margin-top: -25px;">
                 <div class="mensaje" id="mensaje">
                     <p>
+                        ¡Publicación best-seller!<br>
                         Esta publicación ha sido destacada debido a que<br>
                         cumple con los criterios de calidad establecidos<br>
                         por el Equipo de Gestión de Contenidos.<br>
                         <br>
-                        ¡Enhorabuena!
                     </p>
+                    <p>Powered by <span style="font-weight: bold;">TEAM CMS</span></p>
                 </div>
             </div>
 

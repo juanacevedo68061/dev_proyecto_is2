@@ -5,15 +5,12 @@
 <link href="{% static 'css/panel.css' %}" rel="stylesheet" />
 <div class="admin-panel">
   <h1>Panel de Administración</h1>
-
   <div>
-    <br>
-
-    <a class="custom-nav custom-nav-item" href="{% url 'administracion:gestion_categorias' %}">Gestión de Categorías</a><br>
-    <a class="custom-nav custom-nav-item" href="{% url 'administracion:gestion_usuarios' %}">Gestión de Usuarios</a><br>
+    <a class="custom-nav custom-nav-item" href="{% url 'administracion:gestion_categorias' %}">Gestión de Categorías</a>
+    <a class="custom-nav custom-nav-item" href="{% url 'administracion:gestion_usuarios' %}">Gestión de Usuarios</a>
+    <!-- Enlace a Google Analytics -->
+    <a class="custom-nav custom-nav-item" href="https://analytics.google.com/analytics/web/?pli=1#/p417224859/reports/intelligenthome?params=_u..nav%3Dmaui" target="_blank">Reportes-Google Analytics</a>
     <a class="custom-nav custom-nav-item" href="/" class="boton-regresar">Ir a la página principal</a>
-
   </div>
-
 </div>
 {% endblock %}

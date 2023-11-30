@@ -27,6 +27,7 @@
     transition: color 0.2s;
     position: relative;
     font-weight: 650;
+    margin-bottom: 10px;
     /* Utiliza flexbox para centrar texto horizontal y verticalmente */
     display: flex;
     align-items: center;

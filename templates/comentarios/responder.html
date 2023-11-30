@@ -62,7 +62,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('Comentario creado exitosamente');
+                        console.log('Respuesta creada exitosamente');
+                        
+                        var publicacionId = '{{ publicacion.id_publicacion }}';
+
+                        if (publicacionId) {
+                            // Hacer la solicitud fetch para crear un nuevo comentario
+                            fetch('/comentarios/nuevo/' + publicacionId + '/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}',  // Asegúrate de incluir el token CSRF
+                                },
+                                body: JSON.stringify({}),  // Puedes enviar datos adicionales aquí si es necesario
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Lógica adicional si es necesario
+                                    console.log('Nuevo comentario creado exitosamente');
+                                } else {
+                                    console.error('Error al crear un nuevo comentario:', data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error al realizar la solicitud:', error));
+                        } else {
+                            console.error('publicacionId está vacío o no definido.');
+                        }
+
                         respuestaInput.value = '';
                         btnResponder.classList.remove('active');
                         btnResponder.setAttribute('disabled', 'disabled');
@@ -73,6 +100,8 @@
                             'event_label': 'Respuesta a Comentario',
                             'value': 1
                         });
+                        
+                        mostrarMensaje()
                     } else {
                         console.log('Error al crear el comentario');
                     }
@@ -83,6 +112,23 @@
             });
         });
     });
+
+    function mostrarMensaje() {
+        Swal.fire({
+            allowOutsideClick: false,
+            html: 'Respuesta realizada con éxito',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'custom-confirm-button btn btn-primary',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }    
 </script>
 
 <div class="responder">

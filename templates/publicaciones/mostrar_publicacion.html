@@ -207,6 +207,27 @@
                                     });
                                 </script>
 
+                                <!-- En tu plantilla -->
+                                <script>
+                                    var publicacionId = '{{ publicacion.id_publicacion }}';
+                                    console.log("id: ", publicacionId)
+
+                                    fetch('/comentarios/verificar/' + publicacionId + '/')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            console.log('Comentario creado exitosamente');
+                                            $("#comentarios-modal").modal("show");
+                                        }else{
+                                            console.log('Falseeee: ',data.success);
+                                        }
+                                    })
+                                    .catch(error => console.error('Error al realizar la solicitud:', error));
+
+                                </script>
+
+                                
+                                
                                 <!-- Modal de comentarios (inicialmente oculto) -->
                                 <div class="modal fade" id="comentarios-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-right" role="document">

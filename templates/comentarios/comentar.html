@@ -1,15 +1,16 @@
 {% load static %}
+
 <style>
-.btn-comentar {
-    background-color: #bdf8ae;
-    color: #FFFFFF;
-    border: 0px solid #bdf8ae;
-    border-radius: 50px;
-    padding: 5px 12px;
-    cursor: pointer;
-    float: right;
-    cursor: not-allowed;
-}
+    .btn-comentar {
+        background-color: #bdf8ae;
+        color: #FFFFFF;
+        border: 0px solid #bdf8ae;
+        border-radius: 50px;
+        padding: 5px 12px;
+        cursor: pointer;
+        float: right;
+        cursor: not-allowed;
+    }
 </style>
 <div class="comentar">
     <div class="perfil-circle">
@@ -51,18 +52,15 @@
                 btnComentar.setAttribute('disabled', 'disabled');
             }
         });
-        function reloadContent() {
-            // Realiza la recarga de contenido según tus necesidades
-            // Por ejemplo, puedes recargar la página completa usando window.location.reload()
-            window.location.reload();
-        }        // Carga el script de Google Analytics
+
+        // Carga el script de Google Analytics
         var scriptTag = document.createElement('script');
         scriptTag.async = true;
         scriptTag.src = 'https://www.googletagmanager.com/gtag/js?id=G-8PCDK3WX2T';
         document.head.appendChild(scriptTag);
 
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-8PCDK3WX2T');
         document.getElementById('comentarioForm').addEventListener('submit', function (event) {
@@ -77,29 +75,72 @@
                     'X-Requested-With': 'XMLHttpRequest',
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Comentario creado exitosamente');
-                    comentarioInput.value = '';
-                    btnComentar.style.backgroundColor = '#bdf8ae';
-                    btnComentar.style.border = '0px solid #bdf8ae';
-                    btnComentar.style.cursor = 'not-allowed';
-                    btnComentar.setAttribute('disabled', 'disabled');
-                    reloadContent();
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Comentario creado exitosamente');
+                        var publicacionId = '{{ publicacion.id_publicacion }}';
 
-                    // Enviar evento a Google Analytics
-                    gtag('event', 'comentario', {
-                    'event_category': 'Engagement',
-                    'event_label': 'Comment Submission'
-                    });
-                } else {
-                    console.log('Error al crear el comentario');
-                }
-            })
-            .catch(error => {
-                console.log('Error en la solicitud AJAX:', error);
-            });
+                        if (publicacionId) {
+                            // Hacer la solicitud fetch para crear un nuevo comentario
+                            fetch('/comentarios/nuevo/' + publicacionId + '/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}',  // Asegúrate de incluir el token CSRF
+                                },
+                                body: JSON.stringify({}),  // Puedes enviar datos adicionales aquí si es necesario
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Lógica adicional si es necesario
+                                    console.log('Nuevo comentario creado exitosamente');
+                                } else {
+                                    console.error('Error al crear un nuevo comentario:', data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error al realizar la solicitud:', error));
+                        } else {
+                            console.error('publicacionId está vacío o no definido.');
+                        }                        
+                        comentarioInput.value = '';
+                        btnComentar.style.backgroundColor = '#bdf8ae';
+                        btnComentar.style.border = '0px solid #bdf8ae';
+                        btnComentar.style.cursor = 'not-allowed';
+                        btnComentar.setAttribute('disabled', 'disabled');
+
+                        // Enviar evento a Google Analytics
+                        gtag('event', 'comentario', {
+                            'event_category': 'Engagement',
+                            'event_label': 'Comment Submission'
+                        });
+                        
+                        mostrarMensaje()
+                    } else {
+                        console.log('Error al crear el comentario');
+                    }
+                })
+                .catch(error => {
+                    console.log('Error en la solicitud AJAX:', error);
+                });
         });
     });
+    function mostrarMensaje() {
+        Swal.fire({
+            allowOutsideClick: false,
+            html: 'Comentario realizado con éxito',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'custom-confirm-button btn btn-primary',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }
+
 </script>

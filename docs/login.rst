@@ -1,8 +1,10 @@
 Login App
 =========
 
-Models
-------
+La aplicacion `Login` se encarga de gestionar la autenticacion y el registro de usuarios en el sistema CMS. Este documento proporciona una vision detallada del funcionamiento, implementacion y mejores practicas asociadas con esta aplicacion.
+
+Modelos
+-------
 
 .. automodule:: login.models
    :members:

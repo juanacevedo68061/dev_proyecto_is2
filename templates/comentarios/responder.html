@@ -73,6 +73,8 @@
                             'event_label': 'Respuesta a Comentario',
                             'value': 1
                         });
+                        
+                        mostrarMensaje()
                     } else {
                         console.log('Error al crear el comentario');
                     }
@@ -83,6 +85,23 @@
             });
         });
     });
+
+    function mostrarMensaje() {
+        Swal.fire({
+            allowOutsideClick: false,
+            html: 'Respuesta realizada con éxito',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'custom-confirm-button btn btn-primary',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }    
 </script>
 
 <div class="responder">

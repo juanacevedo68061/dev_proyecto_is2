@@ -84,7 +84,6 @@ def crear_publicacion(request):
                     else:                    
                         if request.POST['accion'] == 'crear':
                             publicacion.estado = 'publicado' 
-                            publicacion.calcular_vigencia()
                             publicacion.save()                
                             messages.success(request, message)
                             redirect_url = reverse('publicaciones:crear_publicacion')                                            

@@ -1,2 +1,4 @@
-{% include 'comentarios/comentar.html'%}
+{% if user.is_authenticated %}
+    {% include 'comentarios/comentar.html'%}
+{% endif %}
 {% include 'comentarios/comentario.html'%}

@@ -214,15 +214,6 @@
                 console.log("Evento de like enviado para la publicación:", publicacionId);
             }
 
-            {% comment %} function sendDislikeEvent(publicacionId) {
-                gtag('event', 'dislike', {
-                    'event_category': 'Interacción',
-                    'event_label': 'Publicación ' + publicacionId,
-                    'value': 1
-                });
-                console.log("Evento de dislike enviado para la publicación:", publicacionId);
-            } {% endcomment %}
-
             function sendCommentEvent(publicacionId) {
                 gtag('event', 'comment', {
                     'event_category': 'Interacción',
@@ -231,15 +222,6 @@
                 });
                 console.log("Evento de comentario enviado para la publicación:", publicacionId);
             }
-
-            {% comment %} function sendViewEvent(publicacionId) {
-                gtag('event', 'view', {
-                    'event_category': 'Interacción',
-                    'event_label': 'Publicación ' + publicacionId,
-                    'value': 1
-                });
-                console.log("Evento de vista enviado para la publicación:", publicacionId);
-            } {% endcomment %}
 
             function sendShareEvent(publicacionId) {
                 gtag('event', 'compartir', {

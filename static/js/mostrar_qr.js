@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var compartirBtn = document.querySelector('.compartir-btn');
     var modal = document.getElementById('qrModal');
     var qrImage = document.getElementById('qrImage');
-    var closeModalBtn = document.querySelector('.close-modal');
+    var closeModalBtn = document.querySelector('.close-modal-qr');
 
     compartirBtn.addEventListener('click', function (event) {
         // Obtén la URL de generación del código QR

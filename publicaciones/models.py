@@ -148,6 +148,7 @@ class Publicacion_solo_text(models.Model):
     calificaciones = models.ManyToManyField(Calificacion, blank=True, related_name='publicaciones_calificaciones')
     calificaciones_cantidad = models.PositiveIntegerField(default=0)
     destacado = models.BooleanField(default=False)
+    nuevo_comentario = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         """

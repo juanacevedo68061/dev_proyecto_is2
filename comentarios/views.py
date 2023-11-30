@@ -69,3 +69,27 @@ def responder(request, comentario_id):
             print("Padre: ", comentario.comentario_padre)
             
     return JsonResponse(response_data)
+
+
+def nuevo(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    response_data = {'success': False}
+
+    if request.method == 'POST':
+            publicacion.nuevo_comentario=True
+            publicacion.save()
+            
+            response_data['success'] = True
+    
+    return JsonResponse(response_data)
+
+def verificar(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion_solo_text, id_publicacion=publicacion_id)
+    response_data = {'success': False}
+    response_data['success'] = publicacion.nuevo_comentario
+
+    if request.method == 'GET':
+        if publicacion.nuevo_comentario:
+            publicacion.nuevo_comentario=False
+            publicacion.save()
+    return JsonResponse(response_data)

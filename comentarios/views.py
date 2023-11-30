@@ -37,7 +37,16 @@ def comentar(request, publicacion_id):
 
 @login_required
 def responder(request, comentario_id):
-    
+    """
+    Vista para responder a un comentario existente.
+
+    Args:
+        request (HttpRequest): El objeto HttpRequest.
+        comentario_id (int): El identificador del comentario al que se está respondiendo.
+
+    Returns:
+        JsonResponse: Un objeto JsonResponse que indica si la operación fue exitosa o no.
+    """
     response_data = {'success': False}
     padre = Comment.objects.get(pk=comentario_id)
     

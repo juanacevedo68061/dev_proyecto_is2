@@ -62,14 +62,14 @@
           </a>
           <!-- Línea que muestra la categoría y el enlace de reportar -->
           <div class="categoria-y-enlace">
+            {% if publicacion.destacado %}
+              <img src="{% static 'destacado/extern.png' %}" alt="Foto de perfil" width="80" height="80" style="object-fit: cover; margin-top: -18px;">
+            {% endif %}
             <!-- Muestra la categoría de la publicación -->
             {% if publicacion.destacado %}
               <span class="categoria-destacada">{{ publicacion.categoria }}</span>
             {% else %}
               <span class="categoria">{{ publicacion.categoria }}</span>
-            {% endif %}
-            {% if publicacion.destacado %}
-              <img src="{% static 'destacado/extern.png' %}" alt="Foto de perfil" width="57" height="90" style="object-fit: cover; margin-top: -18px;">
             {% endif %}
 
           </div> 

@@ -21,6 +21,7 @@ Nuestro CMS en Django es una plataforma robusta y flexible para la gestión de c
    roles
    kanban
    administracion
+   documentacion
 
 La sección "Introducción" ofrece un panorama general del CMS, incluyendo su arquitectura y cómo estas aplicaciones interactúan dentro del framework de Django. Las siguientes secciones proporcionan detalles específicos sobre cada aplicación:
 

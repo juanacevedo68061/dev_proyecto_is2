@@ -55,7 +55,16 @@
             // Realiza la recarga de contenido según tus necesidades
             // Por ejemplo, puedes recargar la página completa usando window.location.reload()
             window.location.reload();
-        }
+        }        // Carga el script de Google Analytics
+        var scriptTag = document.createElement('script');
+        scriptTag.async = true;
+        scriptTag.src = 'https://www.googletagmanager.com/gtag/js?id=G-8PCDK3WX2T';
+        document.head.appendChild(scriptTag);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-8PCDK3WX2T');
         document.getElementById('comentarioForm').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = event.target;
@@ -78,6 +87,12 @@
                     btnComentar.style.cursor = 'not-allowed';
                     btnComentar.setAttribute('disabled', 'disabled');
                     reloadContent();
+
+                    // Enviar evento a Google Analytics
+                    gtag('event', 'comentario', {
+                    'event_category': 'Engagement',
+                    'event_label': 'Comment Submission'
+                    });
                 } else {
                     console.log('Error al crear el comentario');
                 }

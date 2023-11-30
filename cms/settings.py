@@ -16,7 +16,7 @@ DEBUG = True
 
 SITE_DOMAIN = '127.0.0.1'
 SITE_PORT = '8000'
-ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0', 'cms-is2.loca.lt']
+ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0', 'cms-is2-produccion.loca.lt']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
 CSRF_TRUSTED_ORIGINS = ['https://*.loca.lt']
@@ -122,7 +122,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR,'credencial.json'))
 
 ## configuracion para archivos multimedia
-###configuration for media file storing and reriving media file from gcloud 
+###configuration for media file storing and reriving media file from gcloud
 DEFAULT_FILE_STORAGE='cms.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'proyectois2-402511'
 GS_BUCKET_NAME = 'proyecto_is2_bucket'

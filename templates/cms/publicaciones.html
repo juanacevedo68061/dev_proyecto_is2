@@ -28,6 +28,10 @@
             <span class="espacio-a-f"></span>
             <!-- Fecha de publicación (dia, mes, año) -->
             <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
+
+            {% if publicacion.destacado %}
+              <span style="margin-left: 10px;"><i class="fas fa-trophy fa-1x" style="color: gold; "></i></span>
+            {% endif %}
             
           </div>
           <!-- Enlace a la publicación completa (vista previa como enlace) -->

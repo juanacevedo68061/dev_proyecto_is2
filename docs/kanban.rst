@@ -22,6 +22,8 @@ Ademas, es importante mencionar que los usuarios pueden tomar uno o mas roles me
 
 Teniendo en cuenta eso, un autor puede ver solo sus publicaciones, en cambio, los editores y publicadores pueden ver todas las publicaciones que les toquen en su estado
 
+A continuacion, se detalla una explicacion mas tecnica de los modelos y las vistas utilizadas en la aplicacion
+
 Modelos
 -------
 

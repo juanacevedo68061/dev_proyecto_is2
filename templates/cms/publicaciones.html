@@ -28,12 +28,11 @@
             <span class="espacio-a-f"></span>
             <!-- Fecha de publicación (dia, mes, año) -->
             <span class="fecha-publicacion">{{ publicacion.fecha_creacion|date:"d, M Y" }}</span>
-            
-            <!--Destacado-->
+
             {% if publicacion.destacado %}
               <span style="margin-left: 10px;"><i class="fas fa-trophy fa-1x" style="color: gold; "></i></span>
             {% endif %}
-
+            
           </div>
           <!-- Enlace a la publicación completa (vista previa como enlace) -->
           <a href="{% url 'publicaciones:mostrar_publicacion' publicacion.id_publicacion %}" class="enlace-previa {% if publicacion.destacado %}enlace-instagram{% endif %}">
@@ -44,7 +43,6 @@
               {% endwith %}
                 <!-- Título de la publicación -->
                 <h2 class="titulo-previa">{{ publicacion.titulo }}</h2>
-
                 <!-- Contenido del medio de la vista previa -->
                 <div class="contenido-medio-previa">
                   {% spaceless %}
@@ -52,6 +50,7 @@
                   {% endspaceless %}
                 </div>
               </div>
+
               <div class="imagen-previa">
                 {% load custom_filters %} <!-- Cargar los filtros personalizados -->
                 {% with publicacion.texto|safe as html_text %}
@@ -65,15 +64,18 @@
             </div>
       
           </a>
-
           <!-- Línea que muestra la categoría y el enlace de reportar -->
           <div class="categoria-y-enlace">
+            {% if publicacion.destacado %}
+              <img src="{% static 'destacado/extern.png' %}" alt="Foto de perfil" width="80" height="80" style="object-fit: cover; margin-top: -18px;">
+            {% endif %}
             <!-- Muestra la categoría de la publicación -->
             {% if publicacion.destacado %}
               <span class="categoria-destacada">{{ publicacion.categoria }}</span>
             {% else %}
               <span class="categoria">{{ publicacion.categoria }}</span>
             {% endif %}
+
           </div> 
         </div>
         <hr>
@@ -87,11 +89,10 @@
     {% endif %}
   </div>
   {% if principal and publicaciones %}
-    {% block content %}
+  {% block content %}
+    {% include 'cms/recomendaciones.html' %}  
+  {% endblock %}
 
-      {% include 'cms/recomendaciones.html' %}
-
-    {% endblock %}
   {% endif %}
   
 </div>

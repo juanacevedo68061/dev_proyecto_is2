@@ -117,12 +117,6 @@ class Publicacion_solo_text(models.Model):
         ('rechazado', 'Rechazado'),
     ]
 
-    UNIDADES_TIEMPO = (
-        ('d', 'Días'),
-        ('h', 'Horas'),
-        ('m', 'Minutos'),
-    )
-
     COLORES = [
         ('rojo', 'Rojo'),
         ('amarillo', 'Amarillo'),
@@ -154,16 +148,7 @@ class Publicacion_solo_text(models.Model):
     calificaciones = models.ManyToManyField(Calificacion, blank=True, related_name='publicaciones_calificaciones')
     calificaciones_cantidad = models.PositiveIntegerField(default=0)
     destacado = models.BooleanField(default=False)
-
-    vigencia = models.BooleanField(default=False)
-    vigencia_tiempo = models.DateTimeField(null=True, blank=True)
-    vigencia_unidad = models.CharField(max_length=1, choices=UNIDADES_TIEMPO, null=True, blank=True)
-    vigencia_cantidad = models.PositiveIntegerField(null=True, blank=True)
-    
-    programar = models.BooleanField(default=False)
-    programar_tiempo = models.DateTimeField(null=True, blank=True)
-    programar_unidad = models.CharField(max_length=1, choices=UNIDADES_TIEMPO, null=True, blank=True)
-    programar_cantidad = models.PositiveIntegerField(null=True, blank=True)
+    nuevo_comentario = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         """
@@ -178,37 +163,6 @@ class Publicacion_solo_text(models.Model):
         path = reverse('publicaciones:mostrar_publicacion', args=[str(self.id_publicacion)])
         url= f'http://{domain}{path}'
         return url
-
-    def calcular_vigencia(self):
-        """
-        Calcula la fecha y hora de vigencia de la publicación.
-        """
-        if self.vigencia_unidad and self.vigencia_cantidad:
-            if self.vigencia_unidad == 'd':
-                delta = datetime.timedelta(days=self.vigencia_cantidad)
-            elif self.vigencia_unidad == 'h':
-                delta = datetime.timedelta(hours=self.vigencia_cantidad)
-            else:
-                delta = datetime.timedelta(minutes=self.vigencia_cantidad)
-            
-            self.vigencia_tiempo = timezone.now() + delta
-            self.save()
-            print(self.vigencia_tiempo)
-    
-    def calcular_programar(self):
-        """
-        Calcula la fecha y hora de programación de la publicación.
-        """
-        if self.programar_unidad and self.programar_cantidad:
-            if self.programar_unidad == 'd':
-                delta = datetime.timedelta(days=self.programar_cantidad)
-            elif self.programar_unidad == 'h':
-                delta = datetime.timedelta(hours=self.programar_cantidad)
-            else:
-                delta = datetime.timedelta(minutes=self.programar_cantidad)
-            
-            self.programar_tiempo = timezone.now() + delta
-            self.save()
 
     def save(self, *args, **kwargs):
         """

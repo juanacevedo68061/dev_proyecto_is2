@@ -7,6 +7,80 @@
     {
         "nombre": "Ciberseguridad",
         "moderada": true,
+        "suscriptores": true
+    },
+    {
+        "nombre": "Literatura",
+        "moderada": false,
+        "suscriptores": true
+    },
+    {
+        "nombre": "Romance",
+        "moderada": true,
+        "suscriptores": true
+    },
+    {
+        "nombre": "Historicos",
+        "moderada": false,
         "suscriptores": false
+    },
+    {
+        "nombre": "Software",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "IA",
+        "moderada": false,
+        "suscriptores": true
+    },
+    {
+        "nombre": "Biblicos",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Actualidad",
+        "moderada": false,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Noticias",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Estoisismo",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Pasión",
+        "moderada": false,
+        "suscriptores": true
+    },
+    {
+        "nombre": "Turismo",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Juegos",
+        "moderada": false,
+        "suscriptores": false
+    },    {
+        "nombre": "Viajes",
+        "moderada": true,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Deportes",
+        "moderada": false,
+        "suscriptores": false
+    },
+    {
+        "nombre": "Astrologia",
+        "moderada": true,
+        "suscriptores": true
     }
 ]

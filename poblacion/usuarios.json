@@ -1,37 +1,95 @@
 [
     {
-        "username": "juan",
-        "email": "juan@gmail.com",
+        "username": "usuario0123",
+        "email": "usuario0123@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
         "roles": ["autor","editor","publicador"]
     },
     {
-        "username": "derlis",
-        "email": "derlis@gmail.com",
+        "username": "usuario0",
+        "email": "usuario0@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
-        "roles": ["editor","publicador"]
+        "roles": ["administrador"]
     },
     {
-        "username": "luis",
-        "email": "luis@gmail.com",
+        "username": "usuario01",
+        "email": "usuario01@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["administrador","autor"]
+    },
+    {
+        "username": "usuario02",
+        "email": "usuario02@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["administrador","editor"]
+    },
+    {
+        "username": "usuario03",
+        "email": "usuario03@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["administrador","publicador"]
+    },
+
+    {
+        "username": "usuario1",
+        "email": "usuario1@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
         "roles": ["autor"]
     },
     {
-        "username": "pedro",
-        "email": "pedro@gmail.com",
+        "username": "usuario12",
+        "email": "usuario12@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["autor","editor"]
+    },
+    {
+        "username": "usuario13",
+        "email": "usuario13@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["autor","publicador"]
+    },
+    {
+        "username": "usuario2",
+        "email": "usuario2@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
         "roles": ["editor"]
     },
     {
-        "username": "carlos",
-        "email": "carlos@gmail.com",
+        "username": "usuario23",
+        "email": "usuario23@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["editor","publicador"]
+    },
+    {
+        "username": "usuario3",
+        "email": "usuario3@gmail.com",
         "password1": "albirroja2023",
         "password2": "albirroja2023",
         "roles": ["publicador"]
+    },
+    {
+        "username": "usuario123",
+        "email": "usuario123@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["autor","editor","publicador"]
+    },
+    {
+        "username": "juan",
+        "email": "juan.acevedo68061@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["autor"]
     }
+
 ]

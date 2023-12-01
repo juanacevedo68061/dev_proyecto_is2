@@ -14,6 +14,7 @@ from .models import Registro
 from administracion.models import Categoria
 from publicaciones.utils import notificar
 from login.models import Usuario
+from datetime import datetime
 
 @permiso_requerido
 @login_required
@@ -195,6 +196,7 @@ def actualizar(request):
                 publicacion.semaforo = "rojo"                
                 if publicacion.estado == "publicado":
                     publicacion.semaforo = "verde"
+                    publicacion.fecha_publicacion = datetime.now().date()
 
                 publicacion.save()
                 if not publicacion.estado == "borrador":

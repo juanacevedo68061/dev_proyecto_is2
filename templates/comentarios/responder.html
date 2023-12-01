@@ -21,6 +21,15 @@
     }
 </style>
 
+<!-- Código de seguimiento de Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8PCDK3WX2T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8PCDK3WX2T');
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var forms = document.querySelectorAll('#responderForm-{{ comentario.id }}');
@@ -53,10 +62,46 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('Comentario creado exitosamente');
+                        console.log('Respuesta creada exitosamente');
+                        
+                        var publicacionId = '{{ publicacion.id_publicacion }}';
+
+                        if (publicacionId) {
+                            // Hacer la solicitud fetch para crear un nuevo comentario
+                            fetch('/comentarios/nuevo/' + publicacionId + '/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}',  // Asegúrate de incluir el token CSRF
+                                },
+                                body: JSON.stringify({}),  // Puedes enviar datos adicionales aquí si es necesario
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Lógica adicional si es necesario
+                                    console.log('Nuevo comentario creado exitosamente');
+                                } else {
+                                    console.error('Error al crear un nuevo comentario:', data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error al realizar la solicitud:', error));
+                        } else {
+                            console.error('publicacionId está vacío o no definido.');
+                        }
+
                         respuestaInput.value = '';
                         btnResponder.classList.remove('active');
                         btnResponder.setAttribute('disabled', 'disabled');
+
+                        // Enviar evento a Google Analytics
+                        gtag('event', 'respuesta_comentario', {
+                            'event_category': 'Comentario',
+                            'event_label': 'Respuesta a Comentario',
+                            'value': 1
+                        });
+                        
+                        mostrarMensaje()
                     } else {
                         console.log('Error al crear el comentario');
                     }
@@ -67,12 +112,38 @@
             });
         });
     });
+
+    function mostrarMensaje() {
+        Swal.fire({
+            allowOutsideClick: false,
+            html: 'Respuesta realizada con éxito',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'custom-confirm-button btn btn-primary',
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }    
 </script>
 
 <div class="responder">
     <form method="post" action="{% url 'comentarios:responder' comentario.id %}" id="responderForm-{{ comentario.id }}" class="responderForm">
-        {% csrf_token %}
-        <input type="text" name="respuesta_texto" class="respuesta-texto" placeholder="Escribe tu respuesta" style="border: none; border-bottom: 1px solid #e0e0e0; width: 100%; outline: none; padding-bottom: 5px;">
+        <div style="display: flex; align-items: center;">
+            <div class="perfil-circle">
+                {% if user.imagen %}
+                    <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="23" height="23" style="object-fit: cover; margin-top: -3px;">
+                {% else %}
+                    <i class="fas fa-user" style="margin-right: 5px;"></i>
+                {% endif %}
+            </div>
+            {% csrf_token %}
+            <input type="text" name="respuesta_texto" class="respuesta-texto" placeholder="Escribe tu respuesta" style="border: none; border-bottom: 1px solid #e0e0e0; flex: 1; margin-left: 5px; outline: none; padding-bottom: 5px;">
+        </div>
 
         <br><br>
         <button type="submit" class="btn-responder" disabled>Enviar</button>

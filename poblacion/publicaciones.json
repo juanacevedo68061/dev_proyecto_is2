@@ -1,18 +1,87 @@
 [
     {
-        "titulo": "Título de la Publicación 1",
-        "autor": "juan",
-        "texto": "<p>Contenido HTML de la Publicación 1</p>",
-        "palabras_clave": "paraguay",
-        "categoria": "Nacional",
-        "estado": "publicado"
+        "titulo": "Grand Theft Auto V (GTA V)",
+        "autor": "usuario1",
+        "texto": "<p>Grand Theft Auto V (GTA V) is an iconic open-world action-adventure video game developed by Rockstar North. Set in the fictional state of San Andreas, the game follows the lives of three criminals—Michael De Santa, Franklin Clinton, and Trevor Philips—as they navigate a world filled with heists, crime, and a satirical take on American culture. Released in 2013, GTA V is renowned for its expansive map, dynamic characters, and engaging narrative. The game allows players to switch between the protagonists, each with a unique story, adding depth to the gameplay. With its stunning visuals, immersive storyline, and a vast array of activities, GTA V has become a cultural phenomenon, leaving an indelible mark on the gaming industry.",
+        "palabras_clave": "gta 5",
+        "categoria": "Juegos",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario1", "usuario3","usuario13","usuario23","usuario123","usuario0123"],
+        "dislikes_usuarios": ["usuario0", "usuario2"],
+        "views": 10,
+        "shared":14
     },
     {
-        "titulo": "Título de la Publicación 2",
-        "autor": "derlis",
-        "texto": "<p>Contenido HTML de la Publicación 2</p>",
-        "palabras_clave": "hackers",
-        "categoria": "Ciberseguridad",
+        "titulo": "How to Read a Poem",
+        "autor": "usuario23",
+        "texto": "<p>How to Read a Poem is an insightful exploration into the art of deciphering poetic language and unraveling the layers of meaning embedded within verses. In this literary journey, readers are guided through the nuances of interpretation, whether it involves understanding the rhythmic cadence, unraveling metaphorical expressions, or delving into the intricate dance of rhymes and verses. The narrative, woven by Anneliese Dahl, invites readers to rekindle their connection with poetry, offering a profound discussion on the mechanics of rhythm and the essence of poetic expression. As the conversation unfolds, Dahl's wit and humor intermingle, making the exploration of poetry an engaging and accessible endeavor for both seasoned enthusiasts and newcomers alike. How to Read a Poem becomes not just a guide but a delightful conversation that beckons readers to embrace the diverse and profound world of poetic expression</p>",
+        "palabras_clave": "poem",
+        "categoria": "Literatura",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario1", "usuario02","usuario0123","usuario23","usuario12","usuario01"],
+        "dislikes_usuarios": ["usuario0", "usuario2"],
+        "views": 40,
+        "shared":90
+    },
+    {
+        "titulo": "The War of the Triple Alliance",
+        "autor": "usuario2",
+        "texto": "<p>The War of the Triple Alliance, fought from 1864 to 1870, was a devastating conflict involving Paraguay against the allied forces of Brazil, Argentina, and Uruguay. Sparked by territorial disputes and political tensions, the war resulted in Paraguay's isolation and immense losses. The conflict reshaped the geopolitical landscape of South America, leaving a lasting impact on Paraguay's demographic and economic structure. The War of the Triple Alliance stands as one of the bloodiest and most consequential conflicts in the region's history, shaping the destinies of nations involved for decades to come.</p>",
+        "palabras_clave": "War",
+        "categoria": "Historicos",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario0", "usuario2"],
+        "dislikes_usuarios": ["usuario1", "usuario02","usuario0123","usuario23","usuario12","usuario01"],
+        "views": 30,
+        "shared":20
+    },
+    {
+        "titulo": "The War of the Triple Alliance",
+        "autor": "usuario12",
+        "texto": "<p>The War of the Triple Alliance, fought from 1864 to 1870, was a devastating conflict involving Paraguay against the allied forces of Brazil, Argentina, and Uruguay. Sparked by territorial disputes and political tensions, the war resulted in Paraguay's isolation and immense losses. The conflict reshaped the geopolitical landscape of South America, leaving a lasting impact on Paraguay's demographic and economic structure. The War of the Triple Alliance stands as one of the bloodiest and most consequential conflicts in the region's history, shaping the destinies of nations involved for decades to come.</p>",
+        "palabras_clave": "War",
+        "categoria": "Historicos",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario0", "usuario2"],
+        "dislikes_usuarios": ["usuario1", "usuario02","usuario0123","usuario23","usuario12","usuario01"],
+        "views": 40,
+        "shared":10
+    },
+    {
+        "titulo": "Artificial Intelligence (AI)",
+        "autor": "usuario123",
+        "texto": "<p>Artificial Intelligence (AI) is a transformative field of computer science that focuses on creating intelligent machines capable of performing tasks that typically require human intelligence. These tasks include learning, reasoning, problem-solving, perception, and language understanding. AI systems can be classified into two main categories: Narrow AI (or Weak AI), which is designed for a specific task, and General AI (or Strong AI), which possesses human-like cognitive abilities across various domains.</p>",
+        "palabras_clave": "IA",
+        "categoria": "IA",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario0", "usuario2"],
+        "dislikes_usuarios": ["usuario1", "usuario02","usuario0123","usuario23","usuario12","usuario01"],
+        "views": 80,
+        "shared":60
+    },
+    {
+        "titulo": "La vida de Moisés está llena de eventos milagrosos y simboliza la liberación.",
+        "autor": "usuario2",
+        "texto": "<p>Según la narrativa bíblica, Moisés nació en Egipto durante un tiempo en que los israelitas eran esclavizados. Su madre lo colocó en un cesto en el río Nilo para salvarlo de la persecución del faraón. Fue encontrado y criado por la hija del faraón. A medida que creció, Moisés se dio cuenta de su origen hebreo y, tras presenciar la opresión de su pueblo, huyó de Egipto. Dios se le reveló a Moisés a través de una zarza ardiente y lo instruyó para liderar a los israelitas fuera de la esclavitud en Egipto. Después de enfrentar al faraón y presenciar las plagas, Moisés guió a los israelitas a través del Mar Rojo, que milagrosamente se abrió para permitirles escapar. Durante su liderazgo, Moisés recibió los Diez Mandamientos en el Monte Sinaí, estableciendo las leyes fundamentales para la comunidad israelita.</p>",
+        "palabras_clave": "Moises",
+        "categoria": "Biblicos",
         "estado": "publicar"
+    },
+    {
+        "titulo": "Metodología SCRUM",
+        "autor": "usuario3",
+        "texto": "<p>Scrum es un marco de trabajo ágil utilizado en desarrollo de software. Sus roles incluyen Scrum Master, Product Owner y Equipo de Desarrollo. Los eventos clave son el Sprint, la Reunión de Planificación, la Revisión del Sprint y el Scrum Diario. Los artefactos principales son el Product Backlog, el Incremento y el Burn-down Chart. Scrum sigue los principios ágiles, promoviendo la adaptabilidad, la entrega continua y la transparencia. Su enfoque iterativo y colaborativo lo hace valioso en entornos cambiantes y proyectos con requisitos dinámicos.</p>",
+        "palabras_clave": "scrum",
+        "categoria": "Software",
+        "estado": "revision"
+    },
+    {
+        "titulo": "El Titanic" ,
+        "autor": "usuario02",
+        "texto": "<p>Es una icónica película de romance y drama dirigida por James Cameron, estrenada en 1997. Ambientada en el trágico hundimiento del RMS Titanic en 1912, la trama se centra en la historia de amor entre Jack Dawson, un artista bohemio, y Rose DeWitt Bukater, una joven de clase alta. Su romance florece a bordo del lujoso transatlántico mientras enfrentan las barreras sociales y luchan por sobrevivir al desastre.</p>",
+        "palabras_clave": "titanic",
+        "categoria": "Romance",
+        "estado": "borrador"
     }
+
 ]

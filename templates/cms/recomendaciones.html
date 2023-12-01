@@ -5,78 +5,73 @@
 <script src="{% static 'js/favorito.js' %}"></script>
 {% endif %}
 
+
 <style>
     .categoria-item {
         text-decoration: none;
-        /* Elimina el subrayado del enlace */
         color: black;
-        /* Establece el color del texto en negro */
         transition: color 0.2s;
-        /* Agrega una transición suave para el cambio de color */
     }
 
     .categoria-item a:hover {
         color: blue;
-        /* Cambia el color del texto a azul al pasar el mouse por encima */
+    }
+
+    .chats-container {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 430px;
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f0f0f0;
+        margin-left: 30px;
+    }
+
+    .chats-container::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .chats-container::-webkit-scrollbar-thumb {
+        background-color: #888;
+    }
+
+    .chats-container::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
     }
 </style>
 
 <div class="barra-lateral">
-    <div class="fijado">
+    <h4 style="position: fixed; font-weight: bold;">Categorías Favoritas</h4>
+    <br><br>
+    <div class="chats-container fijado">
+
         {%if categorias%}
         <!-- Categorías recomendadas -->
-        <div class="categorias-recomendadas">
-            <h3>Categorías Recomendadas</h3>
+        <div class="categorias-recomendadas" style="margin-right: 130px;">
+            
             <br>
             <ul>
-            {% for categoria in categorias %}
+                {% for categoria in categorias %}
                 <li class="categoria-item">
-                    <a class="categoria-item" href="{% url 'publicaciones_categoria' categoria.id %}">{{ categoria }}</a>
+                    <a class="categoria-item" href="{% url 'publicaciones_categoria' categoria.id %}">
+                        {{ categoria}}
+                    </a>
                     <span>
-                        <a href="{% url 'administracion:favorito' categoria.id %}" class="favorito-button {% if favorito %}favorito{% endif %}" data-categoria-id="{{ categoria.id }}" style="text-decoration: none; color: inherit;" title="Favorito">
+                        <a href="{% url 'administracion:favorito' categoria.id %}"
+                            class="favorito-button {% if favorito %}favorito{% endif %}"
+                            data-categoria-id="{{ categoria.id }}" style="text-decoration: none; color: inherit;"
+                            title="Favorito">
                             {% if user in categoria.favorito_usuario.all%}
-                                <i class="fa fa-heart icon-favorito" style="margin-left: 5px; color: #f91880;"></i>
+                            <i class="fa fa-heart icon-favorito" style="margin-left: 5px; color: #f91880;"></i>
                             {% else %}
-                                <i class="far fa-heart icon-favorito" style="margin-left: 5px; color: gray;"></i>
+                            <i class="far fa-heart icon-favorito" style="margin-left: 5px; color: gray;"></i>
                             {% endif %}
                         </a>
                     </span>
                 </li>
-            {% endfor %}                                    
-            </ul>
-        </div>
-        {% endif %}
-
-        <!--        {% if user.is_authenticated and usuarios %}
-        
-        <div class="a-quien-seguir">
-            <h3>A quién seguir</h3>
-            <ul>
-        
-                {% for usuario in usuarios|slice:":3" %}
-                <li>
-                    <div class="usuario">
-        
-                        {% if usuario.imagen %}
-                        <img src="{{ usuario.imagen.url }}" alt="Foto de perfil" class="rounded-circle" width="40"
-                            height="40" style="object-fit: cover; margin-top: -3px;">
-                        {% else %}
-                        <i class="fas fa-user" alt="Foto de perfil" class="rounded-circle" width="40"
-                        height="40" style="object-fit: cover; margin-top: -3px; padding-right: 8px;"></i>
-
-                        {% endif %}
-
-        
-                        <span>{{ usuario.username }}</span>
-        
-                        <a href="#" class="seguir">Seguir</a>
-                    </div>
-                </li>
                 {% endfor %}
             </ul>
         </div>
-        {% endif %} -->
+        {% endif %}
     </div>
 </div>
-
 {% endblock %}

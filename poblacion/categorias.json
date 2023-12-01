@@ -35,7 +35,7 @@
         "suscriptores": true
     },
     {
-        "nombre": "Novelas Turcas",
+        "nombre": "Biblicos",
         "moderada": true,
         "suscriptores": false
     },
@@ -50,12 +50,12 @@
         "suscriptores": false
     },
     {
-        "nombre": "Novelas Mexicanas",
+        "nombre": "Estoisismo",
         "moderada": true,
         "suscriptores": false
     },
     {
-        "nombre": "Novelas Brasileras",
+        "nombre": "Pasión",
         "moderada": false,
         "suscriptores": true
     },

@@ -165,6 +165,6 @@ if ENTORNO == 'desarrollo':
     }
 
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
-"http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000", "https://*.loca.lt",
-"https://*.loca.lt:80", "https://*.loca.lt:8000", "https://*.loca.lt:8080"]
+CSRF_TRUSTED_ORIGINS = ["https://*.loca.lt","https://*.loca.lt:80", "https://*.loca.lt:8000", 
+"https://*.loca.lt:8080","http://localhost:8080","http://localhost:8000","http://localhost:80",
+"http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]

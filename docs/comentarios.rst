@@ -8,14 +8,14 @@ Cada comentario posee un ID unico. Existen otras funcionalidades como responder 
 Modelos
 -------
 
-.. automodule:: administracion.models
+.. automodule:: comentarios.models
    :members:
    :show-inheritance:
 
 Vistas
 ------
 
-.. automodule:: administracion.views
+.. automodule:: comentarios.views
    :members:
    :show-inheritance:
 

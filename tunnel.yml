@@ -2,6 +2,8 @@ version: '3.8'
 
 services:
   localtunnel:
-      image: defunctzombie/localtunnel-server
-      command: --port 8080 --subdomain cms-is2-produccion
-      restart: always
+    image: defunctzombie/localtunnel-server
+    command: --port 8080 --subdomain cms-is2-produccion
+    restart: always
+    ports:
+      - "8080:8080"

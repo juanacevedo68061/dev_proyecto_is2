@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  localtunnel:
+      image: defunctzombie/localtunnel-server
+      command: --port 8000 --domain cms-is2-produccion.loca.lt
+      network_mode: host
+      restart: always

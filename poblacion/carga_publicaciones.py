@@ -29,9 +29,20 @@ def cargar_publicaciones():
             estado = publicacion_data['estado']
             likes_usuarios_nombres = publicacion_data.get('likes_usuarios', [])
             dislikes_usuarios_nombres = publicacion_data.get('dislikes_usuarios', [])
+            views = publicacion_data.get('views',0)
+            shared = publicacion_data.get('shared', 0)
 
-            autor = Usuario.objects.get(username=autor_nombre)
-            categoria = Categoria.objects.get(nombre=categoria_nombre)
+            try:
+                autor = Usuario.objects.get(username=autor_nombre)
+            except Usuario.DoesNotExist:
+                print(f"El usuario con el nombre '{autor_nombre}' no existe. No se pudo cargar la publicación.")
+                continue
+
+            try:
+                categoria = Categoria.objects.get(nombre=categoria_nombre)
+            except Categoria.DoesNotExist:
+                print(f"La categoría con el nombre '{categoria_nombre}' no existe. No se pudo cargar la publicación.")
+                continue
 
             publicacion = Publicacion_solo_text(
                 titulo=titulo,
@@ -40,18 +51,22 @@ def cargar_publicaciones():
                 palabras_clave=palabras_clave,
                 categoria=categoria,
                 estado=estado,
+                views=views,
+                shared=shared
             )
-            publicacion.save()
-            
+            publicacion.save() #es importante ya que despues usas el objeto creado
+
             #likes
-            usuarios_like = Usuario.objects.filter(username__in=likes_usuarios_nombres)
-            publicacion.like_usuario.set(usuarios_like)
-            publicacion.likes = usuarios_like.count()
+            if likes_usuarios_nombres:    
+                usuarios_like = Usuario.objects.filter(username__in=likes_usuarios_nombres)
+                publicacion.like_usuario.set(usuarios_like)
+                publicacion.likes = usuarios_like.count()
 
             #dislikes
-            usuarios_dislike = Usuario.objects.filter(username__in=dislikes_usuarios_nombres)
-            publicacion.dislike_usuario.set(usuarios_dislike)
-            publicacion.dislikes = usuarios_dislike.count()
+            if dislikes_usuarios_nombres:
+                usuarios_dislike = Usuario.objects.filter(username__in=dislikes_usuarios_nombres)
+                publicacion.dislike_usuario.set(usuarios_dislike)
+                publicacion.dislikes = usuarios_dislike.count()
 
             publicacion.save()
 

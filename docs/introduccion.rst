@@ -22,6 +22,13 @@ El CMS está compuesto por varias aplicaciones integradas, cada una diseñada pa
 
 Estas aplicaciones trabajan de manera conjunta para crear una experiencia de usuario cohesiva y eficiente.
 
+Se utilizan contenedores Docker para facilitar la implementación y el despliegue del sistema. Los contenedores se ejecutan en un servidor web Apache, que se comunica con una base de datos MySQL para almacenar y recuperar datos.
+
+En el entorno de produccion, se utiliza el motor `nginx` para servir los archivos estáticos y el servidor `gunicorn` para ejecutar la aplicación Django.
+
+Para la utilizacion de servicios en la nube, se opto por Google Cloud Platform para el alojamiento de archivos multimedia y Google Analytics para obtener estadisticas de uso.
+
+
 Características Clave
 ---------------------
 

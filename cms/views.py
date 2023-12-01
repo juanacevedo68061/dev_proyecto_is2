@@ -88,7 +88,7 @@ def obtener_publicaciones(request, anonimo):
             publicaciones = publicaciones.filter(categoria__in=categorias)
 
         if fecha_publicacion:
-            publicaciones = publicaciones.filter(fecha_publicacion=fecha_publicacion)
+            publicaciones = publicaciones.filter(fecha_publicacion__gte=fecha_publicacion)
 
         if autor:
             publicaciones = [publicacion for publicacion in publicaciones if re.search(re.escape(autor), publicacion.autor.username, re.IGNORECASE)]

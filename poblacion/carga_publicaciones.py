@@ -10,6 +10,7 @@ django.setup()
 from administracion.models import Categoria
 from publicaciones.models import Publicacion_solo_text
 from login.models import Usuario
+from datetime import datetime
 
 def cargar_publicaciones():
     try:
@@ -56,6 +57,8 @@ def cargar_publicaciones():
             )
             publicacion.save() #es importante ya que despues usas el objeto creado
 
+            if not categoria.moderada:
+                publicacion.fecha_publicacion = datetime.now().date()
             #likes
             if likes_usuarios_nombres:    
                 usuarios_like = Usuario.objects.filter(username__in=likes_usuarios_nombres)

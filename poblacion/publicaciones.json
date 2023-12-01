@@ -5,7 +5,11 @@
         "texto": "<p>Contenido HTML de la Publicación 1</p>",
         "palabras_clave": "paraguay",
         "categoria": "Nacional",
-        "estado": "publicado"
+        "estado": "publicado",
+        "likes_usuarios": ["usuario0", "usuario3", "usuario2"],
+        "dislikes_usuarios": ["usuario1"],
+        "views": 30,
+        "shared":14
     },
     {
         "titulo": "Título de la Publicación 2",
@@ -13,6 +17,10 @@
         "texto": "<p>Contenido HTML de la Publicación 2</p>",
         "palabras_clave": "hackers",
         "categoria": "Ciberseguridad",
-        "estado": "publicar"
+        "estado": "publicar",
+        "likes_usuarios": ["usuario1", "usuario3"],
+        "dislikes_usuarios": ["usuario0", "usuario2"],
+        "views": 10,
+        "shared":14
     }
 ]

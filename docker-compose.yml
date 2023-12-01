@@ -25,5 +25,5 @@ services:
     image: defunctzombie/localtunnel-server
     ports:
       - "8081:8081"
-    command: --port 8081 --domain cms-is2-produccion.loca.lt
+    command: --port 8080 --domain cms-is2-produccion.loca.lt
     restart: always

@@ -19,7 +19,6 @@ SITE_PORT = '8000'
 ALLOWED_HOSTS = [SITE_DOMAIN, 'localhost', '0.0.0.0', 'cms-is2-produccion.loca.lt']
 HTTP403_PAGE = '403.html'
 SITE_ID = 1
-CSRF_TRUSTED_ORIGINS = ['https://*.loca.lt']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -167,5 +166,5 @@ if ENTORNO == 'desarrollo':
 
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080","http://localhost:8000","http://localhost:80",
-"http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000"]
-
+"http://127.0.0.1:80","http://127.0.0.1:8080","http://127.0.0.1:8000", "https://*.loca.lt",
+"https://*.loca.lt:80", "https://*.loca.lt:8000", "https://*.loca.lt:8080"]

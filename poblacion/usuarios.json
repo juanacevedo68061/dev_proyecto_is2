@@ -83,6 +83,13 @@
         "password1": "albirroja2023",
         "password2": "albirroja2023",
         "roles": ["autor","editor","publicador"]
+    },
+    {
+        "username": "juan",
+        "email": "juan.acevedo68061@gmail.com",
+        "password1": "albirroja2023",
+        "password2": "albirroja2023",
+        "roles": ["autor"]
     }
 
 ]

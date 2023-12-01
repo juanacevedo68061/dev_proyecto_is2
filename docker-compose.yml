@@ -11,9 +11,9 @@ services:
       python manage.py makemigrations comentarios roles login kanban administracion publicaciones && 
       python manage.py migrate &&
       python poblacion/poblar.py &&
-      python manage.py runserver 0.0.0.0:8000"
+      python manage.py runserver 0.0.0.0:7000"
     volumes:
       - .:/app 
     ports:
-      - "8000:8000"
+      - "7000:7000"
       - "8080:8080"    

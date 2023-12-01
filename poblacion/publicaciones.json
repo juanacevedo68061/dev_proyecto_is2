@@ -1,18 +1,22 @@
 [
     {
-        "titulo": "Título de la Publicación 1",
-        "autor": "juan",
-        "texto": "<p>Contenido HTML de la Publicación 1</p>",
-        "palabras_clave": "paraguay",
-        "categoria": "Nacional",
-        "estado": "publicado"
-    },
-    {
         "titulo": "Título de la Publicación 2",
-        "autor": "derlis",
+        "autor": "usuario1",
         "texto": "<p>Contenido HTML de la Publicación 2</p>",
         "palabras_clave": "hackers",
-        "categoria": "Ciberseguridad",
+        "categoria": "Nacional",
+        "estado": "publicado",
+        "likes_usuarios": ["usuario1", "usuario3"],
+        "dislikes_usuarios": ["usuario0", "usuario2"],
+        "views": 10,
+        "shared":14
+    },
+    {
+        "titulo": "Título de la Publicación 1",
+        "autor": "usuario0",
+        "texto": "<p>Contenido HTML de la Publicación 1</p>",
+        "palabras_clave": "paraguay",
+        "categoria": "Astrologia",
         "estado": "publicar"
     }
 ]

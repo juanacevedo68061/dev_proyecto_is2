@@ -14,12 +14,12 @@
 <link href="{% static 'css/publicacion.css' %}" rel="stylesheet" />
 
 <!--Si quieres que el publicador pueda desactivar solo desde el kanban, quitale rol_-->
-{%if rol_publicador or user == publicacion.autor %}
+{%if user|has_role:"publicador" or user == publicacion.autor %}
     <script src="{% static 'js/activate.js' %}"></script>
 {%endif%}
 
 {% if user.is_authenticated %}
-    {% if user|has_role:"administrador" %}
+    {% if user|has_role:"administrador" or user|has_role:"publicador" %}
     <script src="{% static 'js/destacado.js' %}"></script>
     {%endif%}
 {%endif%}
@@ -45,14 +45,14 @@
     <br>
     <div class="publicacion">
         {% if user.is_authenticated %}
-            {% if user|has_role:"administrador" or rol_publicador or user == publicacion.autor%}    
+            {% if user|has_role:"administrador" or user|has_role:"publicador" or user == publicacion.autor%}    
                 <div class="dropdown" style="text-align: right;">
                     <span class="fas fa-sliders-h" style="font-size: 24px; cursor: pointer;" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"></span>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink" style="padding-left: 10px; padding-right: 30px;">
                         <br>
                         <li style="text-align: left;">
                             <!--Si quieres que el publicador pueda desactivar solo desde el kanban, quitale rol_-->
-                            {% if rol_publicador or user == publicacion.autor %}
+                            {% if user|has_role:"publicador"  or user == publicacion.autor %}
                             <a class="btn-estado" data-publicacion-id="{{ publicacion.id_publicacion }}">
                                 {% if publicacion.activo %}
                                     <i class="fas fa-toggle-on btn-encendido"></i> <span class="descripcion">Inactivar</span>
@@ -65,7 +65,7 @@
                         <br>
                         <li style="text-align: left;">
                             {% if user.is_authenticated %}                                            
-                                {% if user|has_role:"administrador" %}
+                                {% if user|has_role:"administrador" or user|has_role:"publicador" %}
                                     <a class="btn-destacado" data-publicacion_id="{{ publicacion.id_publicacion }}">
                                         {% if publicacion.destacado %}
                                             <i class="fas fa-toggle-on btn-encendido-destacado"></i> <span class="descripcion-destacado">Quitar Destacado</span>
@@ -93,7 +93,7 @@
                         por el Equipo de Gestión de Contenidos.<br>
                         <br>
                     </p>
-                    <p>Powered by <span style="font-weight: bold;">TEAM CMS</span></p>
+                    <span style="font-weight: bold;">TEAM CMS</span>
                 </div>
             </div>
 

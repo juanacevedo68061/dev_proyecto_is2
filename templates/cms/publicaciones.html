@@ -89,11 +89,10 @@
     {% endif %}
   </div>
   {% if principal and publicaciones %}
-    {% block content %}
+  {% block content %}
+    {% include 'cms/recomendaciones.html' %}  
+  {% endblock %}
 
-      {% include 'cms/recomendaciones.html' %}
-
-    {% endblock %}
   {% endif %}
   
 </div>

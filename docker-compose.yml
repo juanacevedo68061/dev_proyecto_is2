@@ -22,10 +22,7 @@ services:
       - web
   
   localtunnel:
-    image: defunctzombie/localtunnel-server
-    ports:
-      - "8081:8081"
-    command: --port 8082 --domain cms-is2-produccion.loca.lt
-    restart: always
-    depends_on:
-      - nginx
+      image: defunctzombie/localtunnel-server
+      command: --port 8082 --domain cms-is2-produccion.loca.lt
+      network_mode: host
+      restart: always
